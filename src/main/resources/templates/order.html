@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>order</title>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.2.1/axios.min.js"></script>
+    <script>
+        const token = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJuZ2hpYTFAZ21haWwuY29tIiwiaWF0IjoxNjg3NTA1Njg0LCJleHAiOjE2ODc1OTIwODR9.MmdzEY4KcIDVU_EllqQMFBZpANmV6A-Pwtuj0dirwbY";
+
+        const request = {
+            "orderFilter": {
+                // "customerNumber":103,
+                // "orderNumber":10298
+                // "status":"DISPUTED"
+                // "orderDate": "",
+                // "requireDate": "",
+                // "shippedDate": "",
+                // "orderDateType": "",
+                // "requireDateType": "",
+                // "shippedDateType": ""
+            },
+            "pageInfo": {
+                "pageNumber": 1,
+                "pageSize": 10
+            }
+        };
+        let orders = [];
+        const getData = async () => {
+            const response = await axios.post("http://localhost:8080/api/v1/order/filters", request, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            orders = response.data.orders;
+        }
+
+        getData();
+    </script>
+</body>
+</html>
