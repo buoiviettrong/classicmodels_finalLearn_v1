@@ -3,12 +3,14 @@ package com.nixagh.classicmodels.service;
 import com.nixagh.classicmodels._common.PageUtil;
 import com.nixagh.classicmodels.dto.*;
 import com.nixagh.classicmodels.dto.orders.*;
+import com.nixagh.classicmodels.dto.product.ProductDTO;
 import com.nixagh.classicmodels.entity.Customer;
 import com.nixagh.classicmodels.entity.Order;
 import com.nixagh.classicmodels.entity.OrderDetail;
 import com.nixagh.classicmodels.entity.Product;
 import com.nixagh.classicmodels.entity.embedded.OrderDetailsEmbed;
 import com.nixagh.classicmodels.entity.enums.ShippingStatus;
+import com.nixagh.classicmodels.dto.orderDetail.OrderDetailByOrderNumber;
 import com.nixagh.classicmodels.repository.CustomerRepository;
 import com.nixagh.classicmodels.repository.OrderDetailRepository;
 import com.nixagh.classicmodels.repository.OrderRepository;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderService {
@@ -92,5 +95,26 @@ public class OrderService {
     };
 
     return result;
+  }
+
+  public OrderDetailByOrderNumber getOrderDetail(Long orderNumber) {
+    List<OrderDetail> orderDetailList = orderDetailRepository.getOrderDetail(orderNumber);
+    return new OrderDetailByOrderNumber(
+        orderDetailList.get(0).getId(),
+        orderDetailList.get(0).getOrder(),
+        orderDetailList.stream()
+            .map(item -> {
+              Product product = item.getProduct();
+              return new ProductDTO(
+                  product.getProductCode(),
+                  product.getProductName(),
+                  product.getProductVendor(),
+                  product.getProductDescription(),
+                  item.getQuantityOrdered(),
+                  item.getPriceEach()
+              );
+            })
+            .collect(Collectors.toList())
+    );
   }
 }

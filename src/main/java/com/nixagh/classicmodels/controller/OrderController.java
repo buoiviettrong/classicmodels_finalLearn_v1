@@ -1,16 +1,13 @@
 package com.nixagh.classicmodels.controller;
 
-import com.nixagh.classicmodels.dto.AbstractRequest;
-import com.nixagh.classicmodels.dto.AbstractResponse;
 import com.nixagh.classicmodels.dto.orders.OrderCreateRequest;
 import com.nixagh.classicmodels.dto.orders.OrderFilterRequest;
 import com.nixagh.classicmodels.dto.orders.OrderSearchResponse;
 import com.nixagh.classicmodels.entity.Order;
+import com.nixagh.classicmodels.dto.orderDetail.OrderDetailByOrderNumber;
 import com.nixagh.classicmodels.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/order")
@@ -34,4 +31,8 @@ public class OrderController {
     return orderService.saveOrder(request);
   }
 
+	@GetMapping("/orderDetail/{orderNumber}")
+  public OrderDetailByOrderNumber getDetail(@PathVariable(value = "orderNumber") Long orderNumber) {
+    return orderService.getOrderDetail(orderNumber);
+  }
 }
