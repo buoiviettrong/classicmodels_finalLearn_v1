@@ -24,9 +24,11 @@ public class OrderDetail {
 
 	@ManyToOne
 	@JoinColumn(name = "orderNumber")
+	@MapsId("orderNumber")
 	private Order order;
 	@ManyToOne
 	@JoinColumn(name = "productCode")
+	@MapsId("productCode")
 	private Product product;
 
 	@Column(name = "quantityOrdered", nullable = false, length = 10)

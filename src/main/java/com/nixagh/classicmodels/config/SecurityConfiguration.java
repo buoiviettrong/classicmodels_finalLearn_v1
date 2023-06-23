@@ -79,7 +79,10 @@ public class SecurityConfiguration {
     )
     .authenticationProvider(authenticationProvider)
     .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-    .exceptionHandling(exceptionHandling -> exceptionHandling.authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint()));
+    .exceptionHandling(exceptionHandling -> exceptionHandling
+        .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
+        .accessDeniedHandler(new BearerTokenAccessDeniedHandler())
+    );
     httpSecurity.logout(logout -> logout
         .logoutUrl("/api/v1/auth/logout")
         .addLogoutHandler(logoutHandler)
