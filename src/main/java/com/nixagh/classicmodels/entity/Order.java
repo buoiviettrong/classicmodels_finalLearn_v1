@@ -20,36 +20,36 @@ import java.util.Set;
 @Setter
 @Builder
 public class Order {
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "orderNumber", insertable=false, updatable=false)
-	private Long orderNumber;
+  @Id
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  @Column(name = "orderNumber", insertable = false, updatable = false)
+  private Long orderNumber;
 
-	@Column(name = "orderDate", nullable = false)
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date orderDate;
+  @Column(name = "orderDate", nullable = false)
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  private Date orderDate;
 
-	@Column(name = "requiredDate", nullable = false)
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date requiredDate;
+  @Column(name = "requiredDate", nullable = false)
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  private Date requiredDate;
 
-	@Column(name = "shippedDate", length = 15)
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date shippedDate;
+  @Column(name = "shippedDate", length = 15)
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  private Date shippedDate;
 
-	@Column(name = "status", nullable = false, length = 15)
-	private String status = ShippingStatus.INPROC.getShippingStatus();
+  @Column(name = "status", nullable = false, length = 15)
+  private String status = ShippingStatus.INPROC.getShippingStatus();
 
-	@Column(name = "comments", length = 15)
-	private String comments;
+  @Column(name = "comments", length = 15)
+  private String comments;
 
-	@ManyToOne
-	@Fetch(FetchMode.JOIN)
-	@JoinColumn(name = "customerNumber")
-	@JsonIgnore
-	private Customer customer;
+  @ManyToOne
+  @Fetch(FetchMode.JOIN)
+  @JoinColumn(name = "customerNumber")
+  @JsonIgnore
+  private Customer customer;
 
-	@OneToMany(mappedBy = "order")
-	@JsonIgnore
-	private Set<OrderDetail> orderDetail = new HashSet<OrderDetail>();
+  @OneToMany(mappedBy = "order")
+  @JsonIgnore
+  private Set<OrderDetail> orderDetail = new HashSet<OrderDetail>();
 }

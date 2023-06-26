@@ -21,7 +21,7 @@ public class SuccessHandler extends SavedRequestAwareAuthenticationSuccessHandle
       Authentication authentication
   ) throws IOException, ServletException {
     String redirectURL = "/api/v1/oauth";
-    getRedirectStrategy().sendRedirect(request, response,  redirectURL);
+    getRedirectStrategy().sendRedirect(request, response, redirectURL);
   }
 }
 

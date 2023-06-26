@@ -10,10 +10,10 @@ import lombok.*;
 @Setter
 @Builder
 public class RegisterRequest {
-    private String firstName;
-    private String lastName;
-    private String email;
-    private String password;
-    private Role role = Role.USER;
-    private LoginType type = LoginType.NORMAL;
+  private String firstName;
+  private String lastName;
+  private String email;
+  private String password;
+  private Role role = Role.USER;
+  private LoginType type = LoginType.NORMAL;
 }

@@ -8,6 +8,6 @@ import lombok.Setter;
 @Setter
 @Builder
 public class AuthenticateRequest {
-    private String email;
-    private String password;
+  private String email;
+  private String password;
 }

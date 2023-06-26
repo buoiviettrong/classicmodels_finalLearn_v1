@@ -19,39 +19,39 @@ import java.util.Set;
 @Getter
 @Setter
 public class Employee {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "employeeNumber")
-	private Long employeeNumber;
+  private Long employeeNumber;
 
-	@Column(name = "lastName", nullable = false, length = 50)
-	private String lastName;
+  @Column(name = "lastName", nullable = false, length = 50)
+  private String lastName;
 
-	@Column(name = "firstName", nullable = false, length = 50)
-	private String firstName;
+  @Column(name = "firstName", nullable = false, length = 50)
+  private String firstName;
 
-	@Column(name = "extension", nullable = false, length = 10)
-	private String extension;
+  @Column(name = "extension", nullable = false, length = 10)
+  private String extension;
 
-	@Column(name = "email", nullable = false, length = 100)
-	private String email;
+  @Column(name = "email", nullable = false, length = 100)
+  private String email;
 
-	@Column(name = "reportsTo", nullable = false)
-	private Long reportsTo;
+  @Column(name = "reportsTo", nullable = false)
+  private Long reportsTo;
 
-	@Column(name = "jobTitle", nullable = false, length = 50)
-	private String jobTitle;
+  @Column(name = "jobTitle", nullable = false, length = 50)
+  private String jobTitle;
 
-	@ManyToOne(targetEntity = Office.class)
-	@JoinColumn(name = "officeCode")
-	private Office officeCode;
+  @ManyToOne(targetEntity = Office.class)
+  @JoinColumn(name = "officeCode")
+  private Office officeCode;
 
-	@OneToMany(cascade = CascadeType.ALL)
-	@JoinColumn(name = "reportsTo")
-	@JsonIgnore
-	private Set<Employee> employees = new HashSet<>();
+  @OneToMany(cascade = CascadeType.ALL)
+  @JoinColumn(name = "reportsTo")
+  @JsonIgnore
+  private Set<Employee> employees = new HashSet<>();
 
-	@OneToMany(mappedBy = "salesRepEmployeeNumber", cascade = CascadeType.ALL)
-	@JsonIgnore
-	private List<Customer> customersList =  new ArrayList<>();
+  @OneToMany(mappedBy = "salesRepEmployeeNumber", cascade = CascadeType.ALL)
+  @JsonIgnore
+  private List<Customer> customersList = new ArrayList<>();
 }

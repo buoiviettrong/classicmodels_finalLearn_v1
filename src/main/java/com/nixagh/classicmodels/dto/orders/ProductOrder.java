@@ -1,6 +1,5 @@
 package com.nixagh.classicmodels.dto.orders;
 
-import com.nixagh.classicmodels.entity.Product;
 import lombok.Getter;
 import lombok.Setter;
 

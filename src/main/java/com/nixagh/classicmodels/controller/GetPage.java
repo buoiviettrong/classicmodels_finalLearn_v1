@@ -20,4 +20,9 @@ public class GetPage {
     return "order";
   }
 
+  @GetMapping("/login")
+  public String getLoginPage() {
+    return "login";
+  }
+
 }

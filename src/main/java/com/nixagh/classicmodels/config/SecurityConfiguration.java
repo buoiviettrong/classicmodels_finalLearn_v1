@@ -5,20 +5,19 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationEntryPoint;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.authentication.logout.LogoutHandler;
 
+import static com.nixagh.classicmodels.entity.user.Role.ADMIN;
+import static com.nixagh.classicmodels.entity.user.Role.MANAGER;
 import static org.springframework.http.HttpMethod.GET;
 
 //import static com.nixagh.security.entity.user.Permission.*;
@@ -36,6 +35,7 @@ public class SecurityConfiguration {
   private final JwtConverter jwtConverter;
   private final AuthenticationSuccessHandler successHandler;
   private final CustomerOAuth2Service oAuth2Service;
+  private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -43,52 +43,59 @@ public class SecurityConfiguration {
         .csrf(AbstractHttpConfigurer::disable)
         .cors(AbstractHttpConfigurer::disable);
     httpSecurity.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-            .requestMatchers(
-                "/api/v1/auth/**",
-                "/v2/api-docs",
-                "/v3/api-docs",
-                "/v3/api-docs/**",
-                "/swagger-resources",
-                "/swagger-resources/**",
-                "/configuration/ui",
-                "/configuration/security",
-                "/swagger-ui/**",
-                "/webjars/**",
-                "/swagger-ui.html",
-                "/login/oauth2/code/*"
-            )
-            .permitAll()
-//              .requestMatchers("/api/v1/management/**").hasAnyRole(ADMIN.name(), MANAGER.name())
+                .requestMatchers(
+                    "/api/v1/auth/**",
+                    "/api/v1/oauth/**",
+                    "/v2/api-docs",
+                    "/v3/api-docs",
+                    "/v3/api-docs/**",
+                    "/swagger-resources",
+                    "/swagger-resources/**",
+                    "/configuration/ui",
+                    "/configuration/security",
+                    "/swagger-ui/**",
+                    "/webjars/**",
+                    "/swagger-ui.html",
+                    "/login/**"
+                )
+                .permitAll()
+                .requestMatchers("/api/v1/management/**").hasAnyRole(ADMIN.name(), MANAGER.name())
 //                .requestMatchers(GET, "/api/v1/management/**").hasAnyAuthority(ADMIN_READ.name(), MANAGER_READ.name())
 //                .requestMatchers(POST, "/api/v1/management/**").hasAnyAuthority(ADMIN_CREATE.name(), MANAGER_CREATE.name())
 //                .requestMatchers(PUT, "/api/v1/management/**").hasAnyAuthority(ADMIN_UPDATE.name(), MANAGER_UPDATE.name())
 //                .requestMatchers(DELETE, "/api/v1/management/**").hasAnyAuthority(ADMIN_DELETE.name(), MANAGER_DELETE.name())
-            .requestMatchers(GET,
-                "/product",
-                "/order",
-                "/customer"
-            )
+                .requestMatchers(GET,
+                    "/product",
+                    "/order",
+                    "/customer"
+                )
                 .permitAll()
-            .anyRequest()
+                .anyRequest()
 //                .permitAll()
-            .authenticated()
-    )
-    .sessionManagement(sessionManagement ->
-        sessionManagement
-            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    )
-    .authenticationProvider(authenticationProvider)
-    .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-    .exceptionHandling(exceptionHandling -> exceptionHandling
-        .authenticationEntryPoint(new BearerTokenAuthenticationEntryPoint())
-        .accessDeniedHandler(new BearerTokenAccessDeniedHandler())
-    );
+                .authenticated()
+        )
+//    .sessionManagement(sessionManagement ->
+//        sessionManagement
+//            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//    )
+        .formLogin(formLogin -> formLogin.loginPage("/login"))
+        .oauth2Login(oAuth2LoginConfigurer ->
+            oAuth2LoginConfigurer
+                .loginPage("/login")
+                .successHandler(successHandler)
+        )
+        .authenticationProvider(authenticationProvider)
+        .addFilterAfter(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+        .exceptionHandling(exceptionHandling -> exceptionHandling
+            .authenticationEntryPoint(customAuthenticationEntryPoint)
+            .accessDeniedHandler(new BearerTokenAccessDeniedHandler())
+        )
+    ;
     httpSecurity.logout(logout -> logout
         .logoutUrl("/api/v1/auth/logout")
         .addLogoutHandler(logoutHandler)
         .logoutSuccessHandler(((request, response, authentication) -> SecurityContextHolder.clearContext()))
     );
-;
     return httpSecurity.build();
   }
 }

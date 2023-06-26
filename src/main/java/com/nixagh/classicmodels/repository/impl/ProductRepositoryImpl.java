@@ -8,6 +8,7 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
   public ProductRepositoryImpl(EntityManager entityManager) {
     super(Product.class, entityManager);
   }
+
   @Override
   public Product findProductByProductCode(String productCode) {
     return jpaQueryFactory

@@ -1,8 +1,6 @@
 package com.nixagh.classicmodels.entity.embedded;
 
-import com.nixagh.classicmodels.entity.Order;
-import com.nixagh.classicmodels.entity.Product;
-import jakarta.persistence.*;
+import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,6 +14,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDetailsEmbed implements Serializable {
-	private Long orderNumber;
-	private String productCode;
+  private Long orderNumber;
+  private String productCode;
 }

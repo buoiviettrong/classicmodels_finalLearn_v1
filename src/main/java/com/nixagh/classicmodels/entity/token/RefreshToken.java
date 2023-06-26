@@ -13,21 +13,21 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class RefreshToken {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    public Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  public Long id;
 
-    @Column(unique = true)
-    public String refreshToken_;
+  @Column(unique = true)
+  public String refreshToken_;
 
-    @Enumerated(EnumType.STRING)
-    public TokenType tokenType = TokenType.BEARER;
+  @Enumerated(EnumType.STRING)
+  public TokenType tokenType = TokenType.BEARER;
 
-    public boolean revoked;
+  public boolean revoked;
 
-    public boolean expired;
+  public boolean expired;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    public User user;
+  @OneToOne
+  @JoinColumn(name = "user_id")
+  public User user;
 }

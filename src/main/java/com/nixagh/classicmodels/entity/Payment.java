@@ -18,18 +18,18 @@ import java.util.Date;
 public class Payment {
 
 
-	@Id
-	@Column(name = "checkNumber", nullable = false, length = 50)
-	private String checkNumber;
+  @Id
+  @Column(name = "checkNumber", nullable = false, length = 50)
+  private String checkNumber;
 
-	@Column(name = "paymentDate", nullable = false)
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+  @Column(name = "paymentDate", nullable = false)
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
   private Date paymentDate;
 
-	@Column(name = "amount",  nullable = false, precision = 10)
-	private Double amount;
+  @Column(name = "amount", nullable = false, precision = 10)
+  private Double amount;
 
-	@ManyToOne
-	@JoinColumn(name = "customerNumber", nullable = false)
-	private Customer customer;
+  @ManyToOne
+  @JoinColumn(name = "customerNumber", nullable = false)
+  private Customer customer;
 }

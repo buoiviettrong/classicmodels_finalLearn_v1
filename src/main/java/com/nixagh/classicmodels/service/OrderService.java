@@ -1,7 +1,10 @@
 package com.nixagh.classicmodels.service;
 
 import com.nixagh.classicmodels._common.PageUtil;
-import com.nixagh.classicmodels.dto.*;
+import com.nixagh.classicmodels.dto.PageRequestInfo;
+import com.nixagh.classicmodels.dto.PageResponseInfo;
+import com.nixagh.classicmodels.dto.ProductRepository;
+import com.nixagh.classicmodels.dto.orderDetail.OrderDetailByOrderNumber;
 import com.nixagh.classicmodels.dto.orders.*;
 import com.nixagh.classicmodels.dto.product.ProductDTO;
 import com.nixagh.classicmodels.entity.Customer;
@@ -10,7 +13,6 @@ import com.nixagh.classicmodels.entity.OrderDetail;
 import com.nixagh.classicmodels.entity.Product;
 import com.nixagh.classicmodels.entity.embedded.OrderDetailsEmbed;
 import com.nixagh.classicmodels.entity.enums.ShippingStatus;
-import com.nixagh.classicmodels.dto.orderDetail.OrderDetailByOrderNumber;
 import com.nixagh.classicmodels.repository.CustomerRepository;
 import com.nixagh.classicmodels.repository.OrderDetailRepository;
 import com.nixagh.classicmodels.repository.OrderRepository;
@@ -80,19 +82,19 @@ public class OrderService {
 
     var result = orderRepository.save(saveOrder);
     List<ProductOrder> productOrders = order.getProducts();
-    for(int i = 0; i < productOrders.size(); i++) {
+    for (int i = 0; i < productOrders.size(); i++) {
       Product product_ = productRepository.findProductByProductCode(productOrders.get(i).getProductCode());
 
       OrderDetail orderDetail = OrderDetail.builder()
-          .id(new OrderDetailsEmbed(result.getOrderNumber() ,product_.getProductCode()))
+          .id(new OrderDetailsEmbed(result.getOrderNumber(), product_.getProductCode()))
           .order(saveOrder)
           .product(product_)
           .quantityOrdered(productOrders.get(i).getQuantity())
           .priceEach(productOrders.get(i).getPrice())
-          .orderLineNumber(i+1)
+          .orderLineNumber(i + 1)
           .build();
       orderDetailRepository.save(orderDetail);
-    };
+    }
 
     return result;
   }

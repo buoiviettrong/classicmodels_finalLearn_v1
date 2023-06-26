@@ -16,20 +16,20 @@ import java.util.Set;
 @Getter
 @Setter
 public class ProductLinee {
-	@Id
-	@Column(name = "productLine", length = 50)
-	private String productLine;
+  @Id
+  @Column(name = "productLine", length = 50)
+  private String productLine;
 
-	@Column(name = "textDescription", length = 4000)
-	private String textDescription;
+  @Column(name = "textDescription", length = 4000)
+  private String textDescription;
 
-	@Column(name = "htmlDescription")
-	private String htmlDescription;
+  @Column(name = "htmlDescription")
+  private String htmlDescription;
 
-	@Column(name = "image")
-	private String image;
+  @Column(name = "image")
+  private String image;
 
-	@OneToMany(targetEntity = Product.class)
-	@JoinColumn(name = "productLine", referencedColumnName = "productLine")
-	private Set<Product> productsList = new HashSet<>();
+  @OneToMany(targetEntity = Product.class)
+  @JoinColumn(name = "productLine", referencedColumnName = "productLine")
+  private Set<Product> productsList = new HashSet<>();
 }
