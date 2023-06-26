@@ -83,6 +83,7 @@ public class SecurityConfiguration {
             oAuth2LoginConfigurer
                 .loginPage("/login")
                 .successHandler(successHandler)
+//                .defaultSuccessUrl("/api/v1/oauth")
         )
         .authenticationProvider(authenticationProvider)
         .addFilterAfter(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)

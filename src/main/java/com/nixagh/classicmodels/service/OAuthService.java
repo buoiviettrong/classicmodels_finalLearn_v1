@@ -25,9 +25,6 @@ import org.springframework.stereotype.Service;
 public class OAuthService {
   private final AuthenticationService authenticationService;
   private final UserRepository userRepository;
-  private final TokenRepository tokenRepository;
-  private final PasswordEncoder passwordEncoder;
-
   public AuthenticationResponse generationToken(
       Authentication authentication,
       HttpServletResponse response,
@@ -63,17 +60,14 @@ public class OAuthService {
               .password(email)
               .build()
       );
-
     // clear session, cookies
     clearCookie(request);
-
     return authenticationResponse;
   }
 
   private void clearCookie(HttpServletRequest request) {
     HttpSession session = request.getSession(false);
     session = request.getSession(false);
-
     if (session != null) {
       session.invalidate();
     }
