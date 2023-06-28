@@ -1,5 +1,6 @@
 package com.nixagh.classicmodels.config;
 
+import com.nixagh.classicmodels.exception.AccessDenied;
 import com.nixagh.classicmodels.repository.TokenRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.nio.file.AccessDeniedException;
 
 @Component
 @RequiredArgsConstructor
@@ -48,7 +50,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     // kiểm tra token header
     if (authHeader == null || !authHeader.startsWith(TOKEN_PREFIX)) {
       filterChain.doFilter(request, response);
-      return;
+      throw new AccessDenied("Missing token header");
     }
     // lấy token
     jwt = authHeader.substring(7);

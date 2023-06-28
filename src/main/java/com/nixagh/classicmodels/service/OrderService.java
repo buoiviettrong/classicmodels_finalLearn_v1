@@ -14,9 +14,12 @@ import com.nixagh.classicmodels.entity.OrderDetail;
 import com.nixagh.classicmodels.entity.Product;
 import com.nixagh.classicmodels.entity.embedded.OrderDetailsEmbed;
 import com.nixagh.classicmodels.entity.enums.ShippingStatus;
+import com.nixagh.classicmodels.exception.NotSupportStatus;
+import com.nixagh.classicmodels.exception.PageInfoException;
 import com.nixagh.classicmodels.repository.CustomerRepository;
 import com.nixagh.classicmodels.repository.OrderDetailRepository;
 import com.nixagh.classicmodels.repository.OrderRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,22 +29,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class OrderService {
 
   private final OrderRepository orderRepository;
   private final CustomerRepository customerRepository;
   private final OrderDetailRepository orderDetailRepository;
   private final ProductRepository productRepository;
-
-  public OrderService(OrderRepository orderRepository,
-                      CustomerRepository customerRepository,
-                      OrderDetailRepository orderDetailRepository,
-                      ProductRepository productRepository) {
-    this.orderRepository = orderRepository;
-    this.customerRepository = customerRepository;
-    this.orderDetailRepository = orderDetailRepository;
-    this.productRepository = productRepository;
-  }
 
   public List<Order> getOrderByCustomerNumber(Long customerNumber) {
     return orderRepository.getOrderByCustomerNumber(customerNumber);
@@ -55,6 +49,9 @@ public class OrderService {
     OrderSearchResponse orderSearchResponse = new OrderSearchResponse();
     PageRequestInfo pageRequestInfo = request.getPageInfo();
     OrderFilter orderFilter = request.getOrderFilter();
+
+    if(pageRequestInfo.getPageNumber() < 1)
+      throw new PageInfoException("Page number must be greater than 0");
 
     List<Order> orders = orderRepository.getOrderByFilters(orderFilter, pageRequestInfo.getPageNumber(), pageRequestInfo.getPageSize());
     PageResponseInfo pageResponseInfo = PageUtil.getResponse(
@@ -104,7 +101,7 @@ public class OrderService {
   public OrderDetailByOrderNumber getOrderDetail(Long orderNumber) {
     List<OrderDetail> orderDetailList = orderDetailRepository.getOrderDetail(orderNumber);
     return new OrderDetailByOrderNumber(
-        orderDetailList.get(0).getId(),
+//        orderDetailList.get(0).getId(),
         orderDetailList.get(0).getOrder(),
         orderDetailList.stream()
             .map(item -> {
@@ -138,9 +135,7 @@ public class OrderService {
       try {
         status = ShippingStatus.valueOf(request.getStatus());
       } catch (IllegalArgumentException e) {
-        messages.add(new Message("STATUS_TYPE_01", e.getMessage()));
-        orderUpdateResponse.setMessages(messages);
-        return orderUpdateResponse;
+        throw new NotSupportStatus("status %s not supported".formatted(request.getStatus()));
       }
 
       switch (status) {

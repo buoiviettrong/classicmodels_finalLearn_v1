@@ -26,7 +26,7 @@ public class CustomerRepositoryImpl extends BaseRepositoryImpl<Customer, Long> i
   public List<Customer> getCustomersBySalesRepEmployeeNumber(Employee salesRepEmployeeNumber) {
     return jpaQueryFactory
         .selectFrom(customer)
-        .where(customer.salesRepEmployeeNumber.eq(salesRepEmployeeNumber))
+        .where(customer.salesRepEmployeeNumber. eq(salesRepEmployeeNumber))
         .stream().toList();
   }
 

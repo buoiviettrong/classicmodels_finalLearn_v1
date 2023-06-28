@@ -4,6 +4,7 @@ import com.nixagh.classicmodels._common.auth.AuthenticateRequest;
 import com.nixagh.classicmodels._common.auth.AuthenticationResponse;
 import com.nixagh.classicmodels._common.auth.AuthenticationService;
 import com.nixagh.classicmodels._common.auth.RegisterRequest;
+import io.swagger.v3.oas.annotations.Hidden;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,6 +32,7 @@ public class AuthenticationController {
     return ResponseEntity.ok(authenticationService.authenticate(request));
   }
 
+  @Hidden
   @PostMapping("/refresh")
   public ResponseEntity<AuthenticationResponse> refresh(
           @RequestBody refreshRequest refreshToken

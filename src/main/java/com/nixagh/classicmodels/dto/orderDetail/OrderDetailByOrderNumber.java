@@ -7,7 +7,7 @@ import com.nixagh.classicmodels.entity.embedded.OrderDetailsEmbed;
 import java.util.List;
 
 public record OrderDetailByOrderNumber(
-    OrderDetailsEmbed id,
+//    OrderDetailsEmbed id,
     Order order,
     List<ProductDTO> product
 ) {

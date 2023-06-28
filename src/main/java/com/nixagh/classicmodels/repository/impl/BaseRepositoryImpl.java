@@ -19,7 +19,7 @@ public abstract class BaseRepositoryImpl<T, ID> extends SimpleJpaRepository<T, I
   protected final QOffice office = QOffice.office;
   protected final QOrder order = QOrder.order;
   protected final QProduct product = QProduct.product;
-  protected final QProductLinee productLine = QProductLinee.productLinee;
+  protected final QProductLinee productLinee = QProductLinee.productLinee;
   protected final QPayment payment = QPayment.payment;
   protected final QOrderDetail orderDetail = QOrderDetail.orderDetail;
 

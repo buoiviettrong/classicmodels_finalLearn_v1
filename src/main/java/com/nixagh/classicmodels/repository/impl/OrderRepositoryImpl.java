@@ -41,8 +41,10 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> impleme
     return jpaQueryFactory
         .select(order)
         .from(order)
+            .join(order.customer, customer)
         .offset(0)
         .limit(10)
+        .fetchJoin()
         .fetch();
   }
 
@@ -65,11 +67,10 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> impleme
   @Override
   @Transactional
   public void deleteByOrderNumber(Long orderNumber) {
-    Order order_ = jpaQueryFactory
-            .selectFrom(order)
+    long num = jpaQueryFactory
+            .delete(order)
             .where(order.orderNumber.eq(orderNumber))
-            .fetchFirst();
-    this.delete(order_);
+            .execute();
   }
 
   private <T> JPAQuery<T> getPredicates(JPAQuery<T> queryFactory, OrderFilter orderFilter) {
@@ -120,8 +121,12 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> impleme
 
   private List<Order> getLimit(OrderFilter filter, Long page, Long size) {
     JPAQuery<Order> select = jpaQueryFactory.select(order);
+
     return getPredicates(select, filter)
         .from(order)
+            .leftJoin(order.customer, customer).fetchJoin()
+            .leftJoin(customer.salesRepEmployeeNumber, employee).fetchJoin()
+            .leftJoin(employee.officeCode, office).fetchJoin()
         .offset((page - 1) * size)
         .limit(size)
         .stream().toList();

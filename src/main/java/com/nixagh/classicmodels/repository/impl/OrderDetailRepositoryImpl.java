@@ -24,11 +24,10 @@ public class OrderDetailRepositoryImpl extends BaseRepositoryImpl<OrderDetail, O
   @Override
   @Transactional
   public void deleteByOrderNumber(Long orderNumber) {
-    List<OrderDetail> orderDetails = jpaQueryFactory
-            .selectFrom(orderDetail)
+    long num = jpaQueryFactory
+            .delete(orderDetail)
             .where(orderDetail.order.orderNumber.eq(orderNumber))
-            .fetch();
-    this.deleteAll(orderDetails);
-    System.out.println("done");
+            .execute();
+    System.out.println(num);
   }
 }

@@ -6,24 +6,20 @@ import com.nixagh.classicmodels.entity.Order;
 import com.nixagh.classicmodels.service.OrderService;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/order")
 @RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class OrderController {
   private final OrderService orderService;
 
   @PostMapping("/filters")
   public OrderSearchResponse getOrderByFilters(@RequestBody OrderFilterRequest request) {
-    System.out.println(request.getOrderFilter());
     return orderService.getOrderByFilters(request);
   }
-
-//	@GetMapping("")
-//	public List<Order> getOrders() {
-//		return orderService.getOrders();
-//	}
 
   @PostMapping("/save")
   public Order saveOrder(@RequestBody OrderCreateRequest request) {
