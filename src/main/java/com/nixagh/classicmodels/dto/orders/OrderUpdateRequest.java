@@ -15,6 +15,6 @@ public class OrderUpdateRequest {
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date shippedDate;
-    private ShippingStatus status;
+    private String status;
     private String comment;
 }

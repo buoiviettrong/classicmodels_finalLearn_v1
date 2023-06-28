@@ -134,7 +134,15 @@ public class OrderService {
     }
 
     if(request.getStatus() != null) {
-      ShippingStatus status = request.getStatus();
+      ShippingStatus status;
+      try {
+        status = ShippingStatus.valueOf(request.getStatus());
+      } catch (IllegalArgumentException e) {
+        messages.add(new Message("STATUS_TYPE_01", e.getMessage()));
+        orderUpdateResponse.setMessages(messages);
+        return orderUpdateResponse;
+      }
+
       switch (status) {
         case SHIPPED -> {
           order.setStatus(ShippingStatus.SHIPPED.getShippingStatus());
@@ -148,11 +156,6 @@ public class OrderService {
         case INPROC -> order.setStatus(ShippingStatus.INPROC.getShippingStatus());
         case DISPUTED -> order.setStatus(ShippingStatus.DISPUTED.getShippingStatus());
         case HOLD -> order.setStatus(ShippingStatus.HOLD.getShippingStatus());
-        default -> {
-          messages.add(new Message("ORDER_UPDATE", "Wrong order status"));
-          orderUpdateResponse.setMessages(messages);
-          return orderUpdateResponse;
-        }
       }
     }
 
