@@ -6,6 +6,7 @@ import com.nixagh.classicmodels.repository.OrderRepository;
 import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import jakarta.persistence.EntityManager;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -51,6 +52,24 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> impleme
     return getPredicates(select, filter)
         .from(order)
         .fetchOne();
+  }
+
+  @Override
+  public Order findOrderByOrderNumber(Long orderNumber) {
+    return jpaQueryFactory
+            .selectFrom(order)
+            .where(order.orderNumber.eq(orderNumber))
+            .fetchOne();
+  }
+
+  @Override
+  @Transactional
+  public void deleteByOrderNumber(Long orderNumber) {
+    Order order_ = jpaQueryFactory
+            .selectFrom(order)
+            .where(order.orderNumber.eq(orderNumber))
+            .fetchFirst();
+    this.delete(order_);
   }
 
   private <T> JPAQuery<T> getPredicates(JPAQuery<T> queryFactory, OrderFilter orderFilter) {

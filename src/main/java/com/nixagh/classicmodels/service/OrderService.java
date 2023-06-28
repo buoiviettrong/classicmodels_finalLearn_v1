@@ -1,6 +1,7 @@
 package com.nixagh.classicmodels.service;
 
 import com.nixagh.classicmodels._common.PageUtil;
+import com.nixagh.classicmodels.dto.Message.Message;
 import com.nixagh.classicmodels.dto.PageRequestInfo;
 import com.nixagh.classicmodels.dto.PageResponseInfo;
 import com.nixagh.classicmodels.dto.ProductRepository;
@@ -19,6 +20,7 @@ import com.nixagh.classicmodels.repository.OrderRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -118,5 +120,83 @@ public class OrderService {
             })
             .collect(Collectors.toList())
     );
+  }
+
+  public OrderUpdateResponse updateOrder(Long orderNumber, OrderUpdateRequest request) {
+    OrderUpdateResponse orderUpdateResponse = new OrderUpdateResponse();
+    List<Message> messages = new ArrayList<Message>();
+    Order order = orderRepository.findOrderByOrderNumber(orderNumber);
+
+    if (order == null) {
+      messages.add(new Message("ORDER_UPDATE", "Order not found"));
+      orderUpdateResponse.setMessages(messages);
+      return orderUpdateResponse;
+    }
+
+    if(request.getStatus() != null) {
+      ShippingStatus status = request.getStatus();
+      switch (status) {
+        case SHIPPED -> {
+          order.setStatus(ShippingStatus.SHIPPED.getShippingStatus());
+          order.setShippedDate(new Date());
+        }
+        case CANCELLED -> order.setStatus(ShippingStatus.CANCELLED.getShippingStatus());
+        case DELIVERING -> order.setStatus(ShippingStatus.DELIVERING.getShippingStatus());
+        case DELIVERED -> order.setStatus(ShippingStatus.DELIVERED.getShippingStatus());
+        case RECEIVED -> order.setStatus(ShippingStatus.RECEIVED.getShippingStatus());
+        case RESOLVED -> order.setStatus(ShippingStatus.RESOLVED.getShippingStatus());
+        case INPROC -> order.setStatus(ShippingStatus.INPROC.getShippingStatus());
+        case DISPUTED -> order.setStatus(ShippingStatus.DISPUTED.getShippingStatus());
+        case HOLD -> order.setStatus(ShippingStatus.HOLD.getShippingStatus());
+        default -> {
+          messages.add(new Message("ORDER_UPDATE", "Wrong order status"));
+          orderUpdateResponse.setMessages(messages);
+          return orderUpdateResponse;
+        }
+      }
+    }
+
+    if (request.getShippedDate() != null) order.setShippedDate(request.getShippedDate());
+
+    if (request.getComment() != null) order.setComments(request.getComment());
+
+    orderRepository.save(order);
+
+    orderUpdateResponse.setOrder(order);
+    return orderUpdateResponse;
+  }
+
+  public OrderDeleteResponse deleteOrder(Long orderNumber) {
+    Order order = orderRepository.findOrderByOrderNumber(orderNumber);
+    OrderDeleteResponse orderDeleteResponse = new OrderDeleteResponse();
+    List<Message> messages = new ArrayList<Message>();
+
+    if (order == null) {
+      messages.add(new Message("ORDER_DELETE", "Order not found"));
+      orderDeleteResponse.setMessages(messages);
+      return orderDeleteResponse;
+    }
+    // delete order details
+    orderDetailRepository.deleteByOrderNumber(orderNumber);
+//    System.out.println();
+    // delete order
+    orderRepository.deleteByOrderNumber(orderNumber);
+
+    orderDeleteResponse.setOrderId(order.getOrderNumber());
+    return orderDeleteResponse;
+  }
+
+  public OrderGetResponse getOrder(Long orderNumber) {
+    OrderGetResponse orderResponse = new OrderGetResponse();
+    Order order = orderRepository.findOrderByOrderNumber(orderNumber);
+
+    if (order == null) {
+      List<Message> messages = new ArrayList<>();
+      messages.add(new Message("ORDER_GET", "Order not found"));
+      orderResponse.setMessages(messages);
+      return orderResponse;
+    }
+    orderResponse.setOrder(order);
+    return orderResponse;
   }
 }

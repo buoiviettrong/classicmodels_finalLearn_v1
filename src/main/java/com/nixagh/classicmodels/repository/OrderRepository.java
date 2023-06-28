@@ -15,4 +15,8 @@ public interface OrderRepository extends BaseRepository<Order, Long> {
   List<Order> getOrderByFilters(OrderFilter filter, Long page, Long size);
 
   Long getCount(OrderFilter request);
+
+  Order findOrderByOrderNumber(Long orderNumber);
+
+  void deleteByOrderNumber(Long orderNumber);
 }

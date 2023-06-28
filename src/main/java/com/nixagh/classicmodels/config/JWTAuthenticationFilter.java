@@ -54,20 +54,27 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     jwt = authHeader.substring(7);
     // lấy email từ jwt
     userEmail = jwtService.extractUsername(jwt);
+
     if (userEmail != null || SecurityContextHolder.getContext().getAuthentication() == null) {
       UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+
+      //kiểm tra token trong database
       var isTokenValid = tokenRepository.findByToken_(jwt)
           .map(t -> !t.isExpired() && !t.isRevoked())
           .orElse(false);
+
+      //kiểm tra hợp lệ
       if (jwtService.isTokenValid(jwt, userDetails) && isTokenValid) {
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
             userEmail,
             null,
             userDetails.getAuthorities()
         );
+
         authToken.setDetails(
             new WebAuthenticationDetailsSource().buildDetails(request)
         );
+        // kiểm tra phân quyền
         SecurityContextHolder.getContext().setAuthentication(authToken);
       }
     }

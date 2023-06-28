@@ -4,6 +4,7 @@ import com.nixagh.classicmodels.entity.OrderDetail;
 import com.nixagh.classicmodels.entity.embedded.OrderDetailsEmbed;
 import com.nixagh.classicmodels.repository.OrderDetailRepository;
 import jakarta.persistence.EntityManager;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -18,5 +19,16 @@ public class OrderDetailRepositoryImpl extends BaseRepositoryImpl<OrderDetail, O
         .selectFrom(orderDetail)
         .where(orderDetail.id.orderNumber.eq(orderNumber))
         .fetch();
+  }
+
+  @Override
+  @Transactional
+  public void deleteByOrderNumber(Long orderNumber) {
+    List<OrderDetail> orderDetails = jpaQueryFactory
+            .selectFrom(orderDetail)
+            .where(orderDetail.order.orderNumber.eq(orderNumber))
+            .fetch();
+    this.deleteAll(orderDetails);
+    System.out.println("done");
   }
 }

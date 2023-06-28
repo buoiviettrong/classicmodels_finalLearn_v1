@@ -10,4 +10,6 @@ import java.util.List;
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, OrderDetailsEmbed> {
 
   List<OrderDetail> getOrderDetail(Long orderNumber);
+
+  void deleteByOrderNumber(Long orderNumber);
 }

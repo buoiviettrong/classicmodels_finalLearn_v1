@@ -9,8 +9,15 @@ import com.nixagh.classicmodels.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +28,7 @@ public class AuthenticationService {
   private final JwtService jwtService;
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
+  private final UserDetailsService userDetailsService;
 
   public AuthenticationResponse register(RegisterRequest request) {
     String token;
@@ -38,7 +46,6 @@ public class AuthenticationService {
         .role(request.getRole())
         .type(request.getType())
         .build();
-
     var saveUser = userRepository.save(user);
     token = jwtService.generateToken(user);
     refreshToken = jwtService.generateRefreshToken(user);
@@ -66,6 +73,7 @@ public class AuthenticationService {
         .orElseThrow();
 
     var jwtToken = jwtService.generateToken(user);
+    System.out.println(jwtToken);
     var refreshToken = jwtService.generateRefreshToken(user);
     revokeAllUserTokens(user);
     saveUserToken(user, jwtToken);
@@ -74,6 +82,25 @@ public class AuthenticationService {
         .accessToken(jwtToken)
         .refreshToken(refreshToken)
         .build();
+  }
+
+  public AuthenticationResponse refresh(String refreshToken) {
+    String username = jwtService.extractUsername(refreshToken);
+    User userDetails = this.userRepository.getUserByEmail(username).orElseThrow();
+
+    if(!jwtService.isTokenValid(refreshToken, userDetails)) return null;
+
+    revokeAllUserTokens(userDetails);
+
+    var jwtToken = jwtService.generateToken(userDetails);
+    refreshToken = jwtService.generateRefreshToken(userDetails);
+    saveUserToken(userDetails, jwtToken);
+
+    return AuthenticationResponse.builder()
+            .email(username)
+            .accessToken(jwtToken)
+            .refreshToken(refreshToken)
+            .build();
   }
 
   private void saveUserToken(User saveUser, String jwtToken) {

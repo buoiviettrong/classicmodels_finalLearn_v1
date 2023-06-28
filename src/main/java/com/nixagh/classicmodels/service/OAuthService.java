@@ -41,7 +41,6 @@ public class OAuthService {
         ? LoginType.GITHUB
         : LoginType.GOOGLE;
     User user = userRepository.getUserByEmail(email).orElse(null);
-    System.out.println(email);
     if (user == null)
       authenticationResponse = authenticationService.register(
           RegisterRequest.builder()

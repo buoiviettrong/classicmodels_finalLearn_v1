@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.client.annotation.RegisteredOAuth2AuthorizedClient;
 import org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -36,6 +37,7 @@ public class SecurityConfiguration {
   private final AuthenticationSuccessHandler successHandler;
   private final CustomerOAuth2Service oAuth2Service;
   private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+//  private final RegisteredOAuth2AuthorizedClient registeredOAuth2AuthorizedClient;
 
   @Bean
   public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
@@ -78,7 +80,7 @@ public class SecurityConfiguration {
 //        sessionManagement
 //            .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 //    )
-        .formLogin(formLogin -> formLogin.loginPage("/login"))
+//        .formLogin(formLogin -> formLogin.loginPage("/login"))
         .oauth2Login(oAuth2LoginConfigurer ->
             oAuth2LoginConfigurer
                 .loginPage("/login")
