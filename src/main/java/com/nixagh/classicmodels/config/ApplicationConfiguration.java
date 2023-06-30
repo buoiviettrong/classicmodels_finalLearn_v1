@@ -1,7 +1,7 @@
 package com.nixagh.classicmodels.config;
 
 import com.nixagh.classicmodels._common.auth.CustomerOAuth2Service;
-import com.nixagh.classicmodels.repository.UserRepository;
+import com.nixagh.classicmodels.repository.authRepo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,39 +18,45 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @RequiredArgsConstructor
 public class ApplicationConfiguration {
 
-  private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-  @Bean
-  public UserDetailsService userDetailsService() {
-    return username -> userRepository.getUserByEmail(username)
-        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-  }
+    @Bean
+    public UserDetailsService userDetailsService() {
+        return username -> userRepository.getUserByEmail(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
 
-  @Bean
-  public AuthenticationProvider authenticationProvider() {
-    DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-    authenticationProvider.setUserDetailsService(userDetailsService());
-    authenticationProvider.setPasswordEncoder(passwordEncoder());
-    return authenticationProvider;
-  }
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+        authenticationProvider.setUserDetailsService(userDetailsService());
+        authenticationProvider.setPasswordEncoder(passwordEncoder());
+        return authenticationProvider;
+    }
 
-  @Bean
-  public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-    return config.getAuthenticationManager();
-  }
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
+    }
 
-  @Bean
-  public PasswordEncoder passwordEncoder() {
-    return new BCryptPasswordEncoder();
-  }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 
-  @Bean
-  public CustomerOAuth2Service oAuth2Service() {
-    return new CustomerOAuth2Service();
-  }
+    @Bean
+    public CustomerOAuth2Service oAuth2Service() {
+        return new CustomerOAuth2Service();
+    }
 
-  @Bean
-  public CustomAuthenticationEntryPoint customAuthenticationEntryPoint() {
-    return new CustomAuthenticationEntryPoint();
-  }
+    @Bean
+    public CustomAuthenticationEntryPoint customAuthenticationEntryPoint() {
+        return new CustomAuthenticationEntryPoint();
+    }
+
+    @Bean
+    public CustomAuthorizationEntryPoint customAuthorizationEntryPoint() {
+        return new CustomAuthorizationEntryPoint();
+    }
+
 }

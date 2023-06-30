@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class AbstractRequest {
-  private PageRequestInfo pageInfo;
+    private PageRequestInfo pageInfo;
 }

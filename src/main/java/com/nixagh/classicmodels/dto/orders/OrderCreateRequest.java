@@ -11,9 +11,9 @@ import java.util.List;
 @Getter
 @Setter
 public class OrderCreateRequest {
-  private Long customerNumber;  // người tạo đơn là ai
-  @DateTimeFormat(pattern = "yyyy-MM-dd")
-  private Date requireDate;   // ngày yêu cầu
+    private Long customerNumber;  // người tạo đơn là ai
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date requireDate;   // ngày yêu cầu
 
-  private List<ProductOrder> products = new ArrayList<>(); // danh sách sản phẩm
+    private List<ProductOrder> products = new ArrayList<>(); // danh sách sản phẩm
 }

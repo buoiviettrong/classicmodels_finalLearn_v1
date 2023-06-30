@@ -10,13 +10,13 @@ import java.security.Principal;
 @Hidden
 public class HomeController {
 
-  @GetMapping("/home")
-  public String getHome() {
-    return "Hello World!";
-  }
+    @GetMapping("/home")
+    public String getHome() {
+        return "Hello World!";
+    }
 
-  @GetMapping("/home/pin")
-  public Principal getPrint(Principal principal) {
-    return principal;
-  }
+    @GetMapping("/home/pin")
+    public Principal getPrint(Principal principal) {
+        return principal;
+    }
 }

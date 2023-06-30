@@ -1,4 +1,4 @@
-package com.nixagh.classicmodels.service.ProductLineService;
+package com.nixagh.classicmodels.service;
 
 import com.nixagh.classicmodels.dto.product_line.ProductLineRequest.ProductLineUpdateRequest;
 import com.nixagh.classicmodels.entity.ProductLinee;
@@ -30,7 +30,7 @@ public class ProductLineService {
     public void updateProductLine(String productLine, ProductLineUpdateRequest request) {
         ProductLinee productLinee = getProductLine(productLine);
 
-        if(productLinee == null) throw new NotFoundEntity("ProductLine not found");
+        if (productLinee == null) throw new NotFoundEntity("ProductLine not found");
 
         if (request.getTextDescription() != null) productLinee.setTextDescription(request.getTextDescription());
         if (request.getHtmlDescription() != null) productLinee.setHtmlDescription(request.getHtmlDescription());
@@ -42,7 +42,7 @@ public class ProductLineService {
     public void deleteProductLine(String productLine) {
         ProductLinee productLinee = getProductLine(productLine);
 
-        if(productLinee == null) throw new NotFoundEntity("ProductLine not found");
+        if (productLinee == null) throw new NotFoundEntity("ProductLine not found");
 
         productLineRepository.deleteProductLinee(productLine);
     }

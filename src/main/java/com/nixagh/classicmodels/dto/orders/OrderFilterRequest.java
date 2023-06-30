@@ -7,5 +7,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class OrderFilterRequest extends AbstractRequest {
-  private OrderFilter orderFilter = null;
+    private OrderFilter orderFilter = null;
 }

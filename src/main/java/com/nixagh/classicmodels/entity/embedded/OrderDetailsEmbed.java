@@ -14,6 +14,6 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDetailsEmbed implements Serializable {
-  private Long orderNumber;
-  private String productCode;
+    private Long orderNumber;
+    private String productCode;
 }

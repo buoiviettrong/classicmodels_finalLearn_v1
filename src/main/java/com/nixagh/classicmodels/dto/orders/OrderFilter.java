@@ -10,13 +10,13 @@ import java.util.Date;
 @Getter
 @Setter
 public class OrderFilter {
-  private Long customerNumber;
-  private Long orderNumber;
-  private ShippingStatus status;
-  private Date orderDate;
-  private Date requireDate;
-  private Date shippedDate;
-  private DateType orderDateType;
-  private DateType requireDateType;
-  private DateType shippedDateType;
+    private Long customerNumber;
+    private Long orderNumber;
+    private ShippingStatus status;
+    private Date orderDate;
+    private Date requireDate;
+    private Date shippedDate;
+    private DateType orderDateType;
+    private DateType requireDateType;
+    private DateType shippedDateType;
 }

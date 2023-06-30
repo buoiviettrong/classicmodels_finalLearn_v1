@@ -13,32 +13,32 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Office {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "officeCode", nullable = false, length = 10)
-  private Long officeCode;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "officeCode", nullable = false, length = 10)
+    private Long officeCode;
 
-  @Column(name = "city", nullable = false, length = 50)
-  private String city;
+    @Column(name = "city", nullable = false, length = 50)
+    private String city;
 
-  @Column(name = "phone", nullable = false, length = 50)
-  private String phone;
+    @Column(name = "phone", nullable = false, length = 50)
+    private String phone;
 
-  @Column(name = "addressLine1", nullable = false, length = 50)
-  private String addressLine1;
+    @Column(name = "addressLine1", nullable = false, length = 50)
+    private String addressLine1;
 
-  @Column(name = "addressLine2", length = 50)
-  private String addressLine2;
+    @Column(name = "addressLine2", length = 50)
+    private String addressLine2;
 
-  @Column(name = "state", length = 50)
-  private String state;
+    @Column(name = "state", length = 50)
+    private String state;
 
-  @Column(name = "country", nullable = false, length = 50)
-  private String country;
+    @Column(name = "country", nullable = false, length = 50)
+    private String country;
 
-  @Column(name = "postalCode", nullable = false, length = 15)
-  private String postalCode;
+    @Column(name = "postalCode", nullable = false, length = 15)
+    private String postalCode;
 
-  @Column(name = "territory", nullable = false, length = 10)
-  private String territory;
+    @Column(name = "territory", nullable = false, length = 10)
+    private String territory;
 }

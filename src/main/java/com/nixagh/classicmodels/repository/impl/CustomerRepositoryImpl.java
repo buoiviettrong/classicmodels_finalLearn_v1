@@ -8,33 +8,33 @@ import jakarta.persistence.EntityManager;
 import java.util.List;
 
 public class CustomerRepositoryImpl extends BaseRepositoryImpl<Customer, Long> implements CustomerRepository {
-  public CustomerRepositoryImpl(EntityManager entityManager) {
-    super(Customer.class, entityManager);
-  }
+    public CustomerRepositoryImpl(EntityManager entityManager) {
+        super(Customer.class, entityManager);
+    }
 
-  @Override
-  public List<Customer> getCustomers() {
-    return jpaQueryFactory
-        .select(customer)
-        .from(customer)
-        .offset(0)
-        .limit(10)
-        .stream().toList();
-  }
+    @Override
+    public List<Customer> getCustomers() {
+        return jpaQueryFactory
+                .select(customer)
+                .from(customer)
+                .offset(0)
+                .limit(10)
+                .stream().toList();
+    }
 
-  @Override
-  public List<Customer> getCustomersBySalesRepEmployeeNumber(Employee salesRepEmployeeNumber) {
-    return jpaQueryFactory
-        .selectFrom(customer)
-        .where(customer.salesRepEmployeeNumber. eq(salesRepEmployeeNumber))
-        .stream().toList();
-  }
+    @Override
+    public List<Customer> getCustomersBySalesRepEmployeeNumber(Employee salesRepEmployeeNumber) {
+        return jpaQueryFactory
+                .selectFrom(customer)
+                .where(customer.salesRepEmployeeNumber.eq(salesRepEmployeeNumber))
+                .stream().toList();
+    }
 
-  @Override
-  public Customer findByCustomerNumber(Long customerNumber) {
-    return jpaQueryFactory
-        .selectFrom(customer)
-        .where(customer.customerNumber.eq(customerNumber))
-        .fetchFirst();
-  }
+    @Override
+    public Customer findByCustomerNumber(Long customerNumber) {
+        return jpaQueryFactory
+                .selectFrom(customer)
+                .where(customer.customerNumber.eq(customerNumber))
+                .fetchFirst();
+    }
 }

@@ -8,9 +8,9 @@ import lombok.Setter;
 @Setter
 @Builder
 public class PageResponseInfo {
-  private Long currentPage;
-  private Long pageSize;
-  private Long totalElements;
-  private Long totalPages;
-  private Long totalElementOfCurrentPage;
+    private Long currentPage;
+    private Long pageSize;
+    private Long totalElements;
+    private Long totalPages;
+    private Long totalElementOfCurrentPage;
 }

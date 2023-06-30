@@ -12,16 +12,16 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CustomerService {
-  private final CustomerRepository customerRepository;
-  private final EmployeeRepository employeeRepository;
+    private final CustomerRepository customerRepository;
+    private final EmployeeRepository employeeRepository;
 
-  public List<Customer> getCustomers() {
-    return customerRepository.getCustomers();
-  }
+    public List<Customer> getCustomers() {
+        return customerRepository.getCustomers();
+    }
 
 
-  public List<Customer> getCustomersBySalesRepEmployeeNumber(Long eNum) throws IllegalAccessException {
-    Employee employee = employeeRepository.findByEmployeeNumber(eNum);
-    return customerRepository.getCustomersBySalesRepEmployeeNumber(employee);
-  }
+    public List<Customer> getCustomersBySalesRepEmployeeNumber(Long eNum) throws IllegalAccessException {
+        Employee employee = employeeRepository.findByEmployeeNumber(eNum);
+        return customerRepository.getCustomersBySalesRepEmployeeNumber(employee);
+    }
 }

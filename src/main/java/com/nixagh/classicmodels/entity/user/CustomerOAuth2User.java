@@ -13,20 +13,20 @@ import java.util.Map;
 @Setter
 @Builder
 public class CustomerOAuth2User implements OAuth2User {
-  private OAuth2User oauth2User;
+    private OAuth2User oauth2User;
 
-  @Override
-  public Map<String, Object> getAttributes() {
-    return oauth2User.getAttributes();
-  }
+    @Override
+    public Map<String, Object> getAttributes() {
+        return oauth2User.getAttributes();
+    }
 
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    return oauth2User.getAuthorities();
-  }
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return oauth2User.getAuthorities();
+    }
 
-  @Override
-  public String getName() {
-    return oauth2User.getName();
-  }
+    @Override
+    public String getName() {
+        return oauth2User.getName();
+    }
 }

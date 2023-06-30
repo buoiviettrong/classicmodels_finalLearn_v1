@@ -2,7 +2,7 @@ package com.nixagh.classicmodels.controller;
 
 import com.nixagh.classicmodels.dto.product_line.ProductLineRequest.ProductLineUpdateRequest;
 import com.nixagh.classicmodels.entity.ProductLinee;
-import com.nixagh.classicmodels.service.ProductLineService.ProductLineService;
+import com.nixagh.classicmodels.service.ProductLineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProductLineController {
     public final ProductLineService productLineService;
+
     @GetMapping
     public List<ProductLinee> getProductLines() {
         return productLineService.getProductLines();

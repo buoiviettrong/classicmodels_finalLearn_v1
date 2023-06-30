@@ -17,15 +17,15 @@ import java.util.List;
 @Hidden
 public class CustomerController {
 
-  private final CustomerService customerService;
+    private final CustomerService customerService;
 
-  @GetMapping
-  public List<Customer> getCustomers() {
-    return customerService.getCustomers();
-  }
+    @GetMapping
+    public List<Customer> getCustomers() {
+        return customerService.getCustomers();
+    }
 
-  @GetMapping("/filters")
-  public List<Customer> getCustomersBySalesRepEmployeeNumber(@PathParam("eNum") Long eNum) throws IllegalAccessException {
-    return customerService.getCustomersBySalesRepEmployeeNumber(eNum);
-  }
+    @GetMapping("/filters")
+    public List<Customer> getCustomersBySalesRepEmployeeNumber(@PathParam("eNum") Long eNum) throws IllegalAccessException {
+        return customerService.getCustomersBySalesRepEmployeeNumber(eNum);
+    }
 }

@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public abstract class AbstractResponse {
-  private PageResponseInfo pageResponseInfo;
+    private PageResponseInfo pageResponseInfo;
 }

@@ -1,11 +1,13 @@
 package com.nixagh.classicmodels.config;
 
+import com.nixagh.classicmodels._common.settings.AuthSettings;
+import com.nixagh.classicmodels.exception.NotFoundEntity;
+import com.nixagh.classicmodels.exception.SignatureTokenException;
+import com.nixagh.classicmodels.repository.authRepo.SettingRepository;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -17,78 +19,79 @@ import java.util.function.Function;
 
 @Service
 public class JwtService {
-  @Value("${application.security.jwt.secret-key}")
-  private String secretKey;
-  @Value("${application.security.jwt.expiration}")
-  private long jwtExpiration;
-  @Value("${application.security.jwt.refresh-token.expiration}")
-  private long refreshExpiration;
+    private final AuthSettings settings;
+    public JwtService(SettingRepository settingRepository) {
+        this.settings = settingRepository.getAuthSettings().orElseThrow(() -> new NotFoundEntity("AuthSettings not found"));
+    }
+    public String extractUsername(String token) {
+        return extractClaims(token, Claims::getSubject);
+    }
 
-  public String extractUsername(String token) {
-    return extractClaims(token, Claims::getSubject);
-  }
+    public <T> T extractClaims(String token, Function<Claims, T> claimFunction) {
+        final Claims claims = extractAllClaims(token);
+        return claimFunction.apply(claims);
+    }
 
-  public <T> T extractClaims(String token, Function<Claims, T> claimFunction) {
-    final Claims claims = extractAllClaims(token);
-    return claimFunction.apply(claims);
-  }
+    public String generateToken(UserDetails userDetails) {
+        return generateToken(new HashMap<>(), userDetails);
+    }
 
-  public String generateToken(UserDetails userDetails) {
-    return generateToken(new HashMap<>(), userDetails);
-  }
+    public String generateRefreshToken(
+            UserDetails userDetails
+    ) {
+        return buildToken(new HashMap<>(), userDetails, settings.getJwtRefreshTokenExpiration());
+    }
 
-  public String generateRefreshToken(
-      UserDetails userDetails
-  ) {
-    return buildToken(new HashMap<>(), userDetails, refreshExpiration);
-  }
+    public String generateToken(
+            Map<String, Object> extraClaims,
+            UserDetails userDetails
+    ) {
+        return buildToken(extraClaims, userDetails, settings.getJwtExpiration());
+    }
 
-  public String generateToken(
-      Map<String, Object> extraClaims,
-      UserDetails userDetails
-  ) {
-    return buildToken(extraClaims, userDetails, jwtExpiration);
-  }
+    private String buildToken(
+            Map<String, Object> extraClaims,
+            UserDetails userDetails,
+            long expiration
+    ) {
+        return Jwts
+                .builder()
+                .setClaims(extraClaims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(getSignInKey(), settings.getSignatureAlgorithm())
+                .compact();
+    }
 
-  private String buildToken(
-      Map<String, Object> extraClaims,
-      UserDetails userDetails,
-      long expiration
-  ) {
-    return Jwts
-        .builder()
-        .setClaims(extraClaims)
-        .setSubject(userDetails.getUsername())
-        .setIssuedAt(new Date(System.currentTimeMillis()))
-        .setExpiration(new Date(System.currentTimeMillis() + expiration))
-        .signWith(getSignInKey(), SignatureAlgorithm.HS256)
-        .compact();
-  }
+    public boolean isTokenValid(String token, UserDetails userDetails) {
+        final String username = extractUsername(token);
+        return (username.equals(userDetails.getUsername())) && isTokenExpired(token);
+    }
 
-  public boolean isTokenValid(String token, UserDetails userDetails) {
-    final String username = extractUsername(token);
-    return (username.equals(userDetails.getUsername())) && isTokenExpired(token);
-  }
+    private boolean isTokenExpired(String token) {
+        return extractExpiration(token).after(new Date());
+    }
 
-  private boolean isTokenExpired(String token) {
-    return extractExpiration(token).after(new Date());
-  }
+    private Date extractExpiration(String token) {
+        return extractClaims(token, Claims::getExpiration);
+    }
 
-  private Date extractExpiration(String token) {
-    return extractClaims(token, Claims::getExpiration);
-  }
+    private Claims extractAllClaims(String token) {
+        try {
+            return Jwts
+                    .parserBuilder()
+                    .setSigningKey(getSignInKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+        } catch (SignatureTokenException e) {
+            throw new SignatureTokenException("JWT signature does not match locally computed signature");
+        }
+    }
 
-  private Claims extractAllClaims(String token) {
-    return Jwts
-        .parserBuilder()
-        .setSigningKey(getSignInKey())
-        .build()
-        .parseClaimsJws(token)
-        .getBody();
-  }
-
-  private Key getSignInKey() {
-    byte[] bytes = Decoders.BASE64.decode(secretKey);
-    return Keys.hmacShaKeyFor(bytes);
-  }
+    private Key getSignInKey() {
+        byte[] bytes = Decoders.BASE64.decode(settings.getJwtSecretKey());
+        return Keys.hmacShaKeyFor(bytes);
+    }
 }

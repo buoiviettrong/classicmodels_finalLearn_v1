@@ -10,10 +10,10 @@ import java.util.HashSet;
 
 @Component
 public class JwtConverter implements Converter<Jwt, UsernamePasswordAuthenticationToken> {
-  @Override
-  public UsernamePasswordAuthenticationToken convert(Jwt jwt) {
-    User user = new User();
-    user.setEmail(jwt.getSubject());
-    return new UsernamePasswordAuthenticationToken(user, jwt, new HashSet<>());
-  }
+    @Override
+    public UsernamePasswordAuthenticationToken convert(Jwt jwt) {
+        User user = new User();
+        user.setEmail(jwt.getSubject());
+        return new UsernamePasswordAuthenticationToken(user, jwt, new HashSet<>());
+    }
 }

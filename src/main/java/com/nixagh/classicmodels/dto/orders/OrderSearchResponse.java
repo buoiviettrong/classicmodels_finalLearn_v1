@@ -11,5 +11,5 @@ import java.util.List;
 @Getter
 @Setter
 public class OrderSearchResponse extends AbstractResponse {
-  private List<Order> orders = new ArrayList<Order>();
+    private List<Order> orders = new ArrayList<Order>();
 }

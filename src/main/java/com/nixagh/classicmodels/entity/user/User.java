@@ -1,6 +1,8 @@
 package com.nixagh.classicmodels.entity.user;
 
-import com.nixagh.classicmodels.entity.token.RefreshToken;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nixagh.classicmodels.entity.auth.Role;
+import com.nixagh.classicmodels.entity.enums.Provider;
 import com.nixagh.classicmodels.entity.token.Token;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,57 +24,62 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class User implements UserDetails {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private Long id;
-  private String firstName;
-  private String lastName;
-  private String email;
-  private String password;
-  @Enumerated(EnumType.STRING)
-  private LoginType type = LoginType.NORMAL;
-  @Enumerated(EnumType.STRING)
-  private Role role;
-  @OneToMany(mappedBy = "user")
-  @Fetch(FetchMode.JOIN)
-  private List<Token> tokens = new ArrayList<>();
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String password;
 
-  @OneToOne
-  @JoinColumn(name = "refresh_token_id")
-  private RefreshToken refreshToken;
+    @Enumerated(EnumType.STRING)
+    private LoginType loginType = LoginType.NORMAL;
 
-  @Override
-  public Collection<? extends GrantedAuthority> getAuthorities() {
-    return role.getAuthorities();
-  }
+    @ManyToOne
+    @JoinColumn(name = "roleId")
+    private Role role;
 
-  @Override
-  public String getUsername() {
-    return email;
-  }
+    @OneToMany(mappedBy = "user")
+    @Fetch(FetchMode.JOIN)
+    @JsonIgnore
+    private List<Token> tokens = new ArrayList<>();
 
-  @Override
-  public String getPassword() {
-    return password;
-  }
+    @JsonIgnore
+    private String refreshToken;
 
-  @Override
-  public boolean isAccountNonExpired() {
-    return true;
-  }
+    @Override
+    @JsonIgnore
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return role.getAuthorities();
+    }
 
-  @Override
-  public boolean isAccountNonLocked() {
-    return true;
-  }
+    @Override
+    public String getUsername() {
+        return email;
+    }
 
-  @Override
-  public boolean isCredentialsNonExpired() {
-    return true;
-  }
+    @Override
+    public String getPassword() {
+        return password;
+    }
 
-  @Override
-  public boolean isEnabled() {
-    return true;
-  }
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

@@ -4,19 +4,20 @@ import com.nixagh.classicmodels.dto.orders.OrderFilter;
 import com.nixagh.classicmodels.entity.Order;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderRepository extends BaseRepository<Order, Long> {
-  List<Order> getOrderByCustomerNumber(Long customerNumber);
+    List<Order> getOrderByCustomerNumber(Long customerNumber);
 
-  List<Order> getOrders();
+    List<Order> getOrders();
 
-  Order getOrderByOrderNumber(Long orderNumber);
+    Order getOrderByOrderNumber(Long orderNumber);
 
-  List<Order> getOrderByFilters(OrderFilter filter, Long page, Long size);
+    List<Order> getOrderByFilters(OrderFilter filter, Long page, Long size);
 
-  Long getCount(OrderFilter request);
+    Long getCount(OrderFilter request);
 
-  Order findOrderByOrderNumber(Long orderNumber);
+    Optional<Order> findOrderByOrderNumber(Long orderNumber);
 
-  void deleteByOrderNumber(Long orderNumber);
+    void deleteByOrderNumber(Long orderNumber);
 }

@@ -13,24 +13,24 @@ import lombok.*;
 @Builder
 public class OrderDetail {
 
-  @EmbeddedId
-  private OrderDetailsEmbed id;
+    @EmbeddedId
+    private OrderDetailsEmbed id;
 
-  @ManyToOne
-  @JoinColumn(name = "orderNumber")
-  @MapsId("orderNumber")
-  private Order order;
-  @ManyToOne
-  @JoinColumn(name = "productCode")
-  @MapsId("productCode")
-  private Product product;
+    @ManyToOne
+    @JoinColumn(name = "orderNumber")
+    @MapsId("orderNumber")
+    private Order order;
+    @ManyToOne
+    @JoinColumn(name = "productCode")
+    @MapsId("productCode")
+    private Product product;
 
-  @Column(name = "quantityOrdered", nullable = false, length = 10)
-  private Long quantityOrdered;
+    @Column(name = "quantityOrdered", nullable = false, length = 10)
+    private Long quantityOrdered;
 
-  @Column(name = "priceEach", nullable = false, precision = 10)
-  private Double priceEach;
+    @Column(name = "priceEach", nullable = false, precision = 10)
+    private Double priceEach;
 
-  @Column(name = "orderLineNumber", nullable = false)
-  private Integer orderLineNumber;
+    @Column(name = "orderLineNumber", nullable = false)
+    private Integer orderLineNumber;
 }

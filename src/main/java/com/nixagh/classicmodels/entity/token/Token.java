@@ -14,21 +14,21 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Token {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  public Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    public Long id;
 
-  @Column(unique = true)
-  public String token_;
+    @Column(unique = true)
+    public String token_;
 
-  @Enumerated(EnumType.STRING)
-  public TokenType tokenType = TokenType.BEARER;
+    @Enumerated(EnumType.STRING)
+    public TokenType tokenType = TokenType.BEARER;
 
-  public boolean revoked;
+    public boolean revoked;
 
-  public boolean expired;
+    public boolean expired;
 
-  @ManyToOne
-  @JoinColumn(name = "user_id")
-  public User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    public User user;
 }

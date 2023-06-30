@@ -1,7 +1,8 @@
 package com.nixagh.classicmodels._common.auth;
 
+import com.nixagh.classicmodels.entity.auth.Role;
+import com.nixagh.classicmodels.entity.enums.Provider;
 import com.nixagh.classicmodels.entity.user.LoginType;
-import com.nixagh.classicmodels.entity.user.Role;
 import lombok.*;
 
 @AllArgsConstructor
@@ -10,10 +11,10 @@ import lombok.*;
 @Setter
 @Builder
 public class RegisterRequest {
-  private String firstName;
-  private String lastName;
-  private String email;
-  private String password;
-  private Role role = Role.USER;
-  private LoginType type = LoginType.NORMAL;
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String password;
+    private Role role = null;
+    private LoginType type = LoginType.NORMAL;
 }
