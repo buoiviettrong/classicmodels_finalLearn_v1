@@ -46,7 +46,7 @@ public class Role {
     @JsonIgnore
     public List<SimpleGrantedAuthority> getAuthorities() {
          List<SimpleGrantedAuthority> list = new java.util.ArrayList<>(permissions.stream()
-                 .map(permissionD -> new SimpleGrantedAuthority(permissionD.getPermissionName()))
+                 .map(permission -> new SimpleGrantedAuthority(permission.getPermissionName()))
                  .toList());
          list.add(new SimpleGrantedAuthority("ROLE_" + roleName));
          return list;

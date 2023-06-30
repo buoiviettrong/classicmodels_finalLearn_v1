@@ -16,6 +16,7 @@ import com.nixagh.classicmodels.repository.authRepo.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -67,21 +68,20 @@ public class AuthenticationService {
     }
 
     public AuthenticationResponse authenticate(AuthenticateRequest request) {
-
+        Authentication authentication;
         // kiem tra dang nhap
-       try{
-           authenticationManager.authenticate(
-                   new UsernamePasswordAuthenticationToken(
-                           request.getEmail(),
-                           request.getPassword()
-                   )
-           );
-       } catch (AuthenticationException e) {
-           throw new InvalidUserNameOrPassword("Wrong username or password");
-       }
+        try {
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            request.getEmail(),
+                            request.getPassword()
+                    )
+            );
+        } catch (AuthenticationException e) {
+            throw new InvalidUserNameOrPassword("Wrong username or password");
+        }
 
-        var user = userRepository.getUserByEmail(request.getEmail())
-                .orElseThrow();
+        User user = (User) authentication.getPrincipal();
 
         var jwtToken = jwtService.generateToken(user);
         var refreshToken = jwtService.generateRefreshToken(user);

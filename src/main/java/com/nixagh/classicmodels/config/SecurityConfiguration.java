@@ -34,6 +34,7 @@ public class SecurityConfiguration {
                 .cors(AbstractHttpConfigurer::disable);
         httpSecurity.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                                 .requestMatchers(
+                                        "/api/v1/employee/**",
                                         "/api/v1/auth/**",
                                         "/api/v1/oauth/**",
                                         "/v2/api-docs",

@@ -5,7 +5,6 @@ import com.nixagh.classicmodels._common.settings.QOAuthClient;
 import com.nixagh.classicmodels.entity.*;
 import com.nixagh.classicmodels.entity.auth.QPermission;
 import com.nixagh.classicmodels.entity.auth.QRole;
-import com.nixagh.classicmodels.entity.token.QRefreshToken;
 import com.nixagh.classicmodels.entity.token.QToken;
 import com.nixagh.classicmodels.entity.user.QUser;
 import com.nixagh.classicmodels.repository.BaseRepository;
@@ -27,7 +26,6 @@ public abstract class BaseRepositoryImpl<T, ID> extends SimpleJpaRepository<T, I
     protected final QOrderDetail orderDetail = QOrderDetail.orderDetail;
     protected final QUser user = QUser.user;
     protected final QToken token = QToken.token;
-    protected final QRefreshToken refreshToken = QRefreshToken.refreshToken;
     protected final QRole role = QRole.role;
     protected final QPermission permission = QPermission.permission;
     protected final QOAuthClient client = QOAuthClient.oAuthClient;
