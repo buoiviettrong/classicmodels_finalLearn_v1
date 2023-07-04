@@ -1,10 +1,12 @@
 package com.nixagh.classicmodels.config;
 
 import com.nixagh.classicmodels._common.settings.AuthSettings;
+import com.nixagh.classicmodels.exception.InvalidToken;
 import com.nixagh.classicmodels.exception.NotFoundEntity;
 import com.nixagh.classicmodels.exception.SignatureTokenException;
 import com.nixagh.classicmodels.repository.authRepo.SettingRepository;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -41,6 +43,12 @@ public class JwtService {
     ) {
         return buildToken(new HashMap<>(), userDetails, settings.getJwtRefreshTokenExpiration());
     }
+    public String generateRefreshToken(
+            UserDetails userDetails,
+            Date refreshTokenExpiration
+    ) {
+        return buildToken(new HashMap<>(), userDetails,refreshTokenExpiration);
+    }
 
     public String generateToken(
             Map<String, Object> extraClaims,
@@ -60,6 +68,20 @@ public class JwtService {
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + expiration))
+                .signWith(getSignInKey(), settings.getSignatureAlgorithm())
+                .compact();
+    }
+    private String buildToken(
+            Map<String, Object> extraClaims,
+            UserDetails userDetails,
+            Date expirationNow
+    ) {
+        return Jwts
+                .builder()
+                .setClaims(extraClaims)
+                .setSubject(userDetails.getUsername())
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(expirationNow)
                 .signWith(getSignInKey(), settings.getSignatureAlgorithm())
                 .compact();
     }
@@ -87,6 +109,10 @@ public class JwtService {
                     .getBody();
         } catch (SignatureTokenException e) {
             throw new SignatureTokenException("JWT signature does not match locally computed signature");
+        } catch (ExpiredJwtException e) {
+            throw new InvalidToken("JWT expired");
+        } catch (Exception e) {
+            throw new InvalidToken("JWT token invalid");
         }
     }
 

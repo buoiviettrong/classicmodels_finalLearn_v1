@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -16,7 +17,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Product {
+public class Product implements Serializable {
     @Id
     @Column(name = "productCode", length = 15)
     private String productCode;
@@ -45,7 +46,7 @@ public class Product {
     private Double buyPrice;
 
     @Column(name = "MSRP", nullable = false, precision = 10)
-    private Double MSRP;
+    private Double msrp;
 
     @JsonIgnore
     @OneToMany(mappedBy = "product")

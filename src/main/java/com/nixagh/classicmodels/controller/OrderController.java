@@ -1,11 +1,14 @@
 package com.nixagh.classicmodels.controller;
 
-import com.nixagh.classicmodels.dto.orderDetail.OrderDetailByOrderNumber;
 import com.nixagh.classicmodels.dto.orders.*;
 import com.nixagh.classicmodels.dto.product.ProductDTO;
 import com.nixagh.classicmodels.entity.Order;
 import com.nixagh.classicmodels.service.OrderService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,11 +17,18 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/order")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
+@EnableCaching
+@Slf4j
 public class OrderController {
     private final OrderService orderService;
+    private final String cacheName = "orders";
+    private final String cacheFilter = "ordersFilter";
+    private final String cacheDetail = "ordersDetail";
+
 
     @PostMapping("/filters")
+    @Cacheable(value = cacheFilter, key = "#request.toString()", cacheManager = "cacheManager", unless = "#result == null")
     public OrderSearchResponse getOrderByFilters(@RequestBody OrderFilterRequest request) {
         return orderService.getOrderByFilters(request);
     }
@@ -29,10 +39,10 @@ public class OrderController {
     }
 
     @GetMapping("/{orderNumber}/orderDetail")
+    @Cacheable(value = cacheDetail, key = "#orderNumber.toString()", cacheManager = "cacheManager", unless = "#result == null")
     public List<ProductDTO> getDetail(@PathVariable(value = "orderNumber") Long orderNumber) {
         return orderService.getOrderDetail(orderNumber);
     }
-
     @PutMapping("/{orderNumber}")
     public Order getDetail(
             @PathVariable(value = "orderNumber") Long orderNumber,
@@ -46,6 +56,7 @@ public class OrderController {
     }
 
     @GetMapping("/{orderNumber}")
+    @Cacheable(value = cacheName, key = "#orderNumber.toString()", cacheManager = "cacheManager", unless = "#result == null")
     public Order getOrder(@PathVariable(value = "orderNumber") Long orderNumber) {
         return orderService.getOrder(orderNumber);
     }

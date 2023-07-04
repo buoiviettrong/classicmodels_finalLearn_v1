@@ -4,6 +4,8 @@ import com.nixagh.classicmodels.entity.embedded.OrderDetailsEmbed;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "order_details")
 @NoArgsConstructor
@@ -11,7 +13,7 @@ import lombok.*;
 @Getter
 @Setter
 @Builder
-public class OrderDetail {
+public class OrderDetail implements Serializable {
 
     @EmbeddedId
     private OrderDetailsEmbed id;

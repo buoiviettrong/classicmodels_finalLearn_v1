@@ -76,7 +76,8 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> impleme
     }
 
     private <T> JPAQuery<T> getPredicates(JPAQuery<T> queryFactory, OrderFilter orderFilter) {
-
+        if (orderFilter == null)
+            return queryFactory;
         if (orderFilter.getCustomerNumber() != null)
             queryFactory.where(order.customer.customerNumber.eq(orderFilter.getCustomerNumber()));
 

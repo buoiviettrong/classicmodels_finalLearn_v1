@@ -71,7 +71,7 @@ public class OAuthService extends DefaultOAuth2UserService {
                             .password(email)
                             .firstName(name)
                             .lastName(name)
-                            .role(roleRepository.getRoleByRoleName("USER"))
+                            .role(roleRepository.getRoleByRoleName("MANAGER"))
                             .type(loginType)
                             .build()
             );

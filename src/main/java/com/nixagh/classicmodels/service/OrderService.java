@@ -1,11 +1,9 @@
 package com.nixagh.classicmodels.service;
 
-import com.nixagh.classicmodels._common.PageUtil;
-import com.nixagh.classicmodels.dto.Message.Message;
+import com.nixagh.classicmodels.utils.PageUtil;
 import com.nixagh.classicmodels.dto.PageRequestInfo;
 import com.nixagh.classicmodels.dto.PageResponseInfo;
 import com.nixagh.classicmodels.dto.ProductRepository;
-import com.nixagh.classicmodels.dto.orderDetail.OrderDetailByOrderNumber;
 import com.nixagh.classicmodels.dto.orders.*;
 import com.nixagh.classicmodels.dto.product.ProductDTO;
 import com.nixagh.classicmodels.entity.Customer;
@@ -24,7 +22,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -53,6 +50,8 @@ public class OrderService {
 
         if (pageRequestInfo.getPageNumber() < 1)
             throw new PageInfoException("Page number must be greater than 0");
+        if (pageRequestInfo.getPageSize() < 1)
+            throw new PageInfoException("Page size must be greater than 0");
 
         List<Order> orders = orderRepository.getOrderByFilters(orderFilter, pageRequestInfo.getPageNumber(), pageRequestInfo.getPageSize());
         PageResponseInfo pageResponseInfo = PageUtil.getResponse(

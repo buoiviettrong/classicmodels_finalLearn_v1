@@ -2,6 +2,7 @@ package com.nixagh.classicmodels.service;
 
 import com.nixagh.classicmodels.entity.Customer;
 import com.nixagh.classicmodels.entity.Employee;
+import com.nixagh.classicmodels.exception.NotFoundEntity;
 import com.nixagh.classicmodels.repository.CustomerRepository;
 import com.nixagh.classicmodels.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,7 @@ public class CustomerService {
 
 
     public List<Customer> getCustomersBySalesRepEmployeeNumber(Long eNum) throws IllegalAccessException {
-        Employee employee = employeeRepository.findByEmployeeNumber(eNum);
+        Employee employee = employeeRepository.findByEmployeeNumber(eNum).orElseThrow(() -> new NotFoundEntity("Employee not found"));
         return customerRepository.getCustomersBySalesRepEmployeeNumber(employee);
     }
 }

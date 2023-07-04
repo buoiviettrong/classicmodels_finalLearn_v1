@@ -28,7 +28,7 @@ public class TokenRepositoryImpl extends BaseRepositoryImpl<Token, Long> impleme
     public Optional<Token> findByToken_(String jwt) {
         return jpaQueryFactory
                 .selectFrom(token)
-                .where(token.token_.eq(jwt))
+                .where(token.accessToken.eq(jwt))
                 .stream().findFirst();
     }
 

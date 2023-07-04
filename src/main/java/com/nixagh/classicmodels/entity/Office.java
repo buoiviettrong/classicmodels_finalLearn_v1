@@ -6,13 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
+
 @Entity
 @Table(name = "offices")
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
-public class Office {
+public class Office implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "officeCode", nullable = false, length = 10)

@@ -1,13 +1,15 @@
 package com.nixagh.classicmodels.dto;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+
+import java.io.Serializable;
 
 @Getter
 @Setter
 @Builder
-public class PageResponseInfo {
+@AllArgsConstructor
+@NoArgsConstructor
+public class PageResponseInfo implements Serializable {
     private Long currentPage;
     private Long pageSize;
     private Long totalElements;

@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -15,7 +16,7 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ProductLinee {
+public class ProductLinee implements Serializable {
     @Id
     @Column(name = "productLine", length = 50)
 //  @JsonProperty("productLine")

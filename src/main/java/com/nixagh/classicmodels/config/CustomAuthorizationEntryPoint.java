@@ -3,6 +3,7 @@ package com.nixagh.classicmodels.config;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nixagh.classicmodels.exception.AccessDenied;
 import com.nixagh.classicmodels.exception.ErrorResponse;
+import com.nixagh.classicmodels.exception.NotFoundEntity;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.minidev.json.JSONObject;
@@ -21,11 +22,16 @@ public class CustomAuthorizationEntryPoint implements AccessDeniedHandler {
             AccessDeniedException accessDeniedException
     ) throws IOException {
 
-        JSONObject json = new JSONObject();
-        json.put("status", HttpStatus.UNAUTHORIZED);
-        json.put("message", "Access denied");
+        String json = """
+                {
+                    "status": "%s",
+                    "message": "%s"
+                }
+                """.formatted(HttpStatus.UNAUTHORIZED.getReasonPhrase(), "Access denied");
 
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        response.getWriter().write(json.toJSONString());
+        response.getWriter().write(json);
     }
 }

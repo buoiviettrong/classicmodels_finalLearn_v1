@@ -1,10 +1,14 @@
 package com.nixagh.classicmodels.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.core.serializer.DefaultSerializer;
+
+import java.io.Serializable;
 
 @Getter
 @Setter
-public abstract class AbstractResponse {
+@AllArgsConstructor
+@NoArgsConstructor
+public abstract class AbstractResponse implements Serializable {
     private PageResponseInfo pageResponseInfo;
 }
