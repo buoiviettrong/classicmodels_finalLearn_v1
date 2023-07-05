@@ -1,9 +1,16 @@
 package com.nixagh.classicmodels.repository.impl;
 
+import com.nixagh.classicmodels.dto.orders.HighestOrderResponse;
 import com.nixagh.classicmodels.dto.orders.OrderFilter;
 import com.nixagh.classicmodels.entity.Order;
 import com.nixagh.classicmodels.repository.OrderRepository;
+import com.querydsl.core.QueryFactory;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ConstructorExpression;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberExpression;
+import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQuery;
 import jakarta.persistence.EntityManager;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,6 +79,25 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> impleme
                 .delete(order)
                 .where(order.orderNumber.eq(orderNumber))
                 .execute();
+    }
+
+    @Override
+    public HighestOrderResponse getHighestOrder() {
+
+        NumberExpression<?> orderNumber = order.orderNumber;
+        NumberExpression<?> totalPrice = orderDetail.priceEach.sum();
+
+        return jpaQueryFactory
+                .select(Projections.constructor(
+                        HighestOrderResponse.class,
+                        orderNumber,
+                        totalPrice
+                ))
+                .from(order)
+                .leftJoin(order.orderDetail, orderDetail)
+                .groupBy(orderNumber)
+                .orderBy(totalPrice.desc())
+                .fetchFirst();
     }
 
     private <T> JPAQuery<T> getPredicates(JPAQuery<T> queryFactory, OrderFilter orderFilter) {

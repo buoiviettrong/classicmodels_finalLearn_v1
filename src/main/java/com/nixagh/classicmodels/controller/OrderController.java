@@ -1,9 +1,6 @@
 package com.nixagh.classicmodels.controller;
 
-import com.nixagh.classicmodels.dto.orders.OrderCreateRequest;
-import com.nixagh.classicmodels.dto.orders.OrderFilterRequest;
-import com.nixagh.classicmodels.dto.orders.OrderSearchResponse;
-import com.nixagh.classicmodels.dto.orders.OrderUpdateRequest;
+import com.nixagh.classicmodels.dto.orders.*;
 import com.nixagh.classicmodels.dto.product.ProductDTO;
 import com.nixagh.classicmodels.entity.Order;
 import com.nixagh.classicmodels.service.OrderService;
@@ -62,6 +59,11 @@ public class OrderController {
     @Cacheable(value = cacheName, key = "#orderNumber.toString()", cacheManager = "cacheManager", unless = "#result == null")
     public Order getOrder(@PathVariable(value = "orderNumber") Long orderNumber) {
         return orderService.getOrder(orderNumber);
+    }
+
+    @GetMapping("/highestOrder")
+    public HighestOrderResponse getHighestOrder() {
+        return orderService.getHighestOrder();
     }
 
 }

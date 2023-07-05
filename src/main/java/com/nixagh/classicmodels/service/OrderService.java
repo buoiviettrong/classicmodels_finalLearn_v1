@@ -166,4 +166,8 @@ public class OrderService {
     public Order getOrder(Long orderNumber) {
         return orderRepository.findOrderByOrderNumber(orderNumber).orElseThrow(() -> new NotFoundEntity("Order " + orderNumber + " not found"));
     }
+
+    public HighestOrderResponse getHighestOrder() {
+        return orderRepository.getHighestOrder();
+    }
 }

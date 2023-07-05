@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,6 +20,7 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     private static final String HEADER_STRING = "Authorization";
@@ -33,6 +35,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain
     ) throws ServletException, IOException {
+        log.info("Just call method: " + request.getMethod() + ", path: " + request.getServletPath());
         // ignore api/v1/auth
         if (request.getServletPath().contains("/api/v1/auth")
                 || request.getServletPath().contains("https://accounts.google.com/o/oauth2/v2/auth")

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,7 +15,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Builder
-public class Permission {
+public class Permission implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long permissionId;
