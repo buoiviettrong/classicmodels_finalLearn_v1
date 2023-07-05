@@ -61,8 +61,4 @@ public class ApplicationConfiguration {
         return new CustomAuthorizationEntryPoint();
     }
 
-    @Bean
-    public RestTemplate restTemplate() {
-        return new RestTemplate();
-    }
 }

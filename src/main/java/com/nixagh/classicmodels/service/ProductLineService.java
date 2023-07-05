@@ -1,6 +1,6 @@
 package com.nixagh.classicmodels.service;
 
-import com.nixagh.classicmodels.dto.product_line.ProductLineRequest.ProductLineUpdateRequest;
+import com.nixagh.classicmodels.dto.product_line.ProductLineUpdateRequest;
 import com.nixagh.classicmodels.entity.ProductLinee;
 import com.nixagh.classicmodels.exception.NotFoundEntity;
 import com.nixagh.classicmodels.repository.ProductLineRepository;

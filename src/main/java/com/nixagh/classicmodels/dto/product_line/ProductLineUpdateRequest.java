@@ -1,4 +1,4 @@
-package com.nixagh.classicmodels.dto.product_line.ProductLineRequest;
+package com.nixagh.classicmodels.dto.product_line;
 
 import lombok.Getter;
 import lombok.Setter;

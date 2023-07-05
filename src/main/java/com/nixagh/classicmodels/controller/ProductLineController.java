@@ -1,9 +1,10 @@
 package com.nixagh.classicmodels.controller;
 
-import com.nixagh.classicmodels.dto.product_line.ProductLineRequest.ProductLineUpdateRequest;
+import com.nixagh.classicmodels.dto.product_line.ProductLineUpdateRequest;
 import com.nixagh.classicmodels.entity.ProductLinee;
 import com.nixagh.classicmodels.service.ProductLineService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.HttpStatus;
@@ -45,6 +46,7 @@ public class ProductLineController {
     }
 
     @DeleteMapping("/{productLine}")
+    @CacheEvict
     public ResponseEntity<?> deleteProductLine(@PathVariable String productLine) {
         productLineService.deleteProductLine(productLine);
         return new ResponseEntity<>(HttpStatus.OK);

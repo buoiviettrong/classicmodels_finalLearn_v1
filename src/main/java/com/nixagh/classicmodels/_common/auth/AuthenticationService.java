@@ -60,6 +60,7 @@ public class AuthenticationService {
         token = jwtService.generateToken(user);
         refreshToken = jwtService.generateRefreshToken(user);
         user.setRefreshToken(refreshToken);
+
         var saveUser = userRepository.save(user);
         saveUserToken(saveUser, token);
         user.setPassword(null);

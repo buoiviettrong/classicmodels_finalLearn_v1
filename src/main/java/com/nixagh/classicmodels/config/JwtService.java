@@ -10,14 +10,18 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
@@ -35,6 +39,7 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
+
         return generateToken(new HashMap<>(), userDetails);
     }
 
@@ -119,5 +124,16 @@ public class JwtService {
     private Key getSignInKey() {
         byte[] bytes = Decoders.BASE64.decode(settings.getJwtSecretKey());
         return Keys.hmacShaKeyFor(bytes);
+    }
+
+    // get authorities from token
+    public List<GrantedAuthority> getAuthorities(String token) {
+        Claims claims = extractAllClaims(token);
+        List<String> authorities = (List<String>) claims.get("authorities");
+        return authorities.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+    }
+
+    public String getUsernameFromToken(String token) {
+        return extractUsername(token);
     }
 }

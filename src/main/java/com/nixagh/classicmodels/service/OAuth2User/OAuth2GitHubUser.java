@@ -1,5 +1,7 @@
 package com.nixagh.classicmodels.service.OAuth2User;
 
+import com.nixagh.classicmodels.entity.user.LoginType;
+
 import java.util.Map;
 
 public class OAuth2GitHubUser extends OAuth2UserDetail {
@@ -8,12 +10,17 @@ public class OAuth2GitHubUser extends OAuth2UserDetail {
     }
 
     @Override
-    protected String getName() {
+    public String getName() {
         return (String) attributes.get("name");
     }
 
     @Override
     public String getEmail() {
-        return (String) attributes.get("login");
+        return (String) attributes.get("login") + "@gmail.com";
+    }
+
+    @Override
+    public LoginType getLoginType() {
+        return LoginType.GITHUB;
     }
 }
