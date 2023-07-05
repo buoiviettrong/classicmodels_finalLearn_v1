@@ -1,7 +1,9 @@
 package com.nixagh.classicmodels.dto;
 
-import lombok.*;
-import org.springframework.core.serializer.DefaultSerializer;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.io.Serializable;
 

@@ -1,8 +1,6 @@
 package com.nixagh.classicmodels.controller;
 
 import com.nixagh.classicmodels.entity.Employee;
-import com.nixagh.classicmodels.exception.NotFoundEntity;
-import com.nixagh.classicmodels.repository.EmployeeRepository;
 import com.nixagh.classicmodels.service.EmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;

@@ -1,6 +1,7 @@
 package com.nixagh.classicmodels.utils;
 
 import com.nixagh.classicmodels.dto.PageResponseInfo;
+
 public class PageUtil {
     public static PageResponseInfo getResponse(
             Long currentPage,

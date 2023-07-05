@@ -1,11 +1,7 @@
 package com.nixagh.classicmodels.config;
 
-import com.nixagh.classicmodels.exception.AccessDenied;
-import com.nixagh.classicmodels.exception.NotFoundEntity;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import net.minidev.json.JSONObject;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

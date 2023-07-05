@@ -2,7 +2,6 @@ package com.nixagh.classicmodels.config;
 
 import com.nixagh.classicmodels._common.auth.CustomerOAuth2Service;
 import com.nixagh.classicmodels.repository.authRepo.UserRepository;
-import com.speedment.jpastreamer.application.JPAStreamer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.client.RestTemplate;
 
 @Configuration
 @RequiredArgsConstructor

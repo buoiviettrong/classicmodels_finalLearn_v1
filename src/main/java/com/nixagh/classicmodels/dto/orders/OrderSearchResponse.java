@@ -3,8 +3,9 @@ package com.nixagh.classicmodels.dto.orders;
 import com.nixagh.classicmodels.dto.AbstractResponse;
 import com.nixagh.classicmodels.dto.PageResponseInfo;
 import com.nixagh.classicmodels.entity.Order;
-import lombok.*;
-import org.springframework.core.serializer.DefaultSerializer;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.Serial;
 import java.io.Serializable;

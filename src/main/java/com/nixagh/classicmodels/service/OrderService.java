@@ -1,6 +1,5 @@
 package com.nixagh.classicmodels.service;
 
-import com.nixagh.classicmodels.utils.PageUtil;
 import com.nixagh.classicmodels.dto.PageRequestInfo;
 import com.nixagh.classicmodels.dto.PageResponseInfo;
 import com.nixagh.classicmodels.dto.ProductRepository;
@@ -18,6 +17,7 @@ import com.nixagh.classicmodels.exception.PageInfoException;
 import com.nixagh.classicmodels.repository.CustomerRepository;
 import com.nixagh.classicmodels.repository.OrderDetailRepository;
 import com.nixagh.classicmodels.repository.OrderRepository;
+import com.nixagh.classicmodels.utils.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

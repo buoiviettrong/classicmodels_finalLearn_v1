@@ -2,7 +2,6 @@ package com.nixagh.classicmodels.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nixagh.classicmodels.entity.auth.Role;
-import com.nixagh.classicmodels.entity.enums.Provider;
 import com.nixagh.classicmodels.entity.token.Token;
 import jakarta.persistence.*;
 import lombok.*;

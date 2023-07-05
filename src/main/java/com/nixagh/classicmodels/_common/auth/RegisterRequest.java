@@ -3,9 +3,9 @@ package com.nixagh.classicmodels._common.auth;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.nixagh.classicmodels.entity.auth.Role;
 import com.nixagh.classicmodels.entity.user.LoginType;
-import com.nixagh.classicmodels.repository.authRepo.RoleRepository;
-import lombok.*;
-import org.springframework.stereotype.Component;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 @Getter
 @Setter

@@ -9,11 +9,11 @@ import java.util.List;
 import java.util.Map;
 
 public class OAuth2UserDetailCustom implements OAuth2User, UserDetails {
-    private Long id;
-    private String email;
-    private String password;
-    private String name;
-    private List<GrantedAuthority> authorities;
+    private final Long id;
+    private final String email;
+    private final String password;
+    private final String name;
+    private final List<GrantedAuthority> authorities;
     private Map<String, Object> attributes;
 
     public OAuth2UserDetailCustom(Long id, String email, String password, String name, List<GrantedAuthority> authorities) {
@@ -23,6 +23,7 @@ public class OAuth2UserDetailCustom implements OAuth2User, UserDetails {
         this.name = name;
         this.authorities = authorities;
     }
+
     @Override
     public String getPassword() {
         return password;

@@ -6,5 +6,5 @@ import com.nixagh.classicmodels.repository.BaseRepository;
 import java.util.Optional;
 
 public interface SettingRepository extends BaseRepository<AuthSettings, String> {
-    public Optional<AuthSettings> getAuthSettings();
+    Optional<AuthSettings> getAuthSettings();
 }

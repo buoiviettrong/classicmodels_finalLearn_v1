@@ -16,7 +16,7 @@ public class OAuth2GitHubUser extends OAuth2UserDetail {
 
     @Override
     public String getEmail() {
-        return (String) attributes.get("login") + "@gmail.com";
+        return attributes.get("login") + "@gmail.com";
     }
 
     @Override

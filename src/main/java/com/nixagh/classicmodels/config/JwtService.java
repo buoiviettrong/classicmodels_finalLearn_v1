@@ -26,9 +26,11 @@ import java.util.stream.Collectors;
 @Service
 public class JwtService {
     private final AuthSettings settings;
+
     public JwtService(SettingRepository settingRepository) {
         this.settings = settingRepository.getAuthSettings().orElseThrow(() -> new NotFoundEntity("AuthSettings not found"));
     }
+
     public String extractUsername(String token) {
         return extractClaims(token, Claims::getSubject);
     }
@@ -48,11 +50,12 @@ public class JwtService {
     ) {
         return buildToken(new HashMap<>(), userDetails, settings.getJwtRefreshTokenExpiration());
     }
+
     public String generateRefreshToken(
             UserDetails userDetails,
             Date refreshTokenExpiration
     ) {
-        return buildToken(new HashMap<>(), userDetails,refreshTokenExpiration);
+        return buildToken(new HashMap<>(), userDetails, refreshTokenExpiration);
     }
 
     public String generateToken(
@@ -76,6 +79,7 @@ public class JwtService {
                 .signWith(getSignInKey(), settings.getSignatureAlgorithm())
                 .compact();
     }
+
     private String buildToken(
             Map<String, Object> extraClaims,
             UserDetails userDetails,

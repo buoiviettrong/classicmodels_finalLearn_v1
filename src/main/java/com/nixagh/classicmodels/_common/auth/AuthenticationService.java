@@ -1,11 +1,8 @@
 package com.nixagh.classicmodels._common.auth;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nixagh.classicmodels.config.JwtService;
-import com.nixagh.classicmodels.entity.enums.Provider;
 import com.nixagh.classicmodels.entity.token.Token;
 import com.nixagh.classicmodels.entity.token.TokenType;
-import com.nixagh.classicmodels.entity.user.LoginType;
 import com.nixagh.classicmodels.entity.user.User;
 import com.nixagh.classicmodels.exception.AlreadyExistsException;
 import com.nixagh.classicmodels.exception.InvalidToken;
@@ -23,8 +20,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor

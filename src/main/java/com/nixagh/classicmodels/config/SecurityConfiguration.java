@@ -28,56 +28,57 @@ public class SecurityConfiguration {
     private final CustomAuthorizationEntryPoint customAuthorizationEntryPoint;
 
     DefaultOAuth2UserService oauth2Delegate = new DefaultOAuth2UserService();
+    String[] openURL = {
+            "/api/v1/auth/**",
+            "/api/v1/oauth2/**",
+            "/v2/api-docs",
+            "/v3/api-docs",
+            "/v3/api-docs/**",
+            "/swagger-resources",
+            "/swagger-resources/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html",
+            "/swagger-ui/index.html#/",
+            "/configuration/ui",
+            "/configuration/security",
+            "/webjars/**",
+            "/login/**",
+            "/favicon.ico/**",
+            "/static/**"
+    };
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(AbstractHttpConfigurer::disable);
         httpSecurity.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
-                        .requestMatchers(
-                                "/api/v1/employee/**",
-                                "/api/v1/auth/**",
-                                "/api/v1/oauth/**",
-                                "/v2/api-docs",
-                                "/v3/api-docs",
-                                "/v3/api-docs/**",
-                                "/swagger-resources",
-                                "/swagger-resources/**",
-                                "/configuration/ui",
-                                "/configuration/security",
-                                "/swagger-ui/**",
-                                "/webjars/**",
-                                "/swagger-ui.html",
-                                "/login/**",
-                                "/swagger-ui/index.html#/",
-                                "/favicon.ico/**",
-                                "/static/**"
-                        )
+                        .requestMatchers(openURL)
                         .permitAll()
                         .requestMatchers("/api/v1/management/**").hasAnyRole("ADMIN", "MANAGER")
                         .anyRequest()
                         .authenticated()
                 )
                 .oauth2Login(oAuth2LoginConfigurer ->
-                        oAuth2LoginConfigurer
-                                .loginPage("/login")
-                                .userInfoEndpoint(userInfoEndpointConfigurer ->
-                                        userInfoEndpointConfigurer
-                                                .userService(userRequest -> {
-                                                    OAuth2User oAuth2User = oauth2Delegate.loadUser(userRequest);
-                                                    return OAuthUserFactory.getOauth2UserDetail(
-                                                            userRequest.getClientRegistration().getRegistrationId().toUpperCase(),
-                                                            oAuth2User.getAttributes());
-                                                })
-                                                .oidcUserService(userRequest -> {
-                                                    OAuth2User oAuth2User = oauth2Delegate.loadUser(userRequest);
-                                                    return OAuthUserFactory.getOauth2UserDetail(
-                                                            userRequest.getClientRegistration().getRegistrationId().toUpperCase(),
-                                                            oAuth2User.getAttributes());
-                                                })
-                                )
+                                oAuth2LoginConfigurer
+                                        .loginPage("/login")
+                                        .userInfoEndpoint(userInfoEndpointConfigurer ->
+                                                userInfoEndpointConfigurer
+                                                        .userService(userRequest -> {
+                                                            OAuth2User oAuth2User = oauth2Delegate.loadUser(userRequest);
+                                                            return OAuthUserFactory.getOauth2UserDetail(
+                                                                    userRequest.getClientRegistration().getRegistrationId().toUpperCase(),
+                                                                    oAuth2User.getAttributes());
+                                                        })
+                                                        .oidcUserService(userRequest -> {
+                                                            OAuth2User oAuth2User = oauth2Delegate.loadUser(userRequest);
+                                                            return OAuthUserFactory.getOauth2UserDetail(
+                                                                    userRequest.getClientRegistration().getRegistrationId().toUpperCase(),
+                                                                    oAuth2User.getAttributes());
+                                                        })
+                                        )
 //                                .successHandler(successHandler)
-                                .defaultSuccessUrl("/api/v1/oauth2/success")
+                                        .defaultSuccessUrl("/api/v1/oauth2/success")
                 )
                 .authenticationProvider(authenticationProvider)
                 .addFilterAfter(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
@@ -93,4 +94,5 @@ public class SecurityConfiguration {
         );
         return httpSecurity.build();
     }
+
 }

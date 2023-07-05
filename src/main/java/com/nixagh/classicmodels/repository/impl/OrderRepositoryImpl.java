@@ -6,7 +6,6 @@ import com.nixagh.classicmodels.repository.OrderRepository;
 import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import jakarta.persistence.EntityManager;
-import org.aspectj.weaver.ast.Or;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

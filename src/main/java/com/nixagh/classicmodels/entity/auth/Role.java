@@ -9,8 +9,6 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Entity
 @Table(name = "roles")
@@ -45,10 +43,10 @@ public class Role {
 
     @JsonIgnore
     public List<SimpleGrantedAuthority> getAuthorities() {
-         List<SimpleGrantedAuthority> list = new java.util.ArrayList<>(permissions.stream()
-                 .map(permission -> new SimpleGrantedAuthority(permission.getPermissionName()))
-                 .toList());
-         list.add(new SimpleGrantedAuthority("ROLE_" + roleName));
-         return list;
+        List<SimpleGrantedAuthority> list = new java.util.ArrayList<>(permissions.stream()
+                .map(permission -> new SimpleGrantedAuthority(permission.getPermissionName()))
+                .toList());
+        list.add(new SimpleGrantedAuthority("ROLE_" + roleName));
+        return list;
     }
 }

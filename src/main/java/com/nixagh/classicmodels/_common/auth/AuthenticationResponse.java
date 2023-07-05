@@ -4,12 +4,14 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.io.Serializable;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @Builder
-public class AuthenticationResponse {
+public class AuthenticationResponse implements Serializable {
     @JsonProperty("user")
     private UserDetails userDetails;
     @JsonProperty("access_token")
