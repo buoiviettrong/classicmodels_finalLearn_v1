@@ -60,4 +60,10 @@ public class CustomExceptionHandler {
     public ErrorResponse handlerInvalidUserNameOrPasswordException(InvalidUserNameOrPassword e) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
     }
+
+    @ExceptionHandler(NotEnoughProduct.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlerNotEnoughProduct(NotEnoughProduct e) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
 }

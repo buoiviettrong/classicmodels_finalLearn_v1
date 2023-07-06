@@ -11,6 +11,7 @@ import com.nixagh.classicmodels.entity.OrderDetail;
 import com.nixagh.classicmodels.entity.Product;
 import com.nixagh.classicmodels.entity.embedded.OrderDetailsEmbed;
 import com.nixagh.classicmodels.entity.enums.ShippingStatus;
+import com.nixagh.classicmodels.exception.NotEnoughProduct;
 import com.nixagh.classicmodels.exception.NotFoundEntity;
 import com.nixagh.classicmodels.exception.NotSupportStatus;
 import com.nixagh.classicmodels.exception.PageInfoException;
@@ -86,6 +87,11 @@ public class OrderService {
         List<ProductOrder> productOrders = order.getProducts();
         for (int i = 0; i < productOrders.size(); i++) {
             Product product_ = productRepository.findProductByProductCode(productOrders.get(i).getProductCode());
+            if (product_ == null)
+                throw new NotFoundEntity("Product not found");
+
+            if (product_.getQuantityInStock() < productOrders.get(i).getQuantity())
+                throw new NotEnoughProduct("Product %s not enough quantity".formatted(product_.getProductName()));
 
             OrderDetail orderDetail = OrderDetail.builder()
                     .id(new OrderDetailsEmbed(result.getOrderNumber(), product_.getProductCode()))
