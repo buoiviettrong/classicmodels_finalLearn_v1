@@ -79,7 +79,10 @@ public class OrderService {
                 .status(ShippingStatus.INPROC.getShippingStatus())
                 .build();
 
+        // tạo order mới
         var result = orderRepository.save(saveOrder);
+
+        // tạo order detail
         List<ProductOrder> productOrders = order.getProducts();
         for (int i = 0; i < productOrders.size(); i++) {
             Product product_ = productRepository.findProductByProductCode(productOrders.get(i).getProductCode());
@@ -93,6 +96,13 @@ public class OrderService {
                     .orderLineNumber(i + 1)
                     .build();
             orderDetailRepository.save(orderDetail);
+        }
+
+        // cập nhập số lượng sản phẩm trong kho product
+        for (ProductOrder productOrder : productOrders) {
+            Product product_ = productRepository.findProductByProductCode(productOrder.getProductCode());
+            product_.setQuantityInStock((int) (product_.getQuantityInStock() - productOrder.getQuantity()));
+            productRepository.save(product_);
         }
 
         return result;
@@ -148,6 +158,16 @@ public class OrderService {
         if (request.getComment() != null) order.setComments(request.getComment());
 
         orderRepository.save(order);
+
+        // nếu status là canceler thì cập nhập số lượng sản phẩm trong kho product
+        if (order.getStatus().equals(ShippingStatus.CANCELLED.getShippingStatus())) {
+            List<OrderDetail> orderDetailList = orderDetailRepository.getOrderDetail(orderNumber);
+            for (OrderDetail orderDetail : orderDetailList) {
+                Product product_ = orderDetail.getProduct();
+                product_.setQuantityInStock((int) (product_.getQuantityInStock() + orderDetail.getQuantityOrdered()));
+                productRepository.save(product_);
+            }
+        }
 
         return order;
     }
