@@ -21,6 +21,17 @@ public interface OrderNoDSLRepository extends JpaRepository<Order, Long> {
             """, nativeQuery = true)
     List<Tuple> getOrderByTimeRange(@Param("from") Date from,
                                     @Param("to") Date to);
+
+    @Query(value = """
+            SELECT month(o.orderDate) as month,
+                round(sum(od.priceEach * od.quantityOrdered), 2) as profit
+            FROM orders o
+            LEFT JOIN order_details od on o.orderNumber = od.orderNumber
+            WHERE year(o.orderDate) = :year
+            AND o.status = 'Shipped'
+            GROUP BY month(o.orderDate)
+            """, nativeQuery = true)
+    List<Tuple> getProfitEachMonthInYear(int year);
 }
 
 

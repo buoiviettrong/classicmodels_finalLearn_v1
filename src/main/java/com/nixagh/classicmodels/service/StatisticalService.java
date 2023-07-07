@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -43,5 +44,13 @@ public class StatisticalService {
 
     public List<Top10ProductResponse> getTop10Products(Date from, Date to) {
         return productService.getTop10Products(from, to);
+    }
+
+    public Map<Integer, Double> getProfitEachMonthInYear(int year) {
+        return orderService.getProfitEachMonthInYear(year);
+    }
+
+    public Map<Integer, ProductsEachMonthInYear> getProductsEachMonthInYear(int year) {
+        return productService.getProductsEachMonthInYear(year);
     }
 }

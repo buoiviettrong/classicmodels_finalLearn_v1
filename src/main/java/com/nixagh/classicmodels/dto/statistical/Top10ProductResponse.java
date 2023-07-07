@@ -9,6 +9,7 @@ import lombok.*;
 @NoArgsConstructor
 public class Top10ProductResponse {
     private String productCode;
+    private String productName;
     private Long totalSoldQuantity;
     private Double totalProfit;
 }

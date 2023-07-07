@@ -2,7 +2,6 @@ package com.nixagh.classicmodels.controller;
 
 import com.nixagh.classicmodels.entity.Customer;
 import com.nixagh.classicmodels.service.CustomerService;
-import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,7 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/customers")
 @RequiredArgsConstructor
-@Hidden
 public class CustomerController {
 
     private final CustomerService customerService;

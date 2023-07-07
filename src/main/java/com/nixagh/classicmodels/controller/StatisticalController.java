@@ -1,5 +1,6 @@
 package com.nixagh.classicmodels.controller;
 
+import com.nixagh.classicmodels.dto.statistical.ProductsEachMonthInYear;
 import com.nixagh.classicmodels.dto.statistical.StatisticalRequest;
 import com.nixagh.classicmodels.dto.statistical.StatisticalResponse;
 import com.nixagh.classicmodels.dto.statistical.Top10ProductResponse;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/statistical")
@@ -29,5 +31,15 @@ public class StatisticalController {
     public List<Top10ProductResponse> getTop10Products(@RequestParam("from") @DateTimeFormat(pattern = "yyyy-MM-dd") Date from,
                                                        @RequestParam("to") @DateTimeFormat(pattern = "yyyy-MM-dd") Date to) {
         return statisticalService.getTop10Products(from, to);
+    }
+
+    @GetMapping
+    public Map<Integer, Double> getProfitEachMonthInYear(@RequestParam("year") int year) {
+        return statisticalService.getProfitEachMonthInYear(year);
+    }
+
+    @GetMapping("/products")
+    public Map<Integer, ProductsEachMonthInYear> getProductsEachMonthInYear(@RequestParam("year") int year) {
+        return statisticalService.getProductsEachMonthInYear(year);
     }
 }

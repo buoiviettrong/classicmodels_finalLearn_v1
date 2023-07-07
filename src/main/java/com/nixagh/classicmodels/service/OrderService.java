@@ -2,7 +2,6 @@ package com.nixagh.classicmodels.service;
 
 import com.nixagh.classicmodels.dto.PageRequestInfo;
 import com.nixagh.classicmodels.dto.PageResponseInfo;
-import com.nixagh.classicmodels.dto.ProductRepository;
 import com.nixagh.classicmodels.dto.orders.*;
 import com.nixagh.classicmodels.dto.product.ProductDTO;
 import com.nixagh.classicmodels.dto.statistical.OrderWithProfit;
@@ -16,10 +15,7 @@ import com.nixagh.classicmodels.exception.NotEnoughProduct;
 import com.nixagh.classicmodels.exception.NotFoundEntity;
 import com.nixagh.classicmodels.exception.NotSupportStatus;
 import com.nixagh.classicmodels.exception.PageInfoException;
-import com.nixagh.classicmodels.repository.CustomerRepository;
-import com.nixagh.classicmodels.repository.OrderDetailRepository;
-import com.nixagh.classicmodels.repository.OrderNoDSLRepository;
-import com.nixagh.classicmodels.repository.OrderRepository;
+import com.nixagh.classicmodels.repository.*;
 import com.nixagh.classicmodels.utils.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -27,7 +23,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -222,5 +220,14 @@ public class OrderService {
                         .profit(tuple.get("totalProfit", Double.class))
                         .build()
                 ).toList();
+    }
+
+    public Map<Integer, Double> getProfitEachMonthInYear(int year) {
+        Map<Integer, Double> map = new HashMap<>();
+        for (int i = 1; i <= 12; i++) map.put(i, 0.0);
+
+        orderNoDSLRepository.getProfitEachMonthInYear(year)
+                .forEach(tuple -> map.put(tuple.get("month", Integer.class), tuple.get("profit", Double.class)));
+        return map;
     }
 }
