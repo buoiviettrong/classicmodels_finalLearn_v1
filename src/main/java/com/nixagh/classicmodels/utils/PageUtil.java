@@ -9,6 +9,7 @@ public class PageUtil {
             Long totalElements,
             Long totalElementOfCurrenPage
     ) {
+        pageSize = pageSize == null || pageSize == 0 ? 10 : pageSize;
         Long totalPage = totalElements % pageSize == 0 ? totalElements / pageSize : totalElements / pageSize + 1;
         return PageResponseInfo.builder()
                 .currentPage(currentPage)

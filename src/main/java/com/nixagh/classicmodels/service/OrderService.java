@@ -5,6 +5,7 @@ import com.nixagh.classicmodels.dto.PageResponseInfo;
 import com.nixagh.classicmodels.dto.ProductRepository;
 import com.nixagh.classicmodels.dto.orders.*;
 import com.nixagh.classicmodels.dto.product.ProductDTO;
+import com.nixagh.classicmodels.dto.statistical.OrderWithProfit;
 import com.nixagh.classicmodels.entity.Customer;
 import com.nixagh.classicmodels.entity.Order;
 import com.nixagh.classicmodels.entity.OrderDetail;
@@ -17,9 +18,11 @@ import com.nixagh.classicmodels.exception.NotSupportStatus;
 import com.nixagh.classicmodels.exception.PageInfoException;
 import com.nixagh.classicmodels.repository.CustomerRepository;
 import com.nixagh.classicmodels.repository.OrderDetailRepository;
+import com.nixagh.classicmodels.repository.OrderNoDSLRepository;
 import com.nixagh.classicmodels.repository.OrderRepository;
 import com.nixagh.classicmodels.utils.PageUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +38,7 @@ public class OrderService {
     private final CustomerRepository customerRepository;
     private final OrderDetailRepository orderDetailRepository;
     private final ProductRepository productRepository;
+    private final OrderNoDSLRepository orderNoDSLRepository;
 
     public List<Order> getOrderByCustomerNumber(Long customerNumber) {
         return orderRepository.getOrderByCustomerNumber(customerNumber);
@@ -98,7 +102,7 @@ public class OrderService {
                     .order(saveOrder)
                     .product(product_)
                     .quantityOrdered(productOrders.get(i).getQuantity())
-                    .priceEach(productOrders.get(i).getPrice())
+                    .priceEach(product_.getMsrp())
                     .orderLineNumber(i + 1)
                     .build();
             orderDetailRepository.save(orderDetail);
@@ -195,5 +199,28 @@ public class OrderService {
 
     public HighestOrderResponse getHighestOrder() {
         return orderRepository.getHighestOrder();
+    }
+
+    public List<OrderWithProfit> getOrderByTimeRange(@DateTimeFormat(pattern = "yyyy-MM-dd") java.sql.Date from,
+                                                     @DateTimeFormat(pattern = "yyyy-MM-dd") java.sql.Date to) {
+        // giảm 1 ngày để lấy đủ dữ liệu
+        long oneDay = 24 * 60 * 60 * 1000;
+        java.sql.Date from_ = new java.sql.Date(from.getTime() - oneDay);
+
+        return orderNoDSLRepository.getOrderByTimeRange(from, to)
+                .stream()
+                .map(tuple -> OrderWithProfit.builder()
+                        // get order detail
+                        .order(Order.builder()
+                                .orderNumber(Long.valueOf(tuple.get("orderNumber", Integer.class)))
+                                .orderDate(tuple.get("orderDate", Date.class))
+                                .requiredDate(tuple.get("requiredDate", Date.class))
+                                .shippedDate(tuple.get("shippedDate", Date.class))
+                                .status(tuple.get("status", String.class))
+                                .comments(tuple.get("comments", String.class))
+                                .build())
+                        .profit(tuple.get("totalProfit", Double.class))
+                        .build()
+                ).toList();
     }
 }

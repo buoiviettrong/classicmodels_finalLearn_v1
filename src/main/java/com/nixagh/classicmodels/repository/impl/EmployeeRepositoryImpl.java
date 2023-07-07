@@ -24,6 +24,7 @@ public class EmployeeRepositoryImpl extends BaseRepositoryImpl<Employee, Long> i
     public List<Employee> getEmployees() {
         return jpaQueryFactory
                 .selectFrom(employee)
+                .join(employee.officeCode, office).fetchJoin()
                 .stream().toList();
     }
 

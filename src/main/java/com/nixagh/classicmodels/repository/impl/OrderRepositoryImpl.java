@@ -4,13 +4,10 @@ import com.nixagh.classicmodels.dto.orders.HighestOrderResponse;
 import com.nixagh.classicmodels.dto.orders.OrderFilter;
 import com.nixagh.classicmodels.entity.Order;
 import com.nixagh.classicmodels.repository.OrderRepository;
-import com.querydsl.core.QueryFactory;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
-import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.NumberExpression;
-import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQuery;
 import jakarta.persistence.EntityManager;
 import org.springframework.transaction.annotation.Transactional;
@@ -100,6 +97,26 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> impleme
                 .fetchFirst();
     }
 
+    @Override
+    public List<Tuple> getOrderByTimeRange(java.sql.Date from, java.sql.Date to) {
+        return jpaQueryFactory
+                .select(
+                        order.orderNumber,
+                        order.orderDate,
+                        order.requiredDate,
+                        order.shippedDate,
+                        order.status,
+                        order.comments,
+                        // sum of priceEach * quantityOrdered and round to 2 decimal places
+                        orderDetail.priceEach.multiply(orderDetail.quantityOrdered).sum().round()
+                )
+                .from(order)
+                .leftJoin(order.orderDetail, orderDetail)
+                .where(order.orderDate.between(from, to).and(order.status.eq("Shipped")))
+                .groupBy(order.orderNumber)
+                .fetch();
+    }
+
     private <T> JPAQuery<T> getPredicates(JPAQuery<T> queryFactory, OrderFilter orderFilter) {
         if (orderFilter == null)
             return queryFactory;
@@ -173,5 +190,4 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> impleme
                 .limit(size)
                 .stream().toList();
     }
-
 }

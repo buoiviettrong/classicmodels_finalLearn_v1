@@ -12,8 +12,10 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
     @Override
     public Product findProductByProductCode(String productCode) {
         return jpaQueryFactory
-                .selectFrom(product)
+                .select(product)
+                .from(product)
                 .where(product.productCode.eq(productCode))
-                .fetchOne();
+                .fetchFirst();
+
     }
 }

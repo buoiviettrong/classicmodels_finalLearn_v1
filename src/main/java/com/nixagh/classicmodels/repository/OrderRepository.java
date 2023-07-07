@@ -3,7 +3,9 @@ package com.nixagh.classicmodels.repository;
 import com.nixagh.classicmodels.dto.orders.HighestOrderResponse;
 import com.nixagh.classicmodels.dto.orders.OrderFilter;
 import com.nixagh.classicmodels.entity.Order;
+import com.querydsl.core.Tuple;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,4 +25,6 @@ public interface OrderRepository extends BaseRepository<Order, Long> {
     void deleteByOrderNumber(Long orderNumber);
 
     HighestOrderResponse getHighestOrder();
+
+    List<Tuple> getOrderByTimeRange(Date from, Date to);
 }
