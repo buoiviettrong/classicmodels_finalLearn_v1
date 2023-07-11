@@ -294,14 +294,17 @@ public class OrderService {
                     var order = orderEachMonths.get(month - 1);
                     // thêm dữ liệu vào tháng tương ứng theo status
                     switch (status) {
+                        // trạng thái order đã được xác nhận
                         case "Shipped" -> {
                             order.setSuccessOrder(order.getSuccessOrder() + 1);
                             order.setSuccessProfit(RoundUtil.convert(order.getSuccessProfit() + profit, 2));
                         }
+                        // trạng thái order đã bị hủy
                         case "Cancelled" -> {
                             order.setCancellerOrder(order.getCancellerOrder() + 1);
                             order.setCancellerProfit(RoundUtil.convert(order.getCancellerProfit() + profit, 2));
                         }
+                        // trạng thái order khác
                         default -> {
                             order.setOtherOrder(order.getOtherOrder() + 1);
                             order.setOtherProfit(RoundUtil.convert(order.getOtherProfit() + profit, 2));
