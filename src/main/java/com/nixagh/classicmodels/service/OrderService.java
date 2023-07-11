@@ -4,7 +4,12 @@ import com.nixagh.classicmodels.dto.PageRequestInfo;
 import com.nixagh.classicmodels.dto.PageResponseInfo;
 import com.nixagh.classicmodels.dto.orders.*;
 import com.nixagh.classicmodels.dto.product.ProductDTO;
-import com.nixagh.classicmodels.dto.statistical.*;
+import com.nixagh.classicmodels.dto.statistical.request.OrderStatisticDTO;
+import com.nixagh.classicmodels.dto.statistical.request.OrderWithProfit;
+import com.nixagh.classicmodels.dto.statistical.request.StatisticalRequest;
+import com.nixagh.classicmodels.dto.statistical.response.OrderEachMonth;
+import com.nixagh.classicmodels.dto.statistical.response.OrderStatisticResponse;
+import com.nixagh.classicmodels.dto.statistical.response.OrderStatusStatisticResponse;
 import com.nixagh.classicmodels.entity.Customer;
 import com.nixagh.classicmodels.entity.Order;
 import com.nixagh.classicmodels.entity.OrderDetail;
@@ -17,15 +22,13 @@ import com.nixagh.classicmodels.exception.NotSupportStatus;
 import com.nixagh.classicmodels.exception.PageInfoException;
 import com.nixagh.classicmodels.repository.*;
 import com.nixagh.classicmodels.utils.PageUtil;
+import com.nixagh.classicmodels.utils.RoundUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -264,5 +267,53 @@ public class OrderService {
                         .amount(tuple.get("profit", Double.class))
                         .build())
                 .toList();
+    }
+
+    public List<OrderEachMonth> getOrderEachMonth(int year) {
+        // tạo ra 12 tháng
+        List<OrderEachMonth> orderEachMonths = new ArrayList<>();
+        for (int i = 1; i <= 12; i++) {
+            orderEachMonths.add(new OrderEachMonth(i,
+                    0L,
+                    0L,
+                    0L,
+                    0L,
+                    0D,
+                    0D,
+                    0D,
+                    0D));
+        }
+        orderNoDSLRepository.getOrderEachMonth(year)
+                .forEach(tuple -> {
+                    // lấy dữ liệu
+                    int month = tuple.get("month", Long.class).intValue();
+                    String status = tuple.get("status", String.class);
+                    Double profit = tuple.get("profit", Double.class);
+
+                    // lấy ra tháng tương ứng
+                    var order = orderEachMonths.get(month - 1);
+                    // thêm dữ liệu vào tháng tương ứng theo status
+                    switch (status) {
+                        case "Shipped" -> {
+                            order.setSuccessOrder(order.getSuccessOrder() + 1);
+                            order.setSuccessProfit(RoundUtil.convert(order.getSuccessProfit() + profit, 2));
+                        }
+                        case "Cancelled" -> {
+                            order.setCancellerOrder(order.getCancellerOrder() + 1);
+                            order.setCancellerProfit(RoundUtil.convert(order.getCancellerProfit() + profit, 2));
+                        }
+                        default -> {
+                            order.setOtherOrder(order.getOtherOrder() + 1);
+                            order.setOtherProfit(RoundUtil.convert(order.getOtherProfit() + profit, 2));
+                        }
+                    }
+                    // count total order items and profit of month
+                    order.setTotalOrder(order.getTotalOrder() + 1);
+                    order.setTotalProfit(RoundUtil.convert(order.getTotalProfit() + profit, 2));
+
+                    // add to list
+                    orderEachMonths.set(month - 1, order);
+                });
+        return orderEachMonths;
     }
 }

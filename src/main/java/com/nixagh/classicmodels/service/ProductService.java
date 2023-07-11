@@ -1,6 +1,13 @@
 package com.nixagh.classicmodels.service;
 
-import com.nixagh.classicmodels.dto.statistical.*;
+import com.nixagh.classicmodels.dto.PageResponseInfo;
+import com.nixagh.classicmodels.dto.statistical.request.ProductStatisticDTO;
+import com.nixagh.classicmodels.dto.statistical.request.ProductsEachMonthInYear;
+import com.nixagh.classicmodels.dto.statistical.request.StatisticDTO;
+import com.nixagh.classicmodels.dto.statistical.request.StatisticalRequest;
+import com.nixagh.classicmodels.dto.statistical.response.ProductEachMonth;
+import com.nixagh.classicmodels.dto.statistical.response.ProductStatisticResponse;
+import com.nixagh.classicmodels.dto.statistical.response.Top10ProductResponse;
 import com.nixagh.classicmodels.entity.Product;
 import com.nixagh.classicmodels.repository.ProductNoDSLRepository;
 import com.nixagh.classicmodels.repository.ProductRepository;
@@ -111,5 +118,29 @@ public class ProductService {
         productStatisticResponse.setPageResponseInfo(PageUtil.getResponse(pageNumber, pageSize, totalItems, (long) products.size()));
 
         return productStatisticResponse;
+    }
+
+    public ProductEachMonth getProductEachMonth(int year, int month, long pageNumber, long pageSize) {
+        ProductEachMonth productEachMonth = new ProductEachMonth();
+        long offset = pageSize * (pageNumber - 1);
+        List<ProductStatisticDTO> products = productNoDSLRepository.getProductEachMonth(year, month, offset, pageSize)
+                .stream()
+                .map(tuple -> ProductStatisticDTO.builder()
+                        .productCode(tuple.get("productCode", String.class))
+                        .productName(tuple.get("productName", String.class))
+                        .totalSoldQuantity(tuple.get("totalSoldQuantity", BigDecimal.class).longValue())
+                        .totalAmount(tuple.get("totalAmount", Double.class))
+                        .build())
+                .toList();
+        PageResponseInfo pageResponseInfo = PageUtil.getResponse(
+                pageNumber,
+                pageSize,
+                (long) productNoDSLRepository.countProductEachMonth(year, month).size(),
+                (long) products.size()
+        );
+
+        productEachMonth.setProducts(products);
+        productEachMonth.setPageResponseInfo(pageResponseInfo);
+        return productEachMonth;
     }
 }

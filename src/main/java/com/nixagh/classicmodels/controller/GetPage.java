@@ -35,6 +35,11 @@ public class GetPage {
         return "statistic";
     }
 
+    @GetMapping("/statistic-each-month")
+    public String getStatisticEachMonthPage() {
+        return "statistic-each-month";
+    }
+
     @GetMapping("/admin/dashboard")
     public String getEmployeePage() {
         return "admin";

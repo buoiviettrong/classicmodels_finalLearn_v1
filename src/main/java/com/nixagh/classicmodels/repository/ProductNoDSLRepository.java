@@ -56,4 +56,35 @@ public interface ProductNoDSLRepository extends JpaRepository<Product, String> {
             """
             , nativeQuery = true)
     long countProductStatistical(Date from, Date to);
+
+    @Query(value = """
+            SELECT p.productCode AS productCode,
+                    p.productName AS productName,
+                    SUM(od.quantityOrdered) AS totalSoldQuantity,
+                    ROUND(SUM(od.quantityOrdered * od.priceEach), 2) AS totalAmount
+            FROM order_details od
+            RIGHT JOIN products p ON od.productCode = p.productCode
+            JOIN orders o on o.orderNumber = od.orderNumber
+            WHERE year(o.orderDate) = :year AND month(o.orderDate) = :month
+                AND o.status = 'Shipped'
+            GROUP BY p.productCode, p.productName
+            ORDER BY totalAmount DESC
+            LIMIT :offset, :pageSize
+            """, nativeQuery = true)
+    List<Tuple> getProductEachMonth(int year, int month, long offset, long pageSize);
+
+    @Query(value = """
+            SELECT p.productCode AS productCode,
+                    p.productName AS productName,
+                    SUM(od.quantityOrdered) AS totalSoldQuantity,
+                    ROUND(SUM(od.quantityOrdered * od.priceEach), 2) AS totalAmount
+            FROM order_details od
+            RIGHT JOIN products p ON od.productCode = p.productCode
+            JOIN orders o on o.orderNumber = od.orderNumber
+            WHERE year(o.orderDate) = :year AND month(o.orderDate) = :month
+                AND o.status = 'Shipped'
+            GROUP BY p.productCode, p.productName
+            ORDER BY totalAmount DESC
+            """, nativeQuery = true)
+    List<Tuple> countProductEachMonth(int year, int month);
 }

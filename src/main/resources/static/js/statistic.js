@@ -297,7 +297,7 @@ const getStatistical = () => {
 
 (() => {
 // init value for date input
-    from_.valueAsDate = new Date();
+    from_.valueAsDate = new Date(new Date().setDate(1));
     to_.valueAsDate = new Date();
     getStatistical();
 })();

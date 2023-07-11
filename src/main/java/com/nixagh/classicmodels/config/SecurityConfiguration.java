@@ -55,6 +55,7 @@ public class SecurityConfiguration {
             "/payment",
             "/productLine",
             "/statistic",
+            "/statistic-each-month/**",
             "/admin/dashboard",
             "/manager/dashboard",
     };

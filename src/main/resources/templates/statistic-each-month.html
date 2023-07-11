@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Statistic Each Month</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+    <!-- base JS File -->
+    <script src="/js/const.js"></script>
+    <script src="/js/mainAPI.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">Navbar</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/customer">Customer</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/product">Product</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/product-line">Product Line</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
+                   aria-haspopup="true" aria-expanded="false">
+                    Statistic
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    <a class="dropdown-item" href="/statistic">Thống Kê Khoảng Thời Gian</a>
+                    <a class="dropdown-item" href="/statistic-each-month">Thống Kê Theo Tháng Của Năm</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="#">Something else here</a>
+                </div>
+            </li>
+        </ul>
+        <form class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+        </form>
+    </div>
+</nav>
+<br>
+<br>
+<!-- Content -->
+<!-- Path: src\main\resources\templates\statistic-each-month.html -->
+<!-- Order -->
+<div>
+    <div class="">
+        <div class="card-header">
+            <h3>Thống Kê Theo Tháng Của Năm</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <!-- Year -->
+                <div class="col-2">
+                    <label for="year">Năm</label>
+                    <select class="form-control" id="year">
+                    </select>
+                </div>
+                <!-- Month -->
+                <div class="col-2">
+                    <label for="month">Tháng</label>
+                    <select class="form-control" id="month">
+                    </select>
+                </div>
+                <!-- Type -->
+                <div class="col-2">
+                    <label for="type">Loại</label>
+                    <select class="form-control" id="type">
+                        <option value="order">Hóa Đơn</option>
+                        <option value="customer">Khách Hàng</option>
+                        <option value="product">Sản Phẩm</option>
+                    </select>
+                </div>
+            </div>
+            <br>
+            <!-- pagination -->
+            <div class="row justify-content-between" id="pagination">
+                <div class="col-3">
+                    <!-- Previous -->
+                    <button class="btn btn-primary" id="previous" onclick="previousPage()">Trang Trước</button>
+                    <!-- Next -->
+                    <button class="btn btn-primary" id="next" onclick="nextPage()">Trang Sau</button>
+                </div>
+                <!-- page info -->
+                <div class="d-flex col-6">
+                    <!-- current page -->
+                    <div class="col">
+                        <label for="current-page">Trang Hiện Tại</label>
+                        <input type="text" class="form-control" id="current-page" disabled>
+                    </div>
+                    <!-- total page -->
+                    <div class="col">
+                        <label for="total-page">Tổng Số Trang</label>
+                        <input type="text" class="form-control" id="total-page" disabled>
+                    </div>
+                    <!-- total record -->
+                    <div class="col">
+                        <label for="total-record">Tổng Số Bản Ghi</label>
+                        <input type="text" class="form-control" id="total-record" disabled>
+                    </div>
+                    <!-- page size -->
+                    <div class="col">
+                        <label for="page-size">Số Bản Ghi Trên Mỗi Trang</label>
+                        <select id="page-size" class="form-control">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="15">15</option>
+                            <option value="20">20</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <!-- Table -->
+            <div class="row">
+                <div class="col-12">
+                    <table class="table table-bordered table-hover table-striped">
+                        <thead id="table-head">
+
+                        </thead>
+                        <tbody id="table-body">
+                        <!-- Data -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <!-- Chart -->
+    <div class="card" hidden="hidden">
+        <div class="card-header">
+            <h3>Biểu Đồ Thống Kê</h3>
+        </div>
+        <div class="card-body">
+            <canvas id="myChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+</div>
+<!-- End Content -->
+<!-- Script -->
+<script>
+    $(document).ready(function () {
+        // load year
+        let year = $('#year');
+        let currentYear = new Date().getFullYear();
+        let option = `<option value="${currentYear}" selected>${currentYear}</option>`;
+        year.append(option);
+        for (let i = currentYear - 1; i >= currentYear - 30; i--) {
+            option = `<option value="${i}">${i}</option>`;
+            year.append(option);
+        }
+
+        // load month
+        let month = $('#month');
+        let currentMonth = new Date().getMonth() + 1;
+        for (let i = 1; i <= 12; i++) {
+            if (i !== currentMonth) {
+                option = `<option value="${i}">${i}</option>`;
+                month.append(option);
+            } else {
+                option = `<option value="${i}" selected>${i}</option>`;
+                month.append(option);
+            }
+        }
+    });
+</script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- statistic-each-month.js -->
+<script src="/js/statistic-each-month.js"></script>
+<!-- End Script -->
+</body>
+</html>

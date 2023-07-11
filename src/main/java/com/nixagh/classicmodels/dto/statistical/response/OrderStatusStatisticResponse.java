@@ -1,4 +1,4 @@
-package com.nixagh.classicmodels.dto.statistical;
+package com.nixagh.classicmodels.dto.statistical.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

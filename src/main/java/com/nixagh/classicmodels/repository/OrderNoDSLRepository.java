@@ -46,6 +46,18 @@ public interface OrderNoDSLRepository extends JpaRepository<Order, Long> {
             GROUP BY o.status
             """, nativeQuery = true)
     List<Tuple> getOrderStatusStatistical(Date from, Date to);
+
+    @Query(value = """
+            SELECT month(o.orderDate) as month, o.status, t.profit as profit
+            FROM classicmodels.orders o
+            LEFT JOIN (
+                       SELECT round(sum(od.quantityOrdered * od.priceEach), 2) as profit, od.orderNumber as orderNumber
+                       FROM order_details od
+                       GROUP BY od.orderNumber
+            ) t ON o.orderNumber = t.orderNumber
+            WHERE year(o.orderDate) = :year
+            """, nativeQuery = true)
+    List<Tuple> getOrderEachMonth(int year);
 }
 
 

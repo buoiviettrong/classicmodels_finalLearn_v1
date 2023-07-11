@@ -1,6 +1,9 @@
 package com.nixagh.classicmodels.controller;
 
-import com.nixagh.classicmodels.dto.statistical.*;
+import com.nixagh.classicmodels.dto.statistical.request.ProductsEachMonthInYear;
+import com.nixagh.classicmodels.dto.statistical.request.StatisticDTO;
+import com.nixagh.classicmodels.dto.statistical.request.StatisticalRequest;
+import com.nixagh.classicmodels.dto.statistical.response.*;
 import com.nixagh.classicmodels.service.StatisticalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -64,5 +67,31 @@ public class StatisticalController {
     @PostMapping("/orders/status")
     public List<OrderStatusStatisticResponse> getOrderStatusStatistical(@RequestBody StatisticalRequest statisticalRequest) {
         return statisticalService.getOrderStatusStatistical(statisticalRequest);
+    }
+
+    // each month
+    @GetMapping("/order-each-month")
+    public List<OrderEachMonth> getOrderEachMonth(@RequestParam("year") int year) {
+        return statisticalService.getOrderEachMonth(year);
+    }
+
+    @GetMapping("/product-each-month")
+    public ProductEachMonth getProductEachMonth(
+            @RequestParam("year") int year,
+            @RequestParam("month") int month,
+            @RequestParam("pageNumber") int pageNumber,
+            @RequestParam("pageSize") int pageSize
+    ) {
+        return statisticalService.getProductEachMonth(year, month, pageNumber, pageSize);
+    }
+
+    @GetMapping("/customer-each-month")
+    public CustomerEachMonth getCustomerEachMonth(
+            @RequestParam("year") int year,
+            @RequestParam("month") int month,
+            @RequestParam("pageNumber") int pageNumber,
+            @RequestParam("pageSize") int pageSize
+    ) {
+        return statisticalService.getCustomerEachMonth(year, month, pageNumber, pageSize);
     }
 }

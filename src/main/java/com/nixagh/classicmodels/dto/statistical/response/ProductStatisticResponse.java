@@ -1,6 +1,7 @@
-package com.nixagh.classicmodels.dto.statistical;
+package com.nixagh.classicmodels.dto.statistical.response;
 
 import com.nixagh.classicmodels.dto.AbstractResponse;
+import com.nixagh.classicmodels.dto.statistical.request.ProductStatisticDTO;
 import lombok.*;
 
 import java.util.ArrayList;

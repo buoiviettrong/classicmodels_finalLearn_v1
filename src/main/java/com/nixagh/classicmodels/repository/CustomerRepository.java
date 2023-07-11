@@ -19,4 +19,5 @@ public interface CustomerRepository extends BaseRepository<Customer, Long> {
     List<Tuple> getCustomerStatistical(Date from, Date to, long pageNumber, long pageSize);
 
     Long countCustomerStatistical(Date from, Date to);
+
 }

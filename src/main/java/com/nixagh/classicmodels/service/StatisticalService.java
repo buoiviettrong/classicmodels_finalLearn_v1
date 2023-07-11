@@ -1,7 +1,8 @@
 package com.nixagh.classicmodels.service;
 
 import com.nixagh.classicmodels.dto.DateRange;
-import com.nixagh.classicmodels.dto.statistical.*;
+import com.nixagh.classicmodels.dto.statistical.request.*;
+import com.nixagh.classicmodels.dto.statistical.response.*;
 import com.nixagh.classicmodels.utils.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -73,5 +74,17 @@ public class StatisticalService {
 
     public List<OrderStatusStatisticResponse> getOrderStatusStatistical(StatisticalRequest statisticalRequest) {
         return orderService.getOrderStatusStatistical(statisticalRequest);
+    }
+
+    public List<OrderEachMonth> getOrderEachMonth(int year) {
+        return orderService.getOrderEachMonth(year);
+    }
+
+    public ProductEachMonth getProductEachMonth(int year, int month, int pageNumber, int pageSize) {
+        return productService.getProductEachMonth(year, month, pageNumber, pageSize);
+    }
+
+    public CustomerEachMonth getCustomerEachMonth(int year, int month, int pageNumber, int pageSize) {
+        return customerService.getCustomerEachMonth(year, month, pageNumber, pageSize);
     }
 }

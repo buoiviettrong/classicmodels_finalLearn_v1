@@ -1,15 +1,15 @@
-package com.nixagh.classicmodels.dto.statistical;
+package com.nixagh.classicmodels.dto.statistical.request;
 
 import lombok.*;
 
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Top10ProductResponse {
+@Builder
+public class ProductStatisticDTO {
     private String productCode;
     private String productName;
     private Long totalSoldQuantity;
-    private Double totalProfit;
+    private Double totalAmount;
 }

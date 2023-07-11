@@ -1,5 +1,6 @@
-package com.nixagh.classicmodels.dto.statistical;
+package com.nixagh.classicmodels.dto.statistical.request;
 
+import com.nixagh.classicmodels.dto.statistical.response.Top10ProductResponse;
 import lombok.Getter;
 import lombok.Setter;
 

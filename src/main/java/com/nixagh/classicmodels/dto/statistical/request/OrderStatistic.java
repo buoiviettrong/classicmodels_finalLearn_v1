@@ -1,4 +1,4 @@
-package com.nixagh.classicmodels.dto.statistical;
+package com.nixagh.classicmodels.dto.statistical.request;
 
 import com.nixagh.classicmodels.dto.AbstractResponse;
 import lombok.*;

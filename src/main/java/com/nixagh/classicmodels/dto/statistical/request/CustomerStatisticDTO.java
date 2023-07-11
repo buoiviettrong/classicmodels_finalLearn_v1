@@ -1,4 +1,4 @@
-package com.nixagh.classicmodels.dto.statistical;
+package com.nixagh.classicmodels.dto.statistical.request;
 
 import lombok.*;
 
@@ -10,6 +10,6 @@ import lombok.*;
 public class CustomerStatisticDTO {
     private Long customerNumber;
     private String customerName;
-    private Integer totalOrder;
+    private Long totalOrder;
     private Double totalAmount;
 }
