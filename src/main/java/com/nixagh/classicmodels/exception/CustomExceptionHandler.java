@@ -66,4 +66,10 @@ public class CustomExceptionHandler {
     public ErrorResponse handlerNotEnoughProduct(NotEnoughProduct e) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
     }
+
+    @ExceptionHandler(SQLError.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handlerSQLError(SQLError e) {
+        return new ErrorResponse(HttpStatus.CONFLICT, e.getMessage());
+    }
 }

@@ -4,11 +4,14 @@ import com.nixagh.classicmodels._common.auth.AuthenticateRequest;
 import com.nixagh.classicmodels._common.auth.AuthenticationResponse;
 import com.nixagh.classicmodels._common.auth.AuthenticationService;
 import com.nixagh.classicmodels._common.auth.RegisterRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.IOException;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -25,9 +28,13 @@ public class AuthenticationController {
 
     @PostMapping("/authenticate")
     public AuthenticationResponse authenticate(
-            @RequestBody AuthenticateRequest request
-    ) {
-        return authenticationService.authenticate(request);
+            @RequestBody AuthenticateRequest request,
+            HttpServletResponse response
+    ) throws IOException {
+        AuthenticationResponse authenticationResponse = authenticationService.authenticate(request);
+        String role = authenticationResponse.getUserDetails().getRole().getRoleName().toLowerCase();
+        authenticationResponse.setRedirect("/" + role + "/dashboard");
+        return authenticationResponse;
     }
 
     @PostMapping("/refresh")

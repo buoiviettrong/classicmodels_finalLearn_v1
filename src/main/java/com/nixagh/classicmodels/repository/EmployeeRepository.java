@@ -1,5 +1,6 @@
 package com.nixagh.classicmodels.repository;
 
+import com.nixagh.classicmodels.entity.Customer;
 import com.nixagh.classicmodels.entity.Employee;
 
 import java.util.List;
@@ -11,4 +12,6 @@ public interface EmployeeRepository extends BaseRepository<Employee, Long> {
     List<Employee> getEmployees();
 
     long updateEmployee(Long employeeNumber, Employee employee);
+
+    Optional<Customer> findOne(Long customerNumber);
 }

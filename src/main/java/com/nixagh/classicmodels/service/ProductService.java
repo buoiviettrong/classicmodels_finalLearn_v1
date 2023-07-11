@@ -1,9 +1,10 @@
 package com.nixagh.classicmodels.service;
 
-import com.nixagh.classicmodels.dto.statistical.ProductsEachMonthInYear;
-import com.nixagh.classicmodels.dto.statistical.Top10ProductResponse;
+import com.nixagh.classicmodels.dto.statistical.*;
+import com.nixagh.classicmodels.entity.Product;
 import com.nixagh.classicmodels.repository.ProductNoDSLRepository;
 import com.nixagh.classicmodels.repository.ProductRepository;
+import com.nixagh.classicmodels.utils.PageUtil;
 import com.querydsl.core.Tuple;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -61,5 +62,54 @@ public class ProductService {
         });
         // trả về map
         return products;
+    }
+
+    public StatisticDTO getAllStatistical() {
+        StatisticDTO statisticDTO = new StatisticDTO();
+        // lấy danh sách các tuple (tháng, customerNumber, customerName,  productCode, productName, totalSoldQuantity, totalProfit)
+        List<Tuple> tuples = productRepository.findAllStatistic();
+
+        // duyệt danh sách các tuple và thêm vào StatisticDTO
+
+        return statisticDTO;
+    }
+
+    public List<Product> getProducts() {
+        return productRepository.findAll();
+    }
+
+    public ProductStatisticResponse getProductStatistical(StatisticalRequest statisticalRequest) {
+        ProductStatisticResponse productStatisticResponse = new ProductStatisticResponse();
+
+        Date from = statisticalRequest.getFrom();
+        Date to = statisticalRequest.getTo();
+
+        if (from == null) {
+            from = new Date(0);
+        }
+        if (to == null) {
+            to = new Date();
+        }
+
+        long pageNumber = statisticalRequest.getPageInfo().getPageNumber();
+        long pageSize = statisticalRequest.getPageInfo().getPageSize();
+
+        long offset = pageSize * (pageNumber - 1);
+
+        List<ProductStatisticDTO> products = productNoDSLRepository.getProductStatistical(from, to, offset, pageSize)
+                .stream()
+                .map(tuple -> ProductStatisticDTO.builder()
+                        .productCode(tuple.get("productCode", String.class))
+                        .productName(tuple.get("productName", String.class))
+                        .totalSoldQuantity(tuple.get("totalSoldQuantity", BigDecimal.class).longValue())
+                        .totalAmount(tuple.get("totalAmount", Double.class))
+                        .build())
+                .toList();
+        long totalItems = productNoDSLRepository.countProductStatistical(from, to);
+
+        productStatisticResponse.setProducts(products);
+        productStatisticResponse.setPageResponseInfo(PageUtil.getResponse(pageNumber, pageSize, totalItems, (long) products.size()));
+
+        return productStatisticResponse;
     }
 }

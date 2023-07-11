@@ -3,19 +3,23 @@ package com.nixagh.classicmodels.controller;
 import com.nixagh.classicmodels.entity.Customer;
 import com.nixagh.classicmodels.service.CustomerService;
 import jakarta.websocket.server.PathParam;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/customers")
-@RequiredArgsConstructor
+@PreAuthorize("hasRole('ADMIN')")
 public class CustomerController {
 
     private final CustomerService customerService;
+
+    @Autowired
+    public CustomerController(CustomerService customerService) {
+        this.customerService = customerService;
+    }
 
     @GetMapping
     public List<Customer> getCustomers() {
@@ -25,5 +29,10 @@ public class CustomerController {
     @GetMapping("/filters")
     public List<Customer> getCustomersBySalesRepEmployeeNumber(@PathParam("eNum") Long eNum) throws IllegalAccessException {
         return customerService.getCustomersBySalesRepEmployeeNumber(eNum);
+    }
+
+    @DeleteMapping("/{customerNumber}")
+    public Long deleteCustomer(@PathVariable("customerNumber") long customerNumber) {
+        return customerService.deleteCustomer(customerNumber);
     }
 }

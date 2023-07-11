@@ -44,7 +44,30 @@ public class SecurityConfiguration {
             "/webjars/**",
             "/login/**",
             "/favicon.ico/**",
-            "/static/**"
+            "/assets/**"
+    };
+    String[] pages = {
+            "/product",
+            "/order",
+            "/customer",
+            "/employee",
+            "/office",
+            "/payment",
+            "/productLine",
+            "/statistic",
+            "/admin/dashboard",
+            "/manager/dashboard",
+    };
+    String[] assets = {
+            "/assets/**",
+            "/assets/css/**",
+            "/assets/js/**",
+            "/assets/img/**",
+            "/assets/vendor/**",
+            "js/**",
+            "css/**",
+            "img/**",
+            "vendor/**"
     };
 
     @Bean
@@ -54,6 +77,10 @@ public class SecurityConfiguration {
                 .cors(AbstractHttpConfigurer::disable);
         httpSecurity.authorizeHttpRequests(authorizeHttpRequests -> authorizeHttpRequests
                         .requestMatchers(openURL)
+                        .permitAll()
+                        .requestMatchers(pages)
+                        .permitAll()
+                        .requestMatchers(assets)
                         .permitAll()
                         .requestMatchers("/api/v1/management/**").hasAnyRole("ADMIN", "MANAGER")
                         .anyRequest()

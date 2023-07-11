@@ -10,6 +10,11 @@ public class GetPage {
         return "product";
     }
 
+    @GetMapping("/product-line")
+    public String getProductLinePage() {
+        return "product-line";
+    }
+
     @GetMapping("/customer")
     public String getCustomerPage() {
         return "customer";
@@ -25,4 +30,18 @@ public class GetPage {
         return "login";
     }
 
+    @GetMapping("/statistic")
+    public String getStatisticPage() {
+        return "statistic";
+    }
+
+    @GetMapping("/admin/dashboard")
+    public String getEmployeePage() {
+        return "admin";
+    }
+
+    @GetMapping("/manager/dashboard")
+    public String getManagerPage() {
+        return "manager";
+    }
 }

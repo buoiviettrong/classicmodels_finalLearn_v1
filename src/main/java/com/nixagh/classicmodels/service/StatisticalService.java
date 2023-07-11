@@ -16,6 +16,7 @@ public class StatisticalService {
 
     private final OrderService orderService;
     private final ProductService productService;
+    private final CustomerService customerService;
 
     public StatisticalResponse getStatistical(StatisticalRequest statisticalRequest) {
         StatisticalResponse response = new StatisticalResponse();
@@ -52,5 +53,17 @@ public class StatisticalService {
 
     public Map<Integer, ProductsEachMonthInYear> getProductsEachMonthInYear(int year) {
         return productService.getProductsEachMonthInYear(year);
+    }
+
+    public StatisticDTO getAllStatistical() {
+        return productService.getAllStatistical();
+    }
+
+    public CustomerStatisticResponse getCustomerStatistical(StatisticalRequest statisticalRequest) {
+        return customerService.getCustomerStatistical(statisticalRequest);
+    }
+
+    public ProductStatisticResponse getProductStatistical(StatisticalRequest statisticalRequest) {
+        return productService.getProductStatistical(statisticalRequest);
     }
 }

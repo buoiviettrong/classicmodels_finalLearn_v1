@@ -1,9 +1,6 @@
 package com.nixagh.classicmodels.controller;
 
-import com.nixagh.classicmodels.dto.statistical.ProductsEachMonthInYear;
-import com.nixagh.classicmodels.dto.statistical.StatisticalRequest;
-import com.nixagh.classicmodels.dto.statistical.StatisticalResponse;
-import com.nixagh.classicmodels.dto.statistical.Top10ProductResponse;
+import com.nixagh.classicmodels.dto.statistical.*;
 import com.nixagh.classicmodels.service.StatisticalService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -38,8 +35,29 @@ public class StatisticalController {
         return statisticalService.getProfitEachMonthInYear(year);
     }
 
-    @GetMapping("/products")
+    @GetMapping("/products/each-month")
     public Map<Integer, ProductsEachMonthInYear> getProductsEachMonthInYear(@RequestParam("year") int year) {
         return statisticalService.getProductsEachMonthInYear(year);
+    }
+
+    @GetMapping("/all")
+    public StatisticDTO getAllStatistical() {
+        return statisticalService.getAllStatistical();
+    }
+
+    @PostMapping("/customers")
+    public CustomerStatisticResponse getCustomerStatistical(@RequestBody StatisticalRequest statisticalRequest) {
+        return statisticalService.getCustomerStatistical(statisticalRequest);
+    }
+
+    @PostMapping("/products")
+    public ProductStatisticResponse getProductStatistical(@RequestBody StatisticalRequest statisticalRequest) {
+        System.out.println(statisticalRequest);
+        return statisticalService.getProductStatistical(statisticalRequest);
+    }
+
+    @PostMapping("/orders")
+    public OrderStatisticResponse getOrderStatistical(@RequestBody StatisticalRequest statisticalRequest) {
+        return statisticalService.getOrderStatistical(statisticalRequest);
     }
 }

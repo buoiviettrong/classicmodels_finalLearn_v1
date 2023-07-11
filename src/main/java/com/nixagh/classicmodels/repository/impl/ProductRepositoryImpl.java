@@ -46,4 +46,32 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
                 .groupBy(month, product.productCode, product.productName)
                 .stream().toList();
     }
+
+    @Override
+    public List<Tuple> findAllStatistic() {
+        // câu lệnh tính tổng profit của mỗi order detail
+        NumberExpression<Double> profit = orderDetail.priceEach.multiply(orderDetail.quantityOrdered).sum();
+        // câu lệnh lấy tháng của order
+        NumberExpression<Integer> month = order.orderDate.month();
+
+        return jpaQueryFactory
+                .select(
+                        month.as("month"),
+                        product.productCode,
+                        product.productName,
+                        customer.customerNumber,
+                        customer.customerName,
+                        orderDetail.quantityOrdered.sum().as("totalSoldQuantity"),
+                        profit.as("totalProfit")
+                )
+                .from(orderDetail)
+                .join(orderDetail.order, order)
+                .join(order.customer, customer)
+                // điều kiện năm và trạng thái order = Shipped
+                .where(order.status.eq("Shipped"))
+                // group by tháng, productCode, productName và customerNumber, customerName
+                .groupBy(month, product.productCode, product.productName, customer.customerNumber, customer.customerName)
+                .stream().toList();
+    }
+
 }

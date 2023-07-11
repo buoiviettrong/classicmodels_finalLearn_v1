@@ -1,5 +1,6 @@
 package com.nixagh.classicmodels.repository.impl;
 
+import com.nixagh.classicmodels.entity.Customer;
 import com.nixagh.classicmodels.entity.Employee;
 import com.nixagh.classicmodels.repository.EmployeeRepository;
 import jakarta.persistence.EntityManager;
@@ -44,5 +45,12 @@ public class EmployeeRepositoryImpl extends BaseRepositoryImpl<Employee, Long> i
                 .execute();
     }
 
+    @Override
+    public Optional<Customer> findOne(Long customerNumber) {
+        return jpaQueryFactory
+                .selectFrom(customer)
+                .where(customer.customerNumber.eq(customerNumber))
+                .stream().findFirst();
+    }
 
 }
