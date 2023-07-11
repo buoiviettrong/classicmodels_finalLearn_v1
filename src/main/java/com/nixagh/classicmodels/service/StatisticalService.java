@@ -66,4 +66,12 @@ public class StatisticalService {
     public ProductStatisticResponse getProductStatistical(StatisticalRequest statisticalRequest) {
         return productService.getProductStatistical(statisticalRequest);
     }
+
+    public OrderStatisticResponse getOrderStatistical(StatisticalRequest statisticalRequest) {
+        return orderService.getOrderStatistical(statisticalRequest);
+    }
+
+    public List<OrderStatusStatisticResponse> getOrderStatusStatistical(StatisticalRequest statisticalRequest) {
+        return orderService.getOrderStatusStatistical(statisticalRequest);
+    }
 }

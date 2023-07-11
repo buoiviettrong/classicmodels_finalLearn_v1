@@ -32,6 +32,20 @@ public interface OrderNoDSLRepository extends JpaRepository<Order, Long> {
             GROUP BY month(o.orderDate)
             """, nativeQuery = true)
     List<Tuple> getProfitEachMonthInYear(int year);
+
+    @Query(value = """
+            SELECT o.status as status, count(o.orderNumber) as count, round(sum(t.totalProfit), 2) as profit
+            FROM orders o
+            join (  select o.orderNumber as orderNumber, sum(od.quantityOrdered * od.priceEach) as totalProfit
+                    from order_details od
+                    join orders o on od.orderNumber = o.orderNumber
+                    where o.orderDate between :from and :to
+                    group by o.orderNumber
+                 ) as t on o.orderNumber = t.orderNumber
+            WHERE o.orderDate between :from and :to
+            GROUP BY o.status
+            """, nativeQuery = true)
+    List<Tuple> getOrderStatusStatistical(Date from, Date to);
 }
 
 

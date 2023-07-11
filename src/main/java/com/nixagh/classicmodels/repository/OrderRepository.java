@@ -27,4 +27,8 @@ public interface OrderRepository extends BaseRepository<Order, Long> {
     HighestOrderResponse getHighestOrder();
 
     List<Tuple> getOrderByTimeRange(Date from, Date to);
+
+    List<Tuple> getOrderStatistical(Date from, Date to, long offset, long limit);
+
+    long countOrderStatistical(Date from, Date to);
 }

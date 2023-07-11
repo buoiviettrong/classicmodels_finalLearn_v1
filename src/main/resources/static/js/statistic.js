@@ -1,13 +1,9 @@
 (() => {
 // init value for date input
-    const today = new Date();
-    const dd = today.getDate();
-    const mm = today.getMonth() + 1; //January is 0!
-    const yyyy = today.getFullYear();
     const from = document.getElementById("from");
     const to = document.getElementById("to");
-    from.value = `${yyyy}-${mm}-${dd}`;
-    to.value = `${yyyy}-${mm}-${dd}`;
+    from.valueAsDate = new Date();
+    to.valueAsDate = new Date();
 })();
 const from_ = document.getElementById("from");
 const to_ = document.getElementById("to");
@@ -17,6 +13,7 @@ const getStatistical = () => {
     const to = to_.value;
     getStatisticalCustomer(from, to);
     getStatisticalProduct(from, to);
+    getStatisticalOrder(from, to);
 }
 
 // Thống kê khách hàng
@@ -118,8 +115,39 @@ const orderInfo = {
     previousPage: document.getElementById("statistic-order-table-previous-page"),
     nextPage: document.getElementById("statistic-order-table-next-page"),
     orderList: document.getElementById("statistic-order-table-body"),
-    totalOrder: document.getElementById("statistic-order-table-body-total-order"),
 }
+
+const statusOrder = {
+    "In Process": {
+        count: document.getElementById("status-order-table-body-in-process-quantity"),
+        amount: document.getElementById("status-order-table-body-in-process-amount"),
+    },
+    "Cancelled": {
+        count: document.getElementById("status-order-table-body-cancelled-quantity"),
+        amount: document.getElementById("status-order-table-body-cancelled-amount"),
+    },
+    "On Hold": {
+        count: document.getElementById("status-order-table-body-on-hold-quantity"),
+        amount: document.getElementById("status-order-table-body-on-hold-amount"),
+    },
+    "Resolved": {
+        count: document.getElementById("status-order-table-body-resolved-quantity"),
+        amount: document.getElementById("status-order-table-body-resolved-amount"),
+    },
+    "Disputed": {
+        count: document.getElementById("status-order-table-body-disputed-quantity"),
+        amount: document.getElementById("status-order-table-body-disputed-amount"),
+    },
+    "Shipped": {
+        count: document.getElementById("status-order-table-body-shipped-quantity"),
+        amount: document.getElementById("status-order-table-body-shipped-amount"),
+    },
+    "total": {
+        count: document.getElementById("status-order-table-foot-total-quantity"),
+        amount: document.getElementById("status-order-table-foot-total-amount"),
+    }
+}
+
 const getStatisticalOrder = (from, to) => {
     const pageNumber = orderInfo.currentPage.value;
     const pageSize = orderInfo.pageSize.value;
@@ -129,26 +157,40 @@ const getStatisticalOrder = (from, to) => {
         updatePageInfo("order", response["pageResponseInfo"]);
         loadOrderToList(response["orders"]);
     });
+    callAPI.post(statisticURL + `/orders/status`, data).then(response => {
+        loadOrderStatusToList(response);
+    });
 }
 
 const loadOrderToList = (response) => {
     const orderList = orderInfo.orderList;
     orderList.innerHTML = "";
-    let totalOrder = 0;
     response.forEach(order => {
         const row = document.createElement("tr");
         row.innerHTML = `
                 <td>${order["orderNumber"]}</td>
                 <td>${order["orderDate"]}</td>
-                <td>${order["customerName"]}</td>
-                <td>${order["totalQuantity"]}</td>
-                <td>${order["totalAmount"]}</td>
+                <td>${order["shippedDate"]}</td>
+                <td>${order["status"]}</td>
+                <td>${order["customerNumber"]}</td>
+                <td>${order["comment"]}</td>
             `;
         orderList.appendChild(row);
-        totalOrder += order["totalAmount"];
     });
-    // statistic-order-table-body-total-order
-    orderInfo.totalOrder.innerText = totalOrder;
+}
+
+// thống kê trang thais đơn hàng
+const loadOrderStatusToList = (response) => {
+    let totalCount = 0;
+    let totalAmount = 0;
+    response.forEach(status => {
+        statusOrder[status["status"]]["count"].innerText = status["count"];
+        statusOrder[status["status"]]["amount"].innerText = status["amount"];
+        totalCount += status["count"];
+        totalAmount += status["amount"];
+    });
+    statusOrder["total"]["count"].innerText = totalCount;
+    statusOrder["total"]["amount"].innerText = totalAmount;
 }
 
 

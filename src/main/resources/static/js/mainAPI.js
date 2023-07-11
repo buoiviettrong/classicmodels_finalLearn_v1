@@ -7,6 +7,10 @@ const checkStatus = (response) => {
     if (response.status >= 200 && response.status < 300) {
         return response;
     } else {
+        if (response.status === 401) {
+            alert("Please login to continue");
+            window.location.href = "/login";
+        }
         const res = response.json();
         console.log(res)
         alert(res.message);

@@ -60,4 +60,9 @@ public class StatisticalController {
     public OrderStatisticResponse getOrderStatistical(@RequestBody StatisticalRequest statisticalRequest) {
         return statisticalService.getOrderStatistical(statisticalRequest);
     }
+
+    @PostMapping("/orders/status")
+    public List<OrderStatusStatisticResponse> getOrderStatusStatistical(@RequestBody StatisticalRequest statisticalRequest) {
+        return statisticalService.getOrderStatusStatistical(statisticalRequest);
+    }
 }

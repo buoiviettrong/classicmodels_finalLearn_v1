@@ -12,6 +12,7 @@ import com.querydsl.jpa.impl.JPAQuery;
 import jakarta.persistence.EntityManager;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,6 +116,33 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> impleme
                 .where(order.orderDate.between(from, to).and(order.status.eq("Shipped")))
                 .groupBy(order.orderNumber)
                 .fetch();
+    }
+
+    @Override
+    public List<Tuple> getOrderStatistical(Date from, Date to, long offset, long limit) {
+        return jpaQueryFactory
+                .select(
+                        order.orderNumber,
+                        order.orderDate,
+                        order.shippedDate,
+                        order.status,
+                        order.customer.customerNumber,
+                        order.comments
+                )
+                .from(order)
+                .where(order.orderDate.between(from, to))
+                .offset(offset)
+                .limit(limit)
+                .fetch();
+    }
+
+    @Override
+    public long countOrderStatistical(Date from, Date to) {
+        return jpaQueryFactory
+                .select(order.orderNumber.count())
+                .from(order)
+                .where(order.orderDate.between(from, to))
+                .fetchFirst();
     }
 
     private <T> JPAQuery<T> getPredicates(JPAQuery<T> queryFactory, OrderFilter orderFilter) {

@@ -4,7 +4,7 @@ import com.nixagh.classicmodels.dto.PageRequestInfo;
 import com.nixagh.classicmodels.dto.PageResponseInfo;
 import com.nixagh.classicmodels.dto.orders.*;
 import com.nixagh.classicmodels.dto.product.ProductDTO;
-import com.nixagh.classicmodels.dto.statistical.OrderWithProfit;
+import com.nixagh.classicmodels.dto.statistical.*;
 import com.nixagh.classicmodels.entity.Customer;
 import com.nixagh.classicmodels.entity.Order;
 import com.nixagh.classicmodels.entity.OrderDetail;
@@ -229,5 +229,40 @@ public class OrderService {
         orderNoDSLRepository.getProfitEachMonthInYear(year)
                 .forEach(tuple -> map.put(tuple.get("month", Integer.class), tuple.get("profit", Double.class)));
         return map;
+    }
+
+    public OrderStatisticResponse getOrderStatistical(StatisticalRequest statisticalRequest) {
+        long offset = (statisticalRequest.getPageInfo().getPageNumber() - 1) * statisticalRequest.getPageInfo().getPageSize();
+        long limit = statisticalRequest.getPageInfo().getPageSize();
+
+        List<OrderStatisticDTO> orders = orderRepository.getOrderStatistical(statisticalRequest.getFrom(), statisticalRequest.getTo(), offset, limit)
+                .stream()
+                .map(tuple -> OrderStatisticDTO.builder()
+                        .orderNumber(tuple.get(0, Long.class))
+                        .orderDate(tuple.get(1, Date.class))
+                        .shippedDate(tuple.get(2, Date.class))
+                        .status(tuple.get(3, String.class))
+                        .customerNumber(tuple.get(4, Long.class))
+                        .comment(tuple.get(5, String.class))
+                        .build())
+                .toList();
+        long total = orderRepository.countOrderStatistical(statisticalRequest.getFrom(), statisticalRequest.getTo());
+
+        OrderStatisticResponse response = new OrderStatisticResponse();
+        response.setOrders(orders);
+        response.setPageResponseInfo(PageUtil.getResponse(statisticalRequest.getPageInfo().getPageNumber(), statisticalRequest.getPageInfo().getPageSize(), total, (long) orders.size()));
+
+        return response;
+    }
+
+    public List<OrderStatusStatisticResponse> getOrderStatusStatistical(StatisticalRequest statisticalRequest) {
+        return orderNoDSLRepository.getOrderStatusStatistical(statisticalRequest.getFrom(), statisticalRequest.getTo())
+                .stream()
+                .map(tuple -> OrderStatusStatisticResponse.builder()
+                        .status(tuple.get("status", String.class))
+                        .count(tuple.get("count", Long.class))
+                        .amount(tuple.get("profit", Double.class))
+                        .build())
+                .toList();
     }
 }
