@@ -1,23 +1,12 @@
-(() => {
-// init value for date input
-    const from = document.getElementById("from");
-    const to = document.getElementById("to");
-    from.valueAsDate = new Date();
-    to.valueAsDate = new Date();
-})();
 const from_ = document.getElementById("from");
 const to_ = document.getElementById("to");
-// Thống kê
-const getStatistical = () => {
-    const from = from_.value;
-    const to = to_.value;
-    getStatisticalCustomer(from, to);
-    getStatisticalProduct(from, to);
-    getStatisticalOrder(from, to);
-}
+
 
 // Thống kê khách hàng
 // Path: src\main\resources\static\js\statistic.js
+// Customer Info
+const customerInfo = {}
+
 const getStatisticalCustomer = (from, to) => {
     const pageNumber = document.getElementById("statistic-customer-table-current-page").value;
     const pageSize = document.getElementById("statistic-customer-table-page-size").value;
@@ -287,3 +276,28 @@ const previousPage = (id) => {
 
     }
 }
+
+// clear all values
+const clearAll = () => {
+    for (let item in statusOrder) {
+        statusOrder[item]["count"].innerText = 0;
+        statusOrder[item]["amount"].innerText = 0;
+    }
+}
+
+const getStatistical = () => {
+    const from = from_.value;
+    const to = to_.value;
+    clearAll();
+
+    getStatisticalCustomer(from, to);
+    getStatisticalProduct(from, to);
+    getStatisticalOrder(from, to);
+}
+
+(() => {
+// init value for date input
+    from_.valueAsDate = new Date();
+    to_.valueAsDate = new Date();
+    getStatistical();
+})();
