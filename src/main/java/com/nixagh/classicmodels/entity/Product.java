@@ -2,10 +2,7 @@ package com.nixagh.classicmodels.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.HashSet;
@@ -17,6 +14,8 @@ import java.util.Set;
 @AllArgsConstructor
 @Getter
 @Setter
+@ToString
+@Builder
 public class Product implements Serializable {
     @Id
     @Column(name = "productCode", length = 15)

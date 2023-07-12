@@ -72,4 +72,11 @@ public class CustomExceptionHandler {
     public ErrorResponse handlerSQLError(SQLError e) {
         return new ErrorResponse(HttpStatus.CONFLICT, e.getMessage());
     }
+
+    @ExceptionHandler(BadRequestException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlerBadRequestException(BadRequestException e) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
+
 }

@@ -4,56 +4,38 @@ const headers = {
 };
 
 const checkStatus = (response) => {
-    if (response.status >= 200 && response.status < 300) {
-        return response;
-    } else {
-        if (response.status === 401) {
-            alert("Please login to continue");
-            window.location.href = "/login";
-        }
-        const res = response.json();
-        console.log(res)
-        alert(res.message);
+    if (response.status === 401) {
+        alert("Please login to continue");
+        window.location.href = "/login";
     }
+    return response;
 }
 
 const callAPI = {
-    post: (url, data) => {
+    base: (method, url, data) => {
         if (localStorage.getItem("token") !== null)
             headers["Authorization"] = "Bearer " + localStorage.getItem("token");
-        return fetch(host + url, {
-            method: "POST",
+        let init = {
+            method: method,
             headers: headers,
-            body: JSON.stringify(data)
-        }).then((response) => checkStatus(response).json())
-            .catch((error) => console.log(error));
+        };
+        if (data != null) init["body"] = JSON.stringify(data);
+
+        return fetch(host + url, init)
+            .then((response) => checkStatus(response))
+            .then((response) => response.json());
+    },
+
+    post: (url, data) => {
+        return callAPI.base("POST", url, data);
     },
     get: (url) => {
-        if (localStorage.getItem("token") !== null)
-            headers["Authorization"] = "Bearer " + localStorage.getItem("token");
-        return fetch(host + url, {
-            method: "GET",
-            headers: headers,
-        }).then((response) => checkStatus(response).json())
-            .catch((error) => console.log(error));
+        return callAPI.base("GET", url);
     },
     put: (url, data) => {
-        if (localStorage.getItem("token") !== null)
-            headers["Authorization"] = "Bearer " + localStorage.getItem("token");
-        return fetch(host + url, {
-            method: "PUT",
-            headers: headers,
-            body: JSON.stringify(data)
-        }).then((response) => checkStatus(response).json())
-            .catch((error) => console.log(error));
+        return callAPI.base("PUT", url, data);
     },
     delete: (url) => {
-        if (localStorage.getItem("token") !== null)
-            headers["Authorization"] = "Bearer " + localStorage.getItem("token");
-        return fetch(host + url, {
-            method: "DELETE",
-            headers: headers,
-        }).then((response) => checkStatus(response).json())
-            .catch((error) => console.log(error));
+        return callAPI.base("DELETE", url);
     }
 }

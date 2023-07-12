@@ -1,6 +1,12 @@
 package com.nixagh.classicmodels.service;
 
 import com.nixagh.classicmodels.dto.PageResponseInfo;
+import com.nixagh.classicmodels.dto.product.ProductAddRequest;
+import com.nixagh.classicmodels.dto.product.edit.ProductUpdateRequest;
+import com.nixagh.classicmodels.dto.product.search.ProductSearchRequest;
+import com.nixagh.classicmodels.dto.product.search.ProductSearchResponse;
+import com.nixagh.classicmodels.dto.product.search.ProductSearchResponseDTO;
+import com.nixagh.classicmodels.dto.product.search.QuantityInStock;
 import com.nixagh.classicmodels.dto.statistical.request.ProductStatisticDTO;
 import com.nixagh.classicmodels.dto.statistical.request.ProductsEachMonthInYear;
 import com.nixagh.classicmodels.dto.statistical.request.StatisticDTO;
@@ -9,6 +15,9 @@ import com.nixagh.classicmodels.dto.statistical.response.ProductEachMonth;
 import com.nixagh.classicmodels.dto.statistical.response.ProductStatisticResponse;
 import com.nixagh.classicmodels.dto.statistical.response.Top10ProductResponse;
 import com.nixagh.classicmodels.entity.Product;
+import com.nixagh.classicmodels.entity.ProductLinee;
+import com.nixagh.classicmodels.exception.BadRequestException;
+import com.nixagh.classicmodels.exception.NotFoundEntity;
 import com.nixagh.classicmodels.repository.ProductNoDSLRepository;
 import com.nixagh.classicmodels.repository.ProductRepository;
 import com.nixagh.classicmodels.utils.PageUtil;
@@ -142,5 +151,130 @@ public class ProductService {
         productEachMonth.setProducts(products);
         productEachMonth.setPageResponseInfo(pageResponseInfo);
         return productEachMonth;
+    }
+
+    public Map<String, String> addProduct(ProductAddRequest product) {
+        String productCode = "S" + product.getProductScale() + "_" + product.getProductCode();
+        ProductLinee productLine = checkField(
+                product.getProductLine(),
+                product.getProductScale(),
+                product.getProductVendor(),
+                null
+        );
+        Product saveProduct = Product.builder()
+                .productCode(productCode)
+                .productName(product.getProductName())
+                .productLine(productLine)
+                .productScale("1:" + product.getProductScale())
+                .productVendor(product.getProductVendor())
+                .productDescription(product.getProductDescription())
+                .quantityInStock(0)
+                .buyPrice(product.getBuyPrice())
+                .msrp(product.getMsrp())
+                .build();
+
+        return new HashMap<>(Map.of("productCode", productRepository.save(saveProduct).getProductCode()));
+    }
+
+    public ProductSearchResponse filterProducts(ProductSearchRequest request) {
+//        String productCode = request.getFilter().getProductCode();
+//        String productName = request.getFilter().getProductName();
+        String productLine = request.getFilter().getProductLine();
+        Integer productScale = request.getFilter().getProductScale();
+        String productVendor = request.getFilter().getProductVendor();
+//        String productDescription = request.getFilter().getProductDescription();
+        QuantityInStock quantityInStock = request.getFilter().getQuantityInStock();
+
+        Long offset = request.getPageInfo().getPageSize() * (request.getPageInfo().getPageNumber() - 1);
+        Long pageSize = request.getPageInfo().getPageSize();
+
+        List<ProductSearchResponseDTO> filterProducts = productRepository.filterProducts(
+//                productCode,
+//                productName,
+                productLine,
+                productScale,
+                productVendor,
+//                productDescription,
+                quantityInStock,
+                offset,
+                pageSize);
+        Long totalItems = productRepository.countFilterProducts(
+//                productCode,
+//                productName,
+                productLine,
+                productScale,
+                productVendor,
+//                productDescription,
+                quantityInStock);
+
+        PageResponseInfo pageResponseInfo = PageUtil.getResponse(
+                request.getPageInfo().getPageNumber(),
+                request.getPageInfo().getPageSize(),
+                totalItems,
+                (long) filterProducts.size()
+        );
+
+        ProductSearchResponse productSearchResponse = new ProductSearchResponse();
+        productSearchResponse.setProducts(filterProducts);
+        productSearchResponse.setPageResponseInfo(pageResponseInfo);
+
+        return productSearchResponse;
+    }
+
+    public Map<String, String> deleteProduct(String productCode) {
+        Product product = productRepository.findByProductCode(productCode)
+                .orElseThrow(() -> new NotFoundEntity("Product code is not existed"));
+        productRepository.delete(product);
+        return new HashMap<>(Map.of("productCode", productCode));
+    }
+
+    public ProductSearchResponseDTO getProduct(String productCode) {
+        ProductSearchResponseDTO product = productRepository.getProduct(productCode);
+        if (product == null) {
+            throw new NotFoundEntity("Product code is not existed");
+        }
+        return product;
+    }
+
+    public Map<String, String> updateProduct(String productCode, ProductUpdateRequest product) {
+        Product productInStore = productRepository.findByProductCode(productCode)
+                .orElseThrow(() -> new NotFoundEntity("Product code is not existed"));
+        ProductLinee productLine = checkField(
+                product.getProductLine(),
+                product.getProductScale(),
+                product.getProductVendor(),
+                product.getQuantityInStock()
+        );
+        productInStore.setProductName(product.getProductName());
+        productInStore.setProductLine(productLine);
+        productInStore.setProductScale("1:" + product.getProductScale());
+        productInStore.setProductVendor(product.getProductVendor());
+        productInStore.setProductDescription(product.getProductDescription());
+        productInStore.setBuyPrice(product.getBuyPrice());
+        productInStore.setMsrp(product.getMsrp());
+        return new HashMap<>(Map.of("productCode", productRepository.save(productInStore).getProductCode()));
+    }
+
+    private ProductLinee checkField(String productLine, Integer productScale, String productVendor, Integer quantityInStock) {
+        ProductLinee productLinee = entityManager.getReference(ProductLinee.class, productLine);
+        if (productLinee == null) {
+            throw new BadRequestException("Product line is not existed");
+        }
+        if (productScale != null) {
+            if (productScale < 1 || productScale > 1000) {
+                throw new BadRequestException("Product scale must be between 1 and 1000");
+            }
+        }
+        if (productVendor != null) {
+            if (productVendor.length() > 50) {
+                throw new BadRequestException("Product vendor must be less than 50 characters");
+            }
+        }
+        if (quantityInStock != null) {
+            if (quantityInStock < 0) {
+                throw new BadRequestException("Quantity in stock must be greater than 0");
+            }
+        }
+        return productLinee;
     }
 }

@@ -46,4 +46,8 @@ public class ProductLineService {
 
         productLineRepository.deleteProductLinee(productLine);
     }
+
+    public List<String> getProductLinesSelect() {
+        return productLineRepository.getProductLinesSelect();
+    }
 }

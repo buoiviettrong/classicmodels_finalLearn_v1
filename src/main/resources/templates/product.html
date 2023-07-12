@@ -3,6 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <title>Product</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+    <!-- base JS File -->
+    <script src="/js/const.js"></script>
+    <script src="/js/mainAPI.js"></script>
+    <!-- JS File -->
+    <script src="/js/product.js"></script>
 </head>
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -45,5 +61,158 @@
         </form>
     </div>
 </nav>
+<!-- content -->
+<div>
+    <div id="alert_"></div>
+    <div id="modal"></div>
+    <!-- main content -->
+    <div class="">
+        <div class="row">
+            <div class="col-12">
+                <h1>Product</h1>
+                <button type="button" class="btn btn-primary" onclick="products.addProduct()">Add Product</button>
+                <!-- filter -->
+                <div class="row">
+                    <label for="product-line-filter" class="col-1 col-form-label">Product Line</label>
+                    <div class="col-2">
+                        <select class="form-control" id="product-line-filter" onchange="products.filter()">
+                            <option value="All" selected>All</option>
+                        </select>
+                    </div>
+                    <label for="product-vendor-filter" class="col-1 col-form-label">Product Vendor</label>
+                    <div class="col-2">
+                        <select class="form-control" id="product-vendor-filter" onchange="products.filter()">
+                            <option value="All" selected>All</option>
+                        </select>
+                    </div>
+                    <label for="product-scale-filter" class="col-1 col-form-label">Product Scale</label>
+                    <div class="col-2">
+                        <select class="form-control" id="product-scale-filter" onchange="products.filter()">
+                            <option value="0" selected>All</option>
+                        </select>
+                    </div>
+                    <!-- range of quantity in stock -->
+                    <div class="col-3 input-group" id="quantity-in-stock-filter">
+                        <div class="input-group-prepend">
+                            <label for="quantity-in-stock-filter" class="input-group-text">Quantity In Stock</label>
+                            <label for="quantity-in-stock-filter-min"></label>
+                            <label for="quantity-in-stock-filter-max"></label>
+                        </div>
+                        <input type="number" class="form-control"
+                               id="quantity-in-stock-filter-min"
+                               onchange="products.filter()"
+                               placeholder="min quantity" value="0">
+                        <input type="number" class="form-control"
+                               id="quantity-in-stock-filter-max"
+                               onchange=" products.filter()"
+                               placeholder="max quantity" value="0">
+                    </div>
+                    <!--                    &lt;!&ndash; range of buy price &ndash;&gt;-->
+                    <!--                    <div class="col-2 input-group" id="buy-price-filter">-->
+                    <!--                        <div class="input-group-prepend">-->
+                    <!--                            <label for="buy-price-filter" class="input-group-text">Buy Price</label>-->
+                    <!--                            <label for="buy-price-filter-min"></label>-->
+                    <!--                            <label for="buy-price-filter-max"></label>-->
+                    <!--                        </div>-->
+                    <!--                        <input type="number" class="form-control"-->
+                    <!--                               id="buy-price-filter-min"-->
+                    <!--                               onchange="products.filter()"-->
+                    <!--                               placeholder="min buy price">-->
+                    <!--                        <input type="number" class="form-control"-->
+                    <!--                               id="buy-price-filter-max"-->
+                    <!--                               onchange="products.filter()"-->
+                    <!--                               placeholder="max buy price">-->
+                    <!--                    </div>-->
+                    <!--                    &lt;!&ndash; range of MSRP &ndash;&gt;-->
+                    <!--                    <div class="col-2 input-group" id="msrp-filter">-->
+                    <!--                        <div class="input-group-prepend">-->
+                    <!--                            <label for="msrp-filter" class="input-group-text">MSRP</label>-->
+                    <!--                            <label for="msrp-filter-min"></label>-->
+                    <!--                            <label for="msrp-filter-max"></label>-->
+                    <!--                        </div>-->
+                    <!--                        <input type="number" class="form-control"-->
+                    <!--                               id="msrp-filter-min" onchange="products.filter()"-->
+                    <!--                               placeholder="min msrp price">-->
+                    <!--                        <input type="number" class="form-control"-->
+                    <!--                               id="msrp-filter-max" onchange="products.filter()"-->
+                    <!--                               placeholder="max msrp price">-->
+                    <!--                    </div>-->
+                </div>
+                <!-- pagination -->
+                <div class="row align-items-end">
+                    <div class="col-1 justify-content-between d-flex">
+                        <!-- previous page -->
+                        <button class="btn btn-primary" type="button" onclick="previousPage()">Previous</button>
+                        <!-- next page -->
+                        <button class="btn btn-primary" type="button" onclick="nextPage()">Next</button>
+                    </div>
+                    <!-- current page -->
+                    <div class="col-1">
+                        <label for="current-page" class="col-form-label">Page</label>
+                        <input type="number" class="form-control" id="current-page" value="1" min="1" disabled>
+                    </div>
+                    <!-- total page -->
+                    <div class="col-1">
+                        <label for="total-page" class="col-form-label">Total Page</label>
+                        <input type="number" class="form-control" id="total-page" value="1" min="1" disabled>
+                    </div>
+                    <!-- total record -->
+                    <div class="col-1">
+                        <label for="total-record" class="col-form-label">Total Record</label>
+                        <input type="number" class="form-control" id="total-record" value="1" min="1" disabled>
+                    </div>
+                    <!-- record per page -->
+                    <div class="col-1">
+                        <label for="record-per-page" class="col-form-label">Record</label>
+                        <select id="record-per-page">
+                            <option value="5">5</option>
+                            <option value="10" selected>10</option>
+                            <option value="20">20</option>
+                            <option value="50">50</option>
+                        </select>
+                    </div>
+
+                </div>
+                <!-- table -->
+                <table class="table table-striped mt-3 table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">Product Code</th>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Product Line</th>
+                        <th scope="col">Product Scale</th>
+                        <th scope="col">Product Vendor</th>
+                        <th scope="col">Product Description</th>
+                        <th scope="col">Quantity In Stock</th>
+                        <th scope="col">Buy Price</th>
+                        <th scope="col">MSRP</th>
+                        <th scope="col">Action</th>
+                    </tr>
+                    </thead>
+                    <tbody id="product-table">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                Delete Product
+            </div>
+            <div class="modal-body">
+                <p>You are about to delete <b><i class="title"></i></b> record, this procedure is irreversible.</p>
+                <p>Do you want to proceed?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <a class="btn btn-danger btn-ok">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

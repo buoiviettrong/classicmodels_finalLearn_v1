@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/product-line")
+@RequestMapping("/api/v1/product-lines")
 @RequiredArgsConstructor
 @EnableCaching
 @PreAuthorize("hasRole('ADMIN')")
@@ -50,6 +50,11 @@ public class ProductLineController {
     public ResponseEntity<?> deleteProductLine(@PathVariable String productLine) {
         productLineService.deleteProductLine(productLine);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/select")
+    public List<String> getProductLinesSelect() {
+        return productLineService.getProductLinesSelect();
     }
 
 }

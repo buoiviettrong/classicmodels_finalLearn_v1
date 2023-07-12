@@ -39,4 +39,12 @@ public class ProductLineRepositoryImpl extends BaseRepositoryImpl<ProductLinee, 
                 .where(productLinee.productLine.eq(productLine_))
                 .execute();
     }
+
+    @Override
+    public List<String> getProductLinesSelect() {
+        return jpaQueryFactory
+                .select(productLinee.productLine)
+                .from(productLinee)
+                .fetch();
+    }
 }

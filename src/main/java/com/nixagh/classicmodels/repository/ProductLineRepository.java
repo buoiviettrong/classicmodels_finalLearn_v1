@@ -10,4 +10,6 @@ public interface ProductLineRepository extends BaseRepository<ProductLinee, Stri
     ProductLinee getProductLine(String productLine);
 
     void deleteProductLinee(String productLine);
+
+    List<String> getProductLinesSelect();
 }
