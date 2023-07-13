@@ -87,7 +87,7 @@ public class CustomerService {
                 .map(tuple -> CustomerStatisticDTO.builder()
                         .customerNumber(Long.valueOf(tuple.get("customerNumber", Integer.class)))
                         .customerName(tuple.get("customerName", String.class))
-                        .totalOrder(tuple.get("totalOrder", Integer.class))
+                        .totalOrder(tuple.get("totalOrder", Long.class).intValue())
                         .totalAmount(tuple.get("totalAmount", Double.class))
                         .build()
                 )
