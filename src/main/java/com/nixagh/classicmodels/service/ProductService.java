@@ -3,6 +3,7 @@ package com.nixagh.classicmodels.service;
 import com.nixagh.classicmodels.dto.PageResponseInfo;
 import com.nixagh.classicmodels.dto.product.ProductAddRequest;
 import com.nixagh.classicmodels.dto.product.edit.ProductUpdateRequest;
+import com.nixagh.classicmodels.dto.product.manager.search.request.ProductManagerSearchRequest;
 import com.nixagh.classicmodels.dto.product.search.ProductSearchRequest;
 import com.nixagh.classicmodels.dto.product.search.ProductSearchResponse;
 import com.nixagh.classicmodels.dto.product.search.ProductSearchResponseDTO;
@@ -250,6 +251,7 @@ public class ProductService {
         productInStore.setProductScale("1:" + product.getProductScale());
         productInStore.setProductVendor(product.getProductVendor());
         productInStore.setProductDescription(product.getProductDescription());
+        productInStore.setQuantityInStock(product.getQuantityInStock());
         productInStore.setBuyPrice(product.getBuyPrice());
         productInStore.setMsrp(product.getMsrp());
         return new HashMap<>(Map.of("productCode", productRepository.save(productInStore).getProductCode()));
@@ -276,5 +278,29 @@ public class ProductService {
             }
         }
         return productLinee;
+    }
+
+    public ProductSearchResponse managerSearch(ProductManagerSearchRequest request) {
+        Long offset = request.getPageInfo().getPageSize() * (request.getPageInfo().getPageNumber() - 1);
+        Long pageSize = request.getPageInfo().getPageSize();
+        String search = request.getSearch();
+
+        List<ProductSearchResponseDTO> products = productRepository.managerSearch(
+                search,
+                offset,
+                pageSize
+        );
+
+        Long totalItems = productRepository.countManagerSearch(search);
+
+        ProductSearchResponse response = new ProductSearchResponse();
+        response.setProducts(products);
+        response.setPageResponseInfo(PageUtil.getResponse(
+                request.getPageInfo().getPageNumber(),
+                request.getPageInfo().getPageSize(),
+                totalItems,
+                (long) products.size()
+        ));
+        return response;
     }
 }

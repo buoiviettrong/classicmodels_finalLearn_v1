@@ -56,8 +56,8 @@ public class SecurityConfiguration {
             "/productLine",
             "/statistic",
             "/statistic-each-month/**",
-            "/admin/dashboard",
-            "/manager/dashboard",
+            "/admin/**",
+            "/manager/**",
     };
     String[] assets = {
             "/assets/**",

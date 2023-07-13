@@ -49,4 +49,10 @@ public class GetPage {
     public String getManagerPage() {
         return "manager";
     }
+
+    @GetMapping("/manager/product")
+    public String getManagerProductPage() {
+        return "manager-product";
+    }
+
 }

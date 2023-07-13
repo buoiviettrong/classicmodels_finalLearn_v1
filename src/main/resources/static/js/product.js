@@ -44,6 +44,7 @@ const modalGenerate = {
         $('#alertProductPrice').empty().hide();
         $('#alertProductCode').empty().hide();
         $('#alertProductMsrp').empty().hide();
+        $('#alertProductQuantity').empty().hide();
         $('#alert_').empty().hide();
     },
     addProduct: {
@@ -373,7 +374,87 @@ const modalGenerate = {
             });
             $('#saveEditProduct').click(this.event.edit);
         }
-    }
+    },
+    filter: {
+        content: `
+        <label for="product-line-filter" class="col-1 col-form-label">Product Line</label>
+                    <div class="col-2">
+                        <select class="form-control" id="product-line-filter" onchange="products.filter()">
+                            <option value="All" selected>All</option>
+                        </select>
+                    </div>
+                    <label for="product-vendor-filter" class="col-1 col-form-label">Product Vendor</label>
+                    <div class="col-2">
+                        <select class="form-control" id="product-vendor-filter" onchange="products.filter()">
+                            <option value="All" selected>All</option>
+                        </select>
+                    </div>
+                    <label for="product-scale-filter" class="col-1 col-form-label">Product Scale</label>
+                    <div class="col-2">
+                        <select class="form-control" id="product-scale-filter" onchange="products.filter()">
+                            <option value="0" selected>All</option>
+                        </select>
+                    </div>
+                    <!-- range of quantity in stock -->
+                    <div class="col-3 input-group" id="quantity-in-stock-filter">
+                        <div class="input-group-prepend">
+                            <label for="quantity-in-stock-filter" class="input-group-text">Quantity In Stock</label>
+                            <label for="quantity-in-stock-filter-min"></label>
+                            <label for="quantity-in-stock-filter-max"></label>
+                        </div>
+                        <input type="number" class="form-control"
+                               id="quantity-in-stock-filter-min"
+                               onchange="products.filter()"
+                               placeholder="min quantity" value="0">
+                        <input type="number" class="form-control"
+                               id="quantity-in-stock-filter-max"
+                               onchange=" products.filter()"
+                               placeholder="max quantity" value="0">
+                    </div>
+                    <!--                    &lt;!&ndash; range of buy price &ndash;&gt;-->
+                    <!--                    <div class="col-2 input-group" id="buy-price-filter">-->
+                    <!--                        <div class="input-group-prepend">-->
+                    <!--                            <label for="buy-price-filter" class="input-group-text">Buy Price</label>-->
+                    <!--                            <label for="buy-price-filter-min"></label>-->
+                    <!--                            <label for="buy-price-filter-max"></label>-->
+                    <!--                        </div>-->
+                    <!--                        <input type="number" class="form-control"-->
+                    <!--                               id="buy-price-filter-min"-->
+                    <!--                               onchange="products.filter()"-->
+                    <!--                               placeholder="min buy price">-->
+                    <!--                        <input type="number" class="form-control"-->
+                    <!--                               id="buy-price-filter-max"-->
+                    <!--                               onchange="products.filter()"-->
+                    <!--                               placeholder="max buy price">-->
+                    <!--                    </div>-->
+                    <!--                    &lt;!&ndash; range of MSRP &ndash;&gt;-->
+                    <!--                    <div class="col-2 input-group" id="msrp-filter">-->
+                    <!--                        <div class="input-group-prepend">-->
+                    <!--                            <label for="msrp-filter" class="input-group-text">MSRP</label>-->
+                    <!--                            <label for="msrp-filter-min"></label>-->
+                    <!--                            <label for="msrp-filter-max"></label>-->
+                    <!--                        </div>-->
+                    <!--                        <input type="number" class="form-control"-->
+                    <!--                               id="msrp-filter-min" onchange="products.filter()"-->
+                    <!--                               placeholder="min msrp price">-->
+                    <!--                        <input type="number" class="form-control"-->
+                    <!--                               id="msrp-filter-max" onchange="products.filter()"-->
+                    <!--                               placeholder="max msrp price">-->
+                    <!--                    </div>-->`,
+        init: () => {
+            const headerRow = $('#header-row');
+            headerRow.append('<div class="col-12 row m-2" id="filter-row" style="display: none"></div>');
+        },
+        toggle: () => {
+            const filterRow = $('#filter-row');
+
+            if (filterRow.is(':visible')) filterRow.hide();
+            else {
+                filterRow.empty().append(modalGenerate.filter.content);
+                filterRow.show();
+            }
+        },
+    },
 }
 const loadScale = () => {
     globalProductScale.forEach((item) => {
@@ -405,7 +486,7 @@ const products = {
         await loadProductLine();
         loadScale();
         loadVendor();
-
+        modalGenerate.filter.init();
         await this.filter();
     },
     updatePageInfo: (data) => {
@@ -448,7 +529,7 @@ const products = {
                             <td>${item.productLine}</td>
                             <td>${item.productScale}</td>
                             <td>${item.productVendor}</td>
-                            <td>${item.productDescription}</td>
+                            <td><textarea class="w-150" disabled>${item.productDescription}</textarea></td>
                             <td>${item.quantityInStock}</td>
                             <td>${item.buyPrice}</td>
                             <td>${item.msrp}</td>
@@ -473,8 +554,8 @@ const products = {
             productVendor: $('#product-vendor-filter').val(),
             // productDescription: $('#product-description-filter')
             quantityInStock: {
-                min: $('#quantity-in-stock-filter-min').val(),
-                max: $('#quantity-in-stock-filter-max').val()
+                min: $('#quantity-in-stock-filter-min').val() || 0,
+                max: $('#quantity-in-stock-filter-max').val() || 0,
             }
         };
         const pageInfo = {

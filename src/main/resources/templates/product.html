@@ -72,71 +72,22 @@
                 <h1>Product</h1>
                 <button type="button" class="btn btn-primary" onclick="products.addProduct()">Add Product</button>
                 <!-- filter -->
-                <div class="row">
-                    <label for="product-line-filter" class="col-1 col-form-label">Product Line</label>
-                    <div class="col-2">
-                        <select class="form-control" id="product-line-filter" onchange="products.filter()">
-                            <option value="All" selected>All</option>
-                        </select>
-                    </div>
-                    <label for="product-vendor-filter" class="col-1 col-form-label">Product Vendor</label>
-                    <div class="col-2">
-                        <select class="form-control" id="product-vendor-filter" onchange="products.filter()">
-                            <option value="All" selected>All</option>
-                        </select>
-                    </div>
-                    <label for="product-scale-filter" class="col-1 col-form-label">Product Scale</label>
-                    <div class="col-2">
-                        <select class="form-control" id="product-scale-filter" onchange="products.filter()">
-                            <option value="0" selected>All</option>
-                        </select>
-                    </div>
-                    <!-- range of quantity in stock -->
-                    <div class="col-3 input-group" id="quantity-in-stock-filter">
-                        <div class="input-group-prepend">
-                            <label for="quantity-in-stock-filter" class="input-group-text">Quantity In Stock</label>
-                            <label for="quantity-in-stock-filter-min"></label>
-                            <label for="quantity-in-stock-filter-max"></label>
+                <div class="row" id="header-row">
+                    <!-- search -->
+                    <div class="col-3">
+                        <div class="input-group">
+                            <label for="search-input"></label>
+                            <input type="text" class="form-control" placeholder="Search" id="search-input"
+                                   onkeyup="products.filter()">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="button" id="filter-button"
+                                        onclick="modalGenerate.filter.toggle()">Filter
+                                </button>
+                            </div>
                         </div>
-                        <input type="number" class="form-control"
-                               id="quantity-in-stock-filter-min"
-                               onchange="products.filter()"
-                               placeholder="min quantity" value="0">
-                        <input type="number" class="form-control"
-                               id="quantity-in-stock-filter-max"
-                               onchange=" products.filter()"
-                               placeholder="max quantity" value="0">
                     </div>
-                    <!--                    &lt;!&ndash; range of buy price &ndash;&gt;-->
-                    <!--                    <div class="col-2 input-group" id="buy-price-filter">-->
-                    <!--                        <div class="input-group-prepend">-->
-                    <!--                            <label for="buy-price-filter" class="input-group-text">Buy Price</label>-->
-                    <!--                            <label for="buy-price-filter-min"></label>-->
-                    <!--                            <label for="buy-price-filter-max"></label>-->
-                    <!--                        </div>-->
-                    <!--                        <input type="number" class="form-control"-->
-                    <!--                               id="buy-price-filter-min"-->
-                    <!--                               onchange="products.filter()"-->
-                    <!--                               placeholder="min buy price">-->
-                    <!--                        <input type="number" class="form-control"-->
-                    <!--                               id="buy-price-filter-max"-->
-                    <!--                               onchange="products.filter()"-->
-                    <!--                               placeholder="max buy price">-->
-                    <!--                    </div>-->
-                    <!--                    &lt;!&ndash; range of MSRP &ndash;&gt;-->
-                    <!--                    <div class="col-2 input-group" id="msrp-filter">-->
-                    <!--                        <div class="input-group-prepend">-->
-                    <!--                            <label for="msrp-filter" class="input-group-text">MSRP</label>-->
-                    <!--                            <label for="msrp-filter-min"></label>-->
-                    <!--                            <label for="msrp-filter-max"></label>-->
-                    <!--                        </div>-->
-                    <!--                        <input type="number" class="form-control"-->
-                    <!--                               id="msrp-filter-min" onchange="products.filter()"-->
-                    <!--                               placeholder="min msrp price">-->
-                    <!--                        <input type="number" class="form-control"-->
-                    <!--                               id="msrp-filter-max" onchange="products.filter()"-->
-                    <!--                               placeholder="max msrp price">-->
-                    <!--                    </div>-->
+                    <!-- filter -->
+
                 </div>
                 <!-- pagination -->
                 <div class="row align-items-end">

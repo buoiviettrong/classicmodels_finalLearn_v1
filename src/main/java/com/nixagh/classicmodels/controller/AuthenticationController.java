@@ -46,4 +46,5 @@ public class AuthenticationController {
 
     public record refreshRequest(String refreshToken) {
     }
+
 }

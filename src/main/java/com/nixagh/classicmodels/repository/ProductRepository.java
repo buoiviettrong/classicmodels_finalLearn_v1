@@ -39,4 +39,8 @@ public interface ProductRepository extends BaseRepository<Product, String> {
     );
 
     ProductSearchResponseDTO getProduct(String productCode);
+
+    List<ProductSearchResponseDTO> managerSearch(String search, Long offset, Long pageSize);
+
+    Long countManagerSearch(String search);
 }

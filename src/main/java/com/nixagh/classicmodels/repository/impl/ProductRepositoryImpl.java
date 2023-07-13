@@ -175,6 +175,51 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
                 .fetchFirst();
     }
 
+    @Override
+    public List<ProductSearchResponseDTO> managerSearch(String search, Long offset, Long pageSize) {
+        BooleanExpression searchExpression = null;
+
+        if (search != null)
+            searchExpression = product.productCode.containsIgnoreCase(search)
+                    .or(product.productName.containsIgnoreCase(search))
+                    .or(product.productLine.productLine.containsIgnoreCase(search));
+
+        return jpaQueryFactory
+                .select(Projections.constructor(
+                        ProductSearchResponseDTO.class,
+                        product.productCode,
+                        product.productName,
+                        product.productLine.productLine,
+                        product.productScale,
+                        product.productVendor,
+                        product.productDescription,
+                        product.quantityInStock,
+                        product.buyPrice,
+                        product.msrp
+                ))
+                .from(product)
+                .where(searchExpression)
+                .offset(offset)
+                .limit(pageSize)
+                .fetch();
+    }
+
+    @Override
+    public Long countManagerSearch(String search) {
+        BooleanExpression searchExpression = null;
+
+        if (search != null)
+            searchExpression = product.productCode.containsIgnoreCase(search)
+                    .or(product.productName.containsIgnoreCase(search))
+                    .or(product.productLine.productLine.containsIgnoreCase(search));
+
+        return jpaQueryFactory
+                .select(product.countDistinct())
+                .from(product)
+                .where(searchExpression)
+                .fetchFirst();
+    }
+
     private <T> JPAQuery<T> getfilter(
             JPAQuery<T> query,
 //            String productCode,
@@ -209,6 +254,8 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
 //            query.where(product.productDescription.eq(productDescription));
 //        }
         if (quantityInStock != null) {
+            // null check
+
             if (quantityInStock.min() > quantityInStock.max())
                 throw new BadRequestException("Min quantity in stock must be less than max quantity in stock");
             if (quantityInStock.min() > 0) {

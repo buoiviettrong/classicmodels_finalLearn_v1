@@ -10,6 +10,6 @@ import lombok.*;
 public class CustomerStatisticDTO {
     private Long customerNumber;
     private String customerName;
-    private Long totalOrder;
+    private Integer totalOrder;
     private Double totalAmount;
 }
