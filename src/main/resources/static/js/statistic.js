@@ -164,7 +164,62 @@ const loadOrderToList = (response) => {
                 <td>${order["customerNumber"]}</td>
                 <td>${order["comment"]}</td>
             `;
+        const btnChangeStatus = `<button class="btn btn-primary btn-sm" onClick="changeStatusOrder('${order["orderNumber"]}')">Change Status</button>`;
+        const action = `
+                <!-- Action -->
+                <td>
+                    <!-- change status -->
+                    ${order["status"] !== 'Shipped' ? btnChangeStatus : ''}
+                    <!-- view detail -->
+                    <button class="btn btn-primary btn-sm" onclick="viewOrderDetail(${order["orderNumber"]})">View Detail</button>
+                </td>
+        `;
+        row.innerHTML += action;
         orderList.appendChild(row);
+    });
+}
+// change status order
+// open modal change status order
+const changeStatusOrder = (orderNumber) => {
+    $("#change-status-order-number").val(orderNumber);
+    $("#change-status-order-modal")['modal']("show");
+}
+// save change status order
+const saveChangeStatusOrder = () => {
+    const orderNumber = parseInt($("#change-status-order-number").val());
+    const status = $("#change-status-order-status").val();
+    const data = {orderNumber, status};
+    callAPI.post(orderURL + `/change-status`, data).then(response => {
+        if (response['message'] === 'success') {
+            alert("Change status order successfully!");
+            $("#change-status-order-modal")['modal']("hide");
+            getStatisticalOrder(from_.value, to_.value);
+        } else {
+            alert("Change status order failed!");
+        }
+    });
+}
+
+// view order detail
+// order details modal
+const viewOrderDetail = async (orderNumber) => {
+    $("#order-detail-modal")['modal']("show");
+    const data = await callAPI.get(orderURL + `/${orderNumber}/orderDetail`);
+    loadOrderDetail(orderNumber, data);
+}
+
+const loadOrderDetail = (orderNumber, response) => {
+    $("#order-detail-order-number").val(orderNumber);
+    const orderDetailList = $("#order-detail-table-body");
+    orderDetailList.empty();
+    response.forEach(orderDetail => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+                <td>${orderDetail["productCode"]}</td>
+                <td>${orderDetail["quantityOrdered"]}</td>
+                <td>${orderDetail["priceEach"]}</td>
+            `;
+        orderDetailList.append(row);
     });
 }
 
@@ -301,3 +356,4 @@ const getStatistical = () => {
     to_.valueAsDate = new Date();
     getStatistical();
 })();
+

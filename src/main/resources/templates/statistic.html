@@ -172,6 +172,7 @@
                     <th>Trạng thái</th>
                     <th>Khách hàng</th>
                     <th>Comment</th>
+                    <th>Action</th>
                 </tr>
                 </thead>
                 <tbody id="statistic-order-table-body">
@@ -295,6 +296,100 @@
                     <td id="statistic-product-table-body-total-amount"></td>
                 </tr>
             </table>
+        </div>
+    </div>
+</div>
+
+<!-- change status modal -->
+<div class="modal fade" id="change-status-order-modal" tabindex="1" aria-labelledby="change-status-order-modal"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Change Status</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- change status form -->
+                <input type="hidden" name="change-status-order-number" id="change-status-order-number" readonly>
+                <!-- status select -->
+                <div class="mb-3">
+                    <label for="change-status-order-status" class="form-label">Status</label>
+                    <select class="form-select" id="change-status-order-status">
+                        <option value="In Process">In Process</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="On Hold">On Hold</option>
+                        <option value="Resolved">Resolved</option>
+                        <option value="Disputed">Disputed</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="saveChangeStatusOrder()">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- order detail modal -->
+<div class="modal fade" id="change-status-order-modal" tabindex="1" aria-labelledby="change-status-order-modal"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Change Status</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <!-- change status form -->
+                <input type="hidden" name="change-status-order-number" id="change-status-order-number" readonly>
+                <!-- status select -->
+                <div class="mb-3">
+                    <label for="change-status-order-status" class="form-label">Status</label>
+                    <select class="form-select" id="change-status-order-status">
+                        <option value="In Process">In Process</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="On Hold">On Hold</option>
+                        <option value="Resolved">Resolved</option>
+                        <option value="Disputed">Disputed</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="saveChangeStatusOrder()">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="order-detail-modal" tabindex="1" aria-labelledby="change-status-order-modal"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Order Detail</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <label for="order-detail-order-number">Order Number</label>
+                <input type="text" name="" id="order-detail-order-number" readonly>
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">Product Code</th>
+                        <th scope="col">Quantity Ordered</th>
+                        <th scope="col">Price Each</th>
+                    </tr>
+                    </thead>
+                    <tbody id="order-detail-table-body">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
         </div>
     </div>
 </div>

@@ -17,10 +17,7 @@ import com.nixagh.classicmodels.entity.OrderDetail;
 import com.nixagh.classicmodels.entity.Product;
 import com.nixagh.classicmodels.entity.embedded.OrderDetailsEmbed;
 import com.nixagh.classicmodels.entity.enums.ShippingStatus;
-import com.nixagh.classicmodels.exception.NotEnoughProduct;
-import com.nixagh.classicmodels.exception.NotFoundEntity;
-import com.nixagh.classicmodels.exception.NotSupportStatus;
-import com.nixagh.classicmodels.exception.PageInfoException;
+import com.nixagh.classicmodels.exception.*;
 import com.nixagh.classicmodels.repository.*;
 import com.nixagh.classicmodels.utils.PageUtil;
 import com.nixagh.classicmodels.utils.RoundUtil;
@@ -239,7 +236,7 @@ public class OrderService {
         long offset = (statisticalRequest.getPageInfo().getPageNumber() - 1) * statisticalRequest.getPageInfo().getPageSize();
         long limit = statisticalRequest.getPageInfo().getPageSize();
 
-        List<OrderStatisticDTO> orders = orderRepository.getOrderStatistical(statisticalRequest.getFrom(), statisticalRequest.getTo(), offset, limit)
+        List<OrderStatisticDTO> orders = orderRepository.getOrderStatistical(statisticalRequest.getFrom(), new java.sql.Date(statisticalRequest.getTo().getTime() + 86400000), offset, limit)
                 .stream()
                 .map(tuple -> OrderStatisticDTO.builder()
                         .orderNumber(tuple.get(0, Long.class))
@@ -331,5 +328,18 @@ public class OrderService {
                         .build()
                 )
                 .toList();
+    }
+
+    public Map<String, String> changeStatus(Long orderNumber, String status) {
+        orderNoDSLRepository.findByOrderNumber(orderNumber).orElseThrow(() -> new NotFoundEntity("Order not found"));
+
+        Arrays.stream(ShippingStatus.values())
+                .map(ShippingStatus::getShippingStatus)
+                .filter(s -> s.equals(status))
+                .findFirst()
+                .orElseThrow(() -> new BadRequestException("Status not found"));
+
+        orderRepository.updateStatus(orderNumber, status);
+        return Map.of("message", "success");
     }
 }

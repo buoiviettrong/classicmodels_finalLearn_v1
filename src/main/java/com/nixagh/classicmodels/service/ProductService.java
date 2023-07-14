@@ -99,14 +99,20 @@ public class ProductService {
         ProductStatisticResponse productStatisticResponse = new ProductStatisticResponse();
 
         Date from = statisticalRequest.getFrom();
+
+
         Date to = statisticalRequest.getTo();
+
 
         if (from == null) {
             from = new Date(0);
         }
         if (to == null) {
-            to = new Date();
+            to = new Date(new Date().getTime() + 86400000);
         }
+
+        // increase 1 day to date to include the last day
+        to = new Date(to.getTime() + 86400000);
 
         long pageNumber = statisticalRequest.getPageInfo().getPageNumber();
         long pageSize = statisticalRequest.getPageInfo().getPageSize();
@@ -129,6 +135,7 @@ public class ProductService {
 
         return productStatisticResponse;
     }
+
 
     public ProductEachMonth getProductEachMonth(int year, int month, long pageNumber, long pageSize) {
         ProductEachMonth productEachMonth = new ProductEachMonth();

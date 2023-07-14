@@ -14,6 +14,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/orders")
@@ -77,6 +78,14 @@ public class OrderController {
     public List<OrderHistoryResponse> getHistory(@PathParam(value = "customerNumber") Long customerNumber) {
         // check SQL injection
         return orderService.getHistory(customerNumber);
+    }
+
+    @PostMapping("/change-status")
+    public Map<String, String> changeStatus(@RequestBody changeStatus request) {
+        return orderService.changeStatus(request.orderNumber, request.status);
+    }
+
+    private record changeStatus(Long orderNumber, String status) {
     }
 
 }

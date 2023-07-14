@@ -31,4 +31,6 @@ public interface OrderRepository extends BaseRepository<Order, Long> {
     List<Tuple> getOrderStatistical(Date from, Date to, long offset, long limit);
 
     long countOrderStatistical(Date from, Date to);
+
+    void updateStatus(Long orderNumber, String status);
 }

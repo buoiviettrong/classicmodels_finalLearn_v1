@@ -11,10 +11,8 @@ import java.util.List;
 @Repository
 public interface CustomerNoDSLRepository extends JpaRepository<Customer, Long> {
     @Query(value = """
-            -- lấy thông tin khách hàng 
             SELECT distinct c.customerNumber, c.customerName, t.totalOrder, t.totalAmount
             FROM customers c
-            -- lấy thông tin đơn hàng của khách hàng
             LEFT JOIN (
                 SELECT o.customerNumber as customerNumber, count(customerNumber) as totalOrder, round(sum(od.priceEach * od.quantityOrdered), 2) as totalAmount
                 FROM orders o
@@ -24,9 +22,7 @@ public interface CustomerNoDSLRepository extends JpaRepository<Customer, Long> {
                 AND o.status = 'Shipped'
                 GROUP BY customerNumber
             ) as t on t.customerNumber = c.customerNumber
-            -- sắp xếp theo tổng số tiền mà khách hàng đã mua
             ORDER BY t.totalAmount DESC
-            -- phân trang
             LIMIT :offset, :pageSize
             """, nativeQuery = true)
     List<Tuple> getCustomerEachMonth(int year, int month, long offset, long pageSize);

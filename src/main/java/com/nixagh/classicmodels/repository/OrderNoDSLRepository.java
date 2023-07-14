@@ -8,6 +8,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.sql.Date;
 import java.util.List;
+import java.util.Optional;
 
 public interface OrderNoDSLRepository extends JpaRepository<Order, Long> {
 
@@ -67,6 +68,8 @@ public interface OrderNoDSLRepository extends JpaRepository<Order, Long> {
             GROUP BY o.orderNumber
             """, nativeQuery = true)
     List<Tuple> findOrderByCustomerNumber(Long customerNumber);
+
+    Optional<Object> findByOrderNumber(Long orderNumber);
 }
 
 

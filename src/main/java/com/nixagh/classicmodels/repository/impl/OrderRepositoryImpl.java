@@ -9,6 +9,7 @@ import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAUpdateClause;
 import jakarta.persistence.EntityManager;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -143,6 +144,21 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> impleme
                 .from(order)
                 .where(order.orderDate.between(from, to))
                 .fetchFirst();
+    }
+
+    @Override
+    @Transactional
+    public void updateStatus(Long orderNumber, String status) {
+        JPAUpdateClause update = jpaQueryFactory.update(order);
+        if (status.equals("Shipped"))
+            update.set(order.status, status)
+                    .set(order.shippedDate, new Date(System.currentTimeMillis()))
+                    .where(order.orderNumber.eq(orderNumber))
+                    .execute();
+        else
+            update.set(order.status, status)
+                    .where(order.orderNumber.eq(orderNumber))
+                    .execute();
     }
 
 
