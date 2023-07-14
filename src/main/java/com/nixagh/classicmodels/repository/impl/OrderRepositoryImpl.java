@@ -145,6 +145,7 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> impleme
                 .fetchFirst();
     }
 
+
     private <T> JPAQuery<T> getPredicates(JPAQuery<T> queryFactory, OrderFilter orderFilter) {
         if (orderFilter == null)
             return queryFactory;

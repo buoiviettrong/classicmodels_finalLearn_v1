@@ -32,8 +32,10 @@ public class AuthenticationController {
             HttpServletResponse response
     ) throws IOException {
         AuthenticationResponse authenticationResponse = authenticationService.authenticate(request);
-        String role = authenticationResponse.getUserDetails().getRole().getRoleName().toLowerCase();
-        authenticationResponse.setRedirect("/" + role + "/dashboard");
+        String accessToken = authenticationResponse.getAccessToken();
+        // get role from token
+        String role = authenticationService.getRoleFromToken(accessToken);
+        authenticationResponse.setRedirect("/" + role.toLowerCase() + "/dashboard");
         return authenticationResponse;
     }
 

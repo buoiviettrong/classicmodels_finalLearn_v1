@@ -1,15 +1,45 @@
-const user = localStorage.getItem('user');
-if (user !== null) {
-    const userObj = JSON.parse(user);
-    const userElement = $('#dropdownMenuButton');
-    userElement.val(userObj.email);
-    userElement.html(userObj.email);
-}
-
 const logoutBtn = $('#logoutBtn');
 logoutBtn.click(async () => {
-    const data = await callAPI.get('/api/v1/auth/logout');
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-    window.location.href = '/login';
+    callAPI.logout();
 });
+
+function parseJwt(token) {
+    const base64Url = token.split('.')[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    return JSON.parse(jsonPayload);
+}
+
+const token = localStorage.getItem('token');
+let user = {
+    email: null,
+    name: null,
+    role: null,
+    permissions: [],
+    userId: null,
+    customerNumber: null,
+};
+const loadEmail = () => {
+    if (token !== null) {
+        const tokenObj = parseJwt(token);
+        if (tokenObj.exp < Date.now() / 1000) {
+            localStorage.removeItem('token');
+            window.location.href = '/login';
+        }
+        $('#dropdownMenuButton').text(tokenObj.email);
+        user = {
+            email: tokenObj.email,
+            name: tokenObj.name,
+            role: tokenObj.role,
+            permissions: tokenObj.permissions,
+            userId: tokenObj.userId,
+            customerNumber: tokenObj.customerNumber,
+        }
+    } else {
+        window.location.href = '/login';
+    }
+}
+loadEmail();

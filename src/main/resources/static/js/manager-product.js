@@ -8,9 +8,16 @@ const products = {
                 <div class="card">
                     <img class="card-img-top" src="${product.image || defaultImageSource}" alt="Card image cap">
                     <div class="card-body">
+                        <!-- product name -->
                         <h5 class="card-title">${product['productName'] || 'This is product Name'}</h5>
+                        <!-- product description -->
                         <p class="card-text">${product['productDescription'] || 'This is product description..'}</p>
-                        
+                        <!-- product price -->
+                        <div class="d-flex justify-content-between align-items-center float-end">
+                            <div class="btn-group">
+                                <h5>Price: ${product['msrp'] || 0} / each</h5>
+                            </div>
+                        </div>
                     </div>
                     <div class="card-footer d-flex justify-content-between align-items-center">
                         <a href="#" class="btn btn-sm btn-outline-secondary" onclick="products.event.view('${product.productCode}')">View</a>
@@ -115,8 +122,8 @@ const carts = {
                             class="reduced items-count button-minus border rounded-circle  icon-shape icon-sm mx-1" type="button">
                             -
                         </button>
-                        <input type="text" name="qty" id="sst" maxlength="12" value="${product['quantity'] || 0}" title="Quantity:"
-                            class="input-text qty" />
+                        <input type="text" name="qty" id="${product.productCode} input" maxlength="12" value="${product['quantity'] || 0}" title="Quantity:"
+                            class="input-text qty" onchange="carts.event.change('${product.productCode}')"/>
                         <button
                             onclick="carts.event.increaseQuantity('${product.productCode}')"
                             class="increase items-count button-plus border rounded-circle icon-shape icon-sm" type="button">
@@ -126,6 +133,12 @@ const carts = {
                 </td>
                 <td>
                     <h5>${(product['msrp'] * product['quantity']).toFixed(2) || 0}</h5>
+                </td>
+                <!-- remove product from cart -->
+                <td>
+                    <a href="#" onclick="carts.event.remove('${product.productCode}')">
+                        Remove
+                    </a>
                 </td>
             </tr>
         `
@@ -141,6 +154,22 @@ const carts = {
                 carts.render();
             }
         },
+        change: function (productCode) {
+            const quantity = parseInt($(`[id='${productCode} input']`).val());
+            if (quantity > 0) {
+                carts.lists[productCode]['quantity'] = quantity;
+            }
+            carts.render();
+        },
+        remove: function (productCode) {
+            delete carts.lists[productCode];
+            carts.render();
+        }
+    },
+    init: function () {
+        $('#checkoutBtn').click(function () {
+            carts.checkout();
+        })
     },
     render: function () {
         this.body.lists.empty();
@@ -162,8 +191,66 @@ const carts = {
         }
         this.render();
     },
+    checkout: function () {
+        // check if cart is empty
+        if (Object.keys(this.lists).length === 0) {
+            alert('Your cart is empty!');
+            return;
+        }
+        // // check if user is logged in
+        // if (!user) {
+        //     alert('Please login to checkout!');
+        //     return;
+        // }
+        // // check if user is manager
+        // if (user['role'] !== 'MANAGER') {
+        //     alert('Only manager can checkout!');
+        //     return;
+        // }
+        // // check if user has enough money
+        // if (user['balance'] < $('#total-price').text()) {
+        //     alert('You do not have enough money to checkout!');
+        //     return;
+        // }
+        // // check if user has enough quantity
+        // for (let key in this.lists) {
+        //     if (this.lists[key]['quantity'] > this.lists[key]['quantityInStock']) {
+        //         alert(`You do not have enough quantity of ${this.lists[key]['productName']} to checkout!`);
+        //         return;
+        //     }
+        // }
+        // checkout
+        const url = '/api/v1/orders/checkout';
+        const postProducts = [];
+        for (let key in this.lists) {
+            postProducts.push({
+                productCode: this.lists[key]['productCode'],
+                quantity: this.lists[key]['quantity'],
+                price: this.lists[key]['msrp']
+            });
+        }
+
+        const request = {
+            products: postProducts,
+            customerNumber: user['customerNumber'],
+            requireDate: new Date().toISOString().slice(0, 10)
+        };
+        console.log(request);
+        callAPI.post(url, request)
+            .then(data => {
+                console.log(data);
+                if (data.message !== undefined) {
+                    alert(data.message);
+                    return;
+                }
+                alert('Checkout successfully!');
+                this.lists = {};
+                this.render();
+            })
+    }
 };
 
 (async () => {
     await products.init();
+    carts.init();
 })();

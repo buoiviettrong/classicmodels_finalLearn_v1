@@ -1,9 +1,11 @@
 package com.nixagh.classicmodels.controller;
 
 import com.nixagh.classicmodels.dto.orders.*;
+import com.nixagh.classicmodels.dto.orders.manager.history.OrderHistoryResponse;
 import com.nixagh.classicmodels.dto.product.ProductDTO;
 import com.nixagh.classicmodels.entity.Order;
 import com.nixagh.classicmodels.service.OrderService;
+import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/order")
+@RequestMapping("/api/v1/orders")
 @RequiredArgsConstructor
 @PreAuthorize("hasAnyRole('MANAGER', 'ADMIN')")
 @EnableCaching
@@ -34,6 +36,11 @@ public class OrderController {
 
     @PostMapping("/save")
     public Order saveOrder(@RequestBody OrderCreateRequest request) {
+        return orderService.saveOrder(request);
+    }
+
+    @PostMapping("/checkout")
+    public Order checkout(@RequestBody OrderCreateRequest request) {
         return orderService.saveOrder(request);
     }
 
@@ -64,6 +71,12 @@ public class OrderController {
     @GetMapping("/highestOrder")
     public HighestOrderResponse getHighestOrder() {
         return orderService.getHighestOrder();
+    }
+
+    @GetMapping("/history")
+    public List<OrderHistoryResponse> getHistory(@PathParam(value = "customerNumber") Long customerNumber) {
+        // check SQL injection
+        return orderService.getHistory(customerNumber);
     }
 
 }

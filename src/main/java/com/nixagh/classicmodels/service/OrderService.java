@@ -3,6 +3,7 @@ package com.nixagh.classicmodels.service;
 import com.nixagh.classicmodels.dto.PageRequestInfo;
 import com.nixagh.classicmodels.dto.PageResponseInfo;
 import com.nixagh.classicmodels.dto.orders.*;
+import com.nixagh.classicmodels.dto.orders.manager.history.OrderHistoryResponse;
 import com.nixagh.classicmodels.dto.product.ProductDTO;
 import com.nixagh.classicmodels.dto.statistical.request.OrderStatisticDTO;
 import com.nixagh.classicmodels.dto.statistical.request.OrderWithProfit;
@@ -318,5 +319,17 @@ public class OrderService {
                     orderEachMonths.set(month - 1, order);
                 });
         return orderEachMonths;
+    }
+
+    public List<OrderHistoryResponse> getHistory(Long customerNumber) {
+        return orderNoDSLRepository.findOrderByCustomerNumber(customerNumber).stream()
+                .map(tuple -> OrderHistoryResponse.builder()
+                        .orderNumber(tuple.get("orderNumber", Integer.class))
+                        .orderDate(tuple.get("orderDate", Date.class))
+                        .totalAmount(tuple.get("totalAmount", Double.class))
+                        .status(tuple.get("status", String.class))
+                        .build()
+                )
+                .toList();
     }
 }

@@ -30,6 +30,7 @@ public class User implements UserDetails {
     private String lastName;
     private String email;
     private String password;
+    private Long customerNumber;
 
     @Enumerated(EnumType.STRING)
     private LoginType loginType = LoginType.NORMAL;

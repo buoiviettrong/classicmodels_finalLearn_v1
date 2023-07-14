@@ -58,6 +58,15 @@ public interface OrderNoDSLRepository extends JpaRepository<Order, Long> {
             WHERE year(o.orderDate) = :year
             """, nativeQuery = true)
     List<Tuple> getOrderEachMonth(int year);
+
+    @Query(value = """
+            SELECT o.orderNumber as orderNumber, o.orderDate as orderDate, round(sum(od.quantityOrdered * od.priceEach), 2) as totalAmount, o.status as status
+            FROM orders o
+            LEFT JOIN order_details od ON o.orderNumber = od.orderNumber
+            WHERE o.customerNumber = :customerNumber
+            GROUP BY o.orderNumber
+            """, nativeQuery = true)
+    List<Tuple> findOrderByCustomerNumber(Long customerNumber);
 }
 
 

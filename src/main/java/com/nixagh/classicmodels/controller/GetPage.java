@@ -55,4 +55,9 @@ public class GetPage {
         return "manager-product";
     }
 
+    @GetMapping("/manager/order-history")
+    public String getManagerOrderHistoryPage() {
+        return "manager-order-history";
+    }
+
 }

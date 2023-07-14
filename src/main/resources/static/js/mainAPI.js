@@ -37,5 +37,19 @@ const callAPI = {
     },
     delete: (url) => {
         return callAPI.base("DELETE", url);
-    }
+    },
+    logout: () => {
+        headers["Authorization"] = "Bearer " + localStorage.getItem("token");
+        let init = {
+            method: 'GET',
+            headers: headers,
+        };
+        fetch(host + '/api/v1/auth/logout', init).then((response) => {
+            localStorage.removeItem("token");
+            window.location.href = "/login";
+        }).catch((error) => {
+                alert("Error logging out");
+            }
+        );
+    },
 }
