@@ -60,6 +60,24 @@ const emptyTable = function () {
     tableHead.empty();
     tableBody.empty();
 }
+
+const modals = {
+    customerOrderDetails: {
+        content: ``,
+        show: function (customerId, yearValue, monthValue) {
+            const url = `${statisticURL}/customer-order-details?customerId=${customerId}&year=${yearValue}&month=${monthValue}`;
+            callAPI.get(url).then(function (response) {
+                modals.customerOrderDetails.loadOrderDetails(response);
+            }).catch(function (error) {
+                console.log(error);
+            });
+        },
+        loadOrderDetails: (response) => {
+            
+        }
+    }
+}
+
 const orders = {
     head: `
         <tr>
@@ -230,7 +248,7 @@ const customers = {
                 <tr>
                     <td>${item["customerNumber"]}</td>
                     <td>${item["customerName"]}</td>
-                    <td>${item["totalOrder"] === null ? 0 : item["totalOrder"]}</td>
+                    <td class="pe-auto" style="cursor: pointer;" onclick="customers.event.getOrderDetail()">${item["totalOrder"] === null ? 0 : item["totalOrder"]}</td>
                     <td>${item["totalAmount"] === null ? 0 : item["totalAmount"]}</td>
                 `;
             tableBody.append(row);
@@ -244,6 +262,11 @@ const customers = {
         totalRecord.val(pageInfo["totalElements"]);
     },
     getChartDataOfCustomer: function (response) {
+    },
+    event: {
+        getOrderDetail: function () {
+            alert("get order detail");
+        }
     }
 }
 

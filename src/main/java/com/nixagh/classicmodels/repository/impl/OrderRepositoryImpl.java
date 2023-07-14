@@ -116,6 +116,7 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> impleme
                 .leftJoin(order.orderDetail, orderDetail)
                 .where(order.orderDate.between(from, to).and(order.status.eq("Shipped")))
                 .groupBy(order.orderNumber)
+                .orderBy(order.orderDate.desc())
                 .fetch();
     }
 
@@ -132,6 +133,7 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> impleme
                 )
                 .from(order)
                 .where(order.orderDate.between(from, to))
+                .orderBy(order.orderDate.desc())
                 .offset(offset)
                 .limit(limit)
                 .fetch();
