@@ -79,4 +79,9 @@ public class CustomExceptionHandler {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 
+    @ExceptionHandler(NotEnoughMoney.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorResponse handlerNotEnoughMoney(NotEnoughMoney e) {
+        return new ErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
+    }
 }

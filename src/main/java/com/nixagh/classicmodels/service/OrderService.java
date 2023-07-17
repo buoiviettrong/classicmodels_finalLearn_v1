@@ -77,7 +77,7 @@ public class OrderService {
     @Transactional
     public Order saveOrder(OrderCreateRequest order) {
         Customer customer = customerRepository.findByCustomerNumber(order.getCustomerNumber());
-
+        Double totalPrice = 0.0;
         Order saveOrder = Order.builder()
                 .orderDate(new Date())
                 .requiredDate(order.getRequireDate())
@@ -108,6 +108,7 @@ public class OrderService {
                     .orderLineNumber(i + 1)
                     .build();
             orderDetailRepository.save(orderDetail);
+            totalPrice += productOrders.get(i).getQuantity() * product_.getMsrp();
         }
 
         // cập nhập số lượng sản phẩm trong kho product
@@ -117,6 +118,11 @@ public class OrderService {
             productRepository.save(product_);
         }
 
+        // trừ tiền khách hàng
+        if (customer.getCreditLimit() < totalPrice)
+            throw new NotEnoughMoney("Customer %s not enough money".formatted(customer.getCustomerName()));
+        customer.setCreditLimit(customer.getCreditLimit() - totalPrice);
+        customerRepository.save(customer);
         return result;
     }
 

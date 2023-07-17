@@ -84,7 +84,7 @@ const products = {
                 pageNumber: $('#current-page').text() || 1,
                 pageSize: 6
             },
-            search: $('#search-input').val()
+            search: $('#searchInput').val()
         }
         const data = await callAPI.post(url, request);
         // update page info
