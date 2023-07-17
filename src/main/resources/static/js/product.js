@@ -681,5 +681,6 @@ const outOfStock = {
 
         modalGenerate.showAlert('success', 'Update product successfully');
         await outOfStock.addToTable();
+        await products.reload();
     },
 }
