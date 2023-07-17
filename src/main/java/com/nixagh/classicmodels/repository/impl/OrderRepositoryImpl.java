@@ -7,6 +7,7 @@ import com.nixagh.classicmodels.repository.OrderRepository;
 import com.querydsl.core.Tuple;
 import com.querydsl.core.types.ConstructorExpression;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAUpdateClause;
@@ -161,6 +162,84 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> impleme
             update.set(order.status, status)
                     .where(order.orderNumber.eq(orderNumber))
                     .execute();
+    }
+
+    @Override
+    public List<Tuple> getOrderDetails(Integer year, Integer month, String status, Long offset, Long limit) {
+        BooleanExpression statusExpression = null;
+        if (status != null) statusExpression = order.status.eq(status);
+
+        return jpaQueryFactory
+                .select(
+                        order.orderNumber,
+                        customer.customerName,
+                        customer.customerNumber,
+                        order.orderDate,
+                        order.shippedDate,
+                        order.status,
+                        order.comments,
+                        orderDetail.priceEach.multiply(orderDetail.quantityOrdered).sum()
+                )
+                .from(order)
+                .leftJoin(order.orderDetail, orderDetail)
+                .leftJoin(order.customer, customer)
+                .where(order.orderDate.year().eq(year).and(order.orderDate.month().eq(month)).and(statusExpression))
+                .groupBy(
+                        order.orderNumber,
+                        customer.customerName,
+                        customer.customerNumber,
+                        order.orderDate,
+                        order.shippedDate,
+                        order.status,
+                        order.comments
+                )
+                .orderBy(order.orderDate.desc())
+                .offset(offset)
+                .limit(limit)
+                .fetch();
+    }
+
+    @Override
+    public List<Tuple> getStatusMap(Integer year, Integer month) {
+        return jpaQueryFactory
+                .select(
+                        order.status,
+                        order.status.count()
+                )
+                .from(order)
+                .where(order.orderDate.year().eq(year).and(order.orderDate.month().eq(month)))
+                .groupBy(order.status)
+                .fetch();
+    }
+
+    @Override
+    public List<Tuple> countOrderDetails(Integer year, Integer month) {
+        return jpaQueryFactory
+                .select(
+                        order.orderNumber,
+                        customer.customerNumber,
+                        customer.customerName,
+                        order.orderDate,
+                        order.shippedDate,
+                        order.status,
+                        orderDetail.quantityOrdered.multiply(orderDetail.priceEach).sum(),
+                        order.comments
+                )
+                .from(order)
+                .leftJoin(order.orderDetail, orderDetail)
+                .leftJoin(order.customer, customer)
+                .where(order.orderDate.year().eq(year).and(order.orderDate.month().eq(month)))
+                .groupBy(
+                        order.orderNumber,
+                        customer.customerName,
+                        customer.customerNumber,
+                        order.orderDate,
+                        order.shippedDate,
+                        order.status,
+                        order.comments
+                )
+                .orderBy(order.orderDate.desc())
+                .fetch();
     }
 
 

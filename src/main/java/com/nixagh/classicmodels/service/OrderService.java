@@ -3,6 +3,9 @@ package com.nixagh.classicmodels.service;
 import com.nixagh.classicmodels.dto.PageRequestInfo;
 import com.nixagh.classicmodels.dto.PageResponseInfo;
 import com.nixagh.classicmodels.dto.orders.*;
+import com.nixagh.classicmodels.dto.orders.admin.statictis.customer.orders.detail.CustomerOrderDetailResponse;
+import com.nixagh.classicmodels.dto.orders.admin.statictis.order.OrderDetailResponse;
+import com.nixagh.classicmodels.dto.orders.admin.statictis.order.OrderDetails;
 import com.nixagh.classicmodels.dto.orders.manager.history.OrderHistoryResponse;
 import com.nixagh.classicmodels.dto.product.ProductDTO;
 import com.nixagh.classicmodels.dto.statistical.request.OrderStatisticDTO;
@@ -202,10 +205,6 @@ public class OrderService {
 
     public List<OrderWithProfit> getOrderByTimeRange(@DateTimeFormat(pattern = "yyyy-MM-dd") java.sql.Date from,
                                                      @DateTimeFormat(pattern = "yyyy-MM-dd") java.sql.Date to) {
-        // giảm 1 ngày để lấy đủ dữ liệu
-        long oneDay = 24 * 60 * 60 * 1000;
-        java.sql.Date from_ = new java.sql.Date(from.getTime() - oneDay);
-
         return orderNoDSLRepository.getOrderByTimeRange(from, to)
                 .stream()
                 .map(tuple -> OrderWithProfit.builder()
@@ -341,5 +340,63 @@ public class OrderService {
 
         orderRepository.updateStatus(orderNumber, status);
         return Map.of("message", "success");
+    }
+
+    public List<CustomerOrderDetailResponse> getCustomerOrderDetails(Long customerNumber, Integer year, Integer month) {
+        return orderNoDSLRepository.getCustomerOrderDetails(customerNumber, year, month)
+                .stream()
+                .map(tuple -> CustomerOrderDetailResponse.builder()
+                        .orderNumber(tuple.get("orderNumber", Integer.class))
+                        .orderDate(tuple.get("orderDate", Date.class))
+                        .shippedDate(tuple.get("shippedDate", Date.class))
+                        .status(tuple.get("status", String.class))
+                        .comments(tuple.get("comments", String.class))
+                        .totalPrice(tuple.get("totalPrice", Double.class))
+                        .build())
+                .toList();
+    }
+
+    public OrderDetailResponse getOrderDetails(Integer year, Integer month, String status, Long pageNumber, Long pageSize) {
+        if (status == null || status.equals("All")) status = null;
+        // check status
+        if (status != null) {
+            String finalStatus = status;
+            Arrays.stream(ShippingStatus.values())
+                    .map(ShippingStatus::getShippingStatus)
+                    .filter(s -> s.equals(finalStatus))
+                    .findFirst()
+                    .orElseThrow(() -> new BadRequestException("Status not found"));
+        }
+
+        Long offset = (pageNumber - 1) * pageSize;
+        Long total = (long) orderRepository.countOrderDetails(year, month).size();
+
+        List<OrderDetails> orderDetails = orderRepository.getOrderDetails(year, month, status, offset, pageSize)
+                .stream()
+                .map(tuple -> OrderDetails.builder()
+                        .orderNumber(tuple.get(0, Long.class))
+                        .customerName(tuple.get(1, String.class))
+                        .customerNumber(tuple.get(2, Long.class))
+                        .orderDate(tuple.get(3, Date.class))
+                        .shippedDate(tuple.get(4, Date.class))
+                        .status(tuple.get(5, String.class))
+                        .comments(tuple.get(6, String.class))
+                        .totalPrice(RoundUtil.convert(tuple.get(7, Double.class), 2))
+                        .build())
+                .toList();
+
+        Map<String, Integer> statusMap = orderRepository.getStatusMap(year, month)
+                .stream()
+                .collect(Collectors.toMap(
+                        tuple -> tuple.get(0, String.class),
+                        tuple -> Objects.requireNonNull(tuple.get(1, Long.class)).intValue()
+                ));
+
+        OrderDetailResponse orderDetailResponse = new OrderDetailResponse();
+        orderDetailResponse.setOrders(orderDetails);
+        orderDetailResponse.setStatus(statusMap);
+        orderDetailResponse.setPageResponseInfo(PageUtil.getResponse(pageNumber, pageSize, total, (long) orderDetails.size()));
+
+        return orderDetailResponse;
     }
 }

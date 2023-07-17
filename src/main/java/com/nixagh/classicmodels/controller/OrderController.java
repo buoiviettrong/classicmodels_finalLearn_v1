@@ -1,6 +1,8 @@
 package com.nixagh.classicmodels.controller;
 
 import com.nixagh.classicmodels.dto.orders.*;
+import com.nixagh.classicmodels.dto.orders.admin.statictis.customer.orders.detail.CustomerOrderDetailResponse;
+import com.nixagh.classicmodels.dto.orders.admin.statictis.order.OrderDetailResponse;
 import com.nixagh.classicmodels.dto.orders.manager.history.OrderHistoryResponse;
 import com.nixagh.classicmodels.dto.product.ProductDTO;
 import com.nixagh.classicmodels.entity.Order;
@@ -88,4 +90,23 @@ public class OrderController {
     private record changeStatus(Long orderNumber, String status) {
     }
 
+    @GetMapping("/customer-order-details")
+    public List<CustomerOrderDetailResponse> getCustomerOrderDetails(
+            @PathParam(value = "customerNumber") Long customerNumber,
+            @PathParam(value = "year") Integer year,
+            @PathParam(value = "month") Integer month
+    ) {
+        return orderService.getCustomerOrderDetails(customerNumber, year, month);
+    }
+
+    @GetMapping("/order-details")
+    public OrderDetailResponse getOrderDetails(
+            @PathParam(value = "year") Integer year,
+            @PathParam(value = "month") Integer month,
+            @PathParam(value = "status") String status,
+            @PathParam(value = "pageNumber") Long pageNumber,
+            @PathParam(value = "pageSize") Long pageSize
+    ) {
+        return orderService.getOrderDetails(year, month, status, pageNumber, pageSize);
+    }
 }

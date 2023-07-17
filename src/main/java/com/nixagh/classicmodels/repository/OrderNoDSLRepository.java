@@ -69,11 +69,29 @@ public interface OrderNoDSLRepository extends JpaRepository<Order, Long> {
             LEFT JOIN order_details od ON o.orderNumber = od.orderNumber
             WHERE o.customerNumber = :customerNumber
             GROUP BY o.orderNumber
-            ORDER BY o.orderDate DESC
+            ORDER BY 2 DESC
             """, nativeQuery = true)
     List<Tuple> findOrderByCustomerNumber(Long customerNumber);
 
     Optional<Object> findByOrderNumber(Long orderNumber);
+
+    @Query(value = """
+            SELECT o.orderNumber as orderNumber,
+                o.orderDate as orderDate,
+                o.shippedDate as shippedDate,
+                o.status as status,
+                o.comments as comments,
+                round(sum(od.quantityOrdered * od.priceEach), 2) as totalPrice
+            FROM orders o
+            LEFT JOIN order_details od ON o.orderNumber = od.orderNumber
+            WHERE o.customerNumber = :customerNumber
+            AND year(o.orderDate) = :year
+            AND month(o.orderDate) = :month
+            GROUP BY o.orderNumber
+            ORDER BY 2 DESC
+            """, nativeQuery = true
+    )
+    List<Tuple> getCustomerOrderDetails(Long customerNumber, Integer year, Integer month);
 }
 
 
