@@ -84,7 +84,7 @@ public class StatisticalService {
         return productService.getProductEachMonth(year, month, pageNumber, pageSize);
     }
 
-    public CustomerEachMonth getCustomerEachMonth(int year, int month, int pageNumber, int pageSize) {
-        return customerService.getCustomerEachMonth(year, month, pageNumber, pageSize);
+    public CustomerEachMonth getCustomerEachMonth(String customerName, int year, int month, int pageNumber, int pageSize) {
+        return customerService.getCustomerEachMonth(customerName, year, month, pageNumber, pageSize);
     }
 }

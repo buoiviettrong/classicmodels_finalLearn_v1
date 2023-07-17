@@ -7,12 +7,15 @@ const pageSize = $('#page-size');
 const totalRecord = $('#total-record');
 const tableBody = $('#table-body');
 const tableHead = $('#table-head');
-const myChart = document.getElementById('myChart').getContext('2d');
-
-const globalChart = new Chart(myChart, {
-    type: 'bar',
-    data: {}
-});
+const globalFilter = $('#filter');
+const formatDay = (day) => {
+    if (day == null) return 'Đang Chờ';
+    day = new Date(day);
+    const year = day.getFullYear();
+    const month = day.getMonth() + 1;
+    const date = day.getDate();
+    return `${date}-${month}-${year}`;
+}
 
 year.on('change', function () {
     loadData();
@@ -37,14 +40,17 @@ const loadData = () => {
         case "product":
             products.getProductData(yearValue, monthValue, currentPage.val(), pageSize.val());
             break;
-        case "customer":
-            customers.getCustomerData(yearValue, monthValue, currentPage.val(), pageSize.val());
+        case "customer": {
+            customers.filter.init();
+            customers.getCustomerData(customers.filter.getFilterValue(), yearValue, monthValue, currentPage.val(), pageSize.val());
             break;
+        }
     }
 }
 
 const empty = function () {
     emptyTable();
+    emptyFilter();
     currentPage.val(1);
     totalPage.val(1);
     pageSize.val(10);
@@ -52,28 +58,118 @@ const empty = function () {
 }
 
 const emptyTable = function () {
-    // destroy chart
-    if (orders.chart != null) orders.chart.destroy();
-    if (products.chart != null) products.chart.destroy();
-    // if(customers.chart) customers.chart.destroy();
-    // myChart.destroy();
     tableHead.empty();
     tableBody.empty();
 }
 
+const emptyFilter = function () {
+    globalFilter.empty();
+}
+
 const modals = {
     customerOrderDetails: {
-        content: ``,
+        content: `
+        <div class="modal fade bd-example-modal-lg" id="customerOrderDetails" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Customer Order Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
+              <div class="row m-2" id="tableInfo">
+                  <div class="col-6 font-weight-bold" id="customerNumber"></div>
+                  <div class="col-3 font-weight-bold" id="year"></div>
+                  <div class="col-3 font-weight-bold" id="month"></div>
+              </div>
+              <div class="row m-2 font-weight-bold" id="totalStatus"></div>
+              <div class="row m-2" id="statusInfo">
+                  <div class="col-2" id="Shipped"></div>
+                  <div class="col-2" id="Cancelled"></div>
+                  <div class="col-2" id="Resolved"></div>
+                  <div class="col-2" id="Disputed"></div>
+                  <div class="col-2" id="InProcess"></div>
+                  <div class="col-2" id="OnHold"></div>
+              </div>  
+              <table class="modal-body table table-bordered table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th scope="col">Mã Đơn Hàng</th>
+                        <th scope="col">Ngày Đặt Hàng</th>
+                        <th scope="col">Ngày Giao Hàng</th>
+                        <th scope="col">Trạng Thái</th>
+                        <th scope="col">Tổng Tiền</th>
+                        <th scope="col">Ghi Chú</th>
+                    </tr>
+                </thead>
+                <tbody class="body-content"></tbody>
+              </table>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>`,
         show: function (customerId, yearValue, monthValue) {
-            const url = `${statisticURL}/customer-order-details?customerId=${customerId}&year=${yearValue}&month=${monthValue}`;
+            const url = `${orderURL}/customer-order-details?customerNumber=${customerId}&year=${yearValue}&month=${monthValue}`;
             callAPI.get(url).then(function (response) {
-                modals.customerOrderDetails.loadOrderDetails(response);
+                modals.customerOrderDetails.loadOrderDetails(customerId, response);
             }).catch(function (error) {
                 console.log(error);
             });
         },
-        loadOrderDetails: (response) => {
-            
+        loadOrderDetails: (customerNumber, response) => {
+            const baseModal = $('#baseModal');
+            baseModal.empty().append(modals.customerOrderDetails.content);
+            const modal = $('#customerOrderDetails');
+            modals.customerOrderDetails.updateTableInfo(customerNumber, year.val(), month.val());
+
+            const status = {
+                'total': 0,
+                'Shipped': 0,
+                'InProcess': 0,
+                'Cancelled': 0,
+                'Resolved': 0,
+                'Disputed': 0,
+                'OnHold': 0,
+            };
+
+            const bodyContent = modal.find('.body-content');
+            response.forEach(item => {
+                let row = `
+                    <tr>
+                        <td>${item["orderNumber"]}</td>
+                        <td>${formatDay(item["orderDate"])}</td>
+                        <td>${formatDay(item["shippedDate"])}</td>
+                        <td>${item["status"]}</td>
+                        <td>${item["totalPrice"]}</td>
+                        <td><textarea readonly>${item['comments']}</textarea></td>
+                        
+                    </tr>
+                `
+                status[item['status'].replaceAll(' ', '')]++;
+                status['total']++;
+                bodyContent.append(row);
+            });
+            modals.customerOrderDetails.updateStatusInfo(status);
+            modal['modal']('show');
+        },
+        updateTableInfo: function (customerId, yearValue, monthValue) {
+            const tableInfo = $('#tableInfo');
+            tableInfo.find('#customerNumber').text(`Mã Khách Hàng: ${customerId}`);
+            tableInfo.find('#year').text(`Năm: ${yearValue}`);
+            tableInfo.find('#month').text(`Tháng: ${monthValue}`);
+        },
+        updateStatusInfo: function (response) {
+            const statusInfo = $('#statusInfo');
+            $('#totalStatus').text(`Tổng Đơn Hàng: ${response['total']}`);
+
+            for (let key in response) {
+                if (key !== 'total') {
+                    statusInfo.find(`#${key}`).text(`${key}: ${response[key]}`);
+                }
+            }
         }
     }
 }
@@ -117,7 +213,6 @@ const orders = {
         const url = statisticURL + "/order-each-month" + "?year=" + yearValue;
         callAPI.get(url).then(function (response) {
             orders.loadOrderEachMonthToTable(response);
-            orders.getChartDataOfOrder(response);
         }).catch(function (error) {
             console.log(error);
         });
@@ -140,22 +235,6 @@ const orders = {
             `
             tableBody.append(row);
         });
-    },
-    getChartDataOfOrder: function (response) {
-        const chart = globalChart;
-        chart.data = orders.chartData;
-        const labels = [];
-        const data = [];
-        const data2 = [];
-        response.forEach(item => {
-            labels.push(item["month"]);
-            data.push(item["successProfit"]);
-            data2.push(item["cancellerProfit"]);
-        });
-        chart.data.labels = labels;
-        chart.data["datasets"][0].data = data;
-        chart.data["datasets"][1].data = data2;
-        chart.update();
     }
 }
 
@@ -231,9 +310,33 @@ const customers = {
             <th scope="col">Tiền Bán Được</th>
         </tr>
     `,
+    filter: {
+        content: `
+            <div class="col-6 input-group">
+                <label class="input-group-text" for="customerNameFilter">Filter</label>
+                <input class="form-control" type="text" value="" placeholder="Customer Name" id="customerNameFilter">
+                <button class="btn btn-outline-primary" type="button" id="button-addon2" onclick="customers.filter.onChange()">Search</button>
+            </div>
+        `,
+        init: function () {
+            globalFilter.html(customers.filter.content);
+        },
+        getFilterValue: function () {
+            return $('#customerNameFilter').val();
+        },
+        onChange: () => {
+            customers.getCustomerData(
+                customers.filter.getFilterValue(),
+                year.val(),
+                month.val(),
+                currentPage.val(),
+                pageSize.val()
+            );
+        }
+    },
     chartData: {},
-    getCustomerData: function (yearValue, monthValue, pageNumber, pageSize) {
-        const url = `${statisticURL}/customer-each-month?year=${yearValue}&month=${monthValue}&pageNumber=${pageNumber}&pageSize=${pageSize}`;
+    getCustomerData: function (customerName, yearValue, monthValue, pageNumber, pageSize) {
+        const url = `${statisticURL}/customer-each-month?customerName=${customerName}&year=${yearValue}&month=${monthValue}&pageNumber=${pageNumber}&pageSize=${pageSize}`;
         callAPI.get(url).then(function (response) {
             customers.updatePageInfo(response);
             customers.loadCustomerEachMonthToTable(response);
@@ -248,7 +351,12 @@ const customers = {
                 <tr>
                     <td>${item["customerNumber"]}</td>
                     <td>${item["customerName"]}</td>
-                    <td class="pe-auto" style="cursor: pointer;" onclick="customers.event.getOrderDetail()">${item["totalOrder"] === null ? 0 : item["totalOrder"]}</td>
+                    <td class="pe-auto"
+                        style="cursor: pointer;"
+                        onclick="customers.event.getOrderDetail('${item['customerNumber']}')"
+                    >
+                        ${item["totalOrder"] === null ? 0 : item["totalOrder"]}
+                    </td>
                     <td>${item["totalAmount"] === null ? 0 : item["totalAmount"]}</td>
                 `;
             tableBody.append(row);
@@ -264,8 +372,8 @@ const customers = {
     getChartDataOfCustomer: function (response) {
     },
     event: {
-        getOrderDetail: function () {
-            alert("get order detail");
+        getOrderDetail: function (customerId) {
+            modals.customerOrderDetails.show(customerId, year.val(), month.val());
         }
     }
 }
@@ -282,7 +390,7 @@ const nextPage = () => {
                 products.getProductData(year.val(), month.val(), currentPage.val(), pageSize.val());
                 break;
             case "customer":
-                customers.getCustomerData(year.val(), month.val(), currentPage.val(), pageSize.val());
+                customers.getCustomerData(customers.filter.getFilterValue(), year.val(), month.val(), currentPage.val(), pageSize.val());
                 break;
         }
     }
@@ -300,7 +408,7 @@ const previousPage = () => {
                 products.getProductData(year.val(), month.val(), currentPage.val(), pageSize.val());
                 break;
             case "customer":
-                customers.getCustomerData(year.val(), month.val(), currentPage.val(), pageSize.val());
+                customers.getCustomerData(customers.filter.getFilterValue(), year.val(), month.val(), currentPage.val(), pageSize.val());
                 break;
         }
     }

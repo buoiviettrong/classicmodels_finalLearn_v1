@@ -78,11 +78,11 @@ public class CustomerService {
         return customerStatisticResponse;
     }
 
-    public CustomerEachMonth getCustomerEachMonth(int year, int month, long pageNumber, long pageSize) {
+    public CustomerEachMonth getCustomerEachMonth(String customerName, int year, int month, long pageNumber, long pageSize) {
         CustomerEachMonth customerEachMonth = new CustomerEachMonth();
         long offset = (pageNumber - 1) * pageSize;
-
-        List<CustomerStatisticDTO> customerStatisticDTOs = customerNoDSLRepository.getCustomerEachMonth(year, month, offset, pageSize)
+        customerName = "%" + customerName + "%";
+        List<CustomerStatisticDTO> customerStatisticDTOs = customerNoDSLRepository.getCustomerEachMonth(customerName, year, month, offset, pageSize)
                 .stream()
                 .map(tuple -> CustomerStatisticDTO.builder()
                         .customerNumber(Long.valueOf(tuple.get("customerNumber", Integer.class)))
@@ -92,7 +92,7 @@ public class CustomerService {
                         .build()
                 )
                 .toList();
-        Long total = (long) customerNoDSLRepository.countCustomerEachMonth(year, month).size();
+        Long total = (long) customerNoDSLRepository.countCustomerEachMonth(customerName, year, month).size();
 
         customerEachMonth.setCustomers(customerStatisticDTOs);
         customerEachMonth.setPageResponseInfo(PageUtil.getResponse(pageNumber, pageSize, total, (long) customerStatisticDTOs.size()));

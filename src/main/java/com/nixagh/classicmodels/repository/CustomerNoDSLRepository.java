@@ -14,32 +14,40 @@ public interface CustomerNoDSLRepository extends JpaRepository<Customer, Long> {
             SELECT distinct c.customerNumber, c.customerName, t.totalOrder, t.totalAmount
             FROM customers c
             LEFT JOIN (
-                SELECT o.customerNumber as customerNumber, count(customerNumber) as totalOrder, round(sum(od.priceEach * od.quantityOrdered), 2) as totalAmount
+                SELECT o.customerNumber as customerNumber, count(customerNumber) as totalOrder, t1.totalAmount
                 FROM orders o
-                LEFT JOIN order_details od on o.orderNumber = od.orderNumber
+                LEFT JOIN (
+                    SELECT round(sum(od.priceEach * od.quantityOrdered), 2) as totalAmount, od.orderNumber as orderNumber
+                    FROM order_details od
+                    GROUP BY orderNumber
+                ) as t1 on t1.orderNumber = o.orderNumber
                 WHERE YEAR(o.orderDate) = :year
                 AND MONTH(o.orderDate) = :month
-                AND o.status = 'Shipped'
                 GROUP BY customerNumber
             ) as t on t.customerNumber = c.customerNumber
+            WHERE c.customerName LIKE :customerName
             ORDER BY t.totalAmount DESC
             LIMIT :offset, :pageSize
             """, nativeQuery = true)
-    List<Tuple> getCustomerEachMonth(int year, int month, long offset, long pageSize);
+    List<Tuple> getCustomerEachMonth(String customerName, int year, int month, long offset, long pageSize);
 
     @Query(value = """
             SELECT distinct c.customerNumber, c.customerName, t.totalOrder, t.totalAmount
             FROM customers c
             LEFT JOIN (
-                SELECT o.customerNumber as customerNumber, count(customerNumber) as totalOrder, round(sum(od.priceEach * od.quantityOrdered), 2) as totalAmount
+                SELECT o.customerNumber as customerNumber, count(customerNumber) as totalOrder, t1.totalAmount
                 FROM orders o
-                LEFT JOIN order_details od on o.orderNumber = od.orderNumber
+                LEFT JOIN (
+                    SELECT round(sum(od.priceEach * od.quantityOrdered), 2) as totalAmount, od.orderNumber as orderNumber
+                    FROM order_details od
+                    GROUP BY orderNumber
+                ) as t1 on t1.orderNumber = o.orderNumber
                 WHERE YEAR(o.orderDate) = :year
                 AND MONTH(o.orderDate) = :month
-                AND o.status = 'Shipped'
                 GROUP BY customerNumber
             ) as t on t.customerNumber = c.customerNumber
+            WHERE c.customerName LIKE :customerName
             ORDER BY t.totalAmount DESC
             """, nativeQuery = true)
-    List<Tuple> countCustomerEachMonth(int year, int month);
+    List<Tuple> countCustomerEachMonth(String customerName, int year, int month);
 }

@@ -87,11 +87,12 @@ public class StatisticalController {
 
     @GetMapping("/customer-each-month")
     public CustomerEachMonth getCustomerEachMonth(
+            @RequestParam("customerName") String customerName,
             @RequestParam("year") int year,
             @RequestParam("month") int month,
             @RequestParam("pageNumber") int pageNumber,
             @RequestParam("pageSize") int pageSize
     ) {
-        return statisticalService.getCustomerEachMonth(year, month, pageNumber, pageSize);
+        return statisticalService.getCustomerEachMonth(customerName, year, month, pageNumber, pageSize);
     }
 }
