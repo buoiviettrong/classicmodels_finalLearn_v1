@@ -19,23 +19,19 @@ public interface ProductRepository extends BaseRepository<Product, String> {
     Optional<Product> findByProductCode(String productCode);
 
     List<ProductSearchResponseDTO> filterProducts(
-//            String productCode,
-//            String productName,
+            String search,
             String productLine,
             Integer productScale,
             String productVendor,
-//            String productDescription,
             QuantityInStock quantityInStock,
             Long offset, Long pageSize
     );
 
     Long countFilterProducts(
-//            String productCode,
-//            String productName,
+            String search,
             String productLine,
             Integer productScale,
             String productVendor,
-//            String productDescription,
             QuantityInStock quantityInStock
     );
 

@@ -10,4 +10,5 @@ import lombok.ToString;
 @ToString
 public class ProductSearchRequest extends AbstractRequest {
     private ProductSearchFilter filter = new ProductSearchFilter();
+
 }

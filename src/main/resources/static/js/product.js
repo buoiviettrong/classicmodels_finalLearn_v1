@@ -559,7 +559,8 @@ const products = {
             quantityInStock: {
                 min: $('#quantity-in-stock-filter-min').val() || 0,
                 max: $('#quantity-in-stock-filter-max').val() || 0,
-            }
+            },
+            search: $('#search-input').val(),
         };
         const pageInfo = {
             pageNumber: $('#current-page').val(),

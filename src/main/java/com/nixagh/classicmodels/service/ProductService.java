@@ -186,34 +186,28 @@ public class ProductService {
     }
 
     public ProductSearchResponse filterProducts(ProductSearchRequest request) {
-//        String productCode = request.getFilter().getProductCode();
-//        String productName = request.getFilter().getProductName();
         String productLine = request.getFilter().getProductLine();
         Integer productScale = request.getFilter().getProductScale();
         String productVendor = request.getFilter().getProductVendor();
-//        String productDescription = request.getFilter().getProductDescription();
         QuantityInStock quantityInStock = request.getFilter().getQuantityInStock();
+        String search = request.getFilter().getSearch();
 
         Long offset = request.getPageInfo().getPageSize() * (request.getPageInfo().getPageNumber() - 1);
         Long pageSize = request.getPageInfo().getPageSize();
 
         List<ProductSearchResponseDTO> filterProducts = productRepository.filterProducts(
-//                productCode,
-//                productName,
+                search,
                 productLine,
                 productScale,
                 productVendor,
-//                productDescription,
                 quantityInStock,
                 offset,
                 pageSize);
         Long totalItems = productRepository.countFilterProducts(
-//                productCode,
-//                productName,
+                search,
                 productLine,
                 productScale,
                 productVendor,
-//                productDescription,
                 quantityInStock);
 
         PageResponseInfo pageResponseInfo = PageUtil.getResponse(

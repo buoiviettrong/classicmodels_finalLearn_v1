@@ -92,17 +92,14 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
 
     @Override
     public List<ProductSearchResponseDTO> filterProducts(
-//            String productCode,
-//            String productName,
+            String search,
             String productLine,
             Integer productScale,
             String productVendor,
-//            String productDescription,
             QuantityInStock quantityInStock,
             Long offset,
             Long pageSize
     ) {
-
         JPAQuery<ProductSearchResponseDTO> query = jpaQueryFactory.select(
                 Projections.constructor(
                         ProductSearchResponseDTO.class,
@@ -119,12 +116,10 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
         ).from(product);
         query = getfilter(
                 query,
-//                productCode,
-//                productName,
+                search,
                 productLine,
                 productScale,
                 productVendor,
-//                productDescription,
                 quantityInStock
         );
         return query.offset(offset).limit(pageSize).fetch();
@@ -132,12 +127,10 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
 
     @Override
     public Long countFilterProducts(
-//            String productCode,
-//            String productName,
+            String search,
             String productLine,
             Integer productScale,
             String productVendor,
-//            String productDescription,
             QuantityInStock quantityInStock) {
         JPAQuery<Long> query = jpaQueryFactory.select(
                 product.countDistinct()
@@ -145,12 +138,10 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
 
         query = getfilter(
                 query,
-//                productCode,
-//                productName,
+                search,
                 productLine,
                 productScale,
                 productVendor,
-//                productDescription,
                 quantityInStock
         );
         return query.fetchFirst();
@@ -239,19 +230,11 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
 
     private <T> JPAQuery<T> getfilter(
             JPAQuery<T> query,
-//            String productCode,
-//            String productName,
+            String search,
             String productLine,
             Integer productScale,
             String productVendor,
-//            String productDescription,
             QuantityInStock quantityInStock) {
-//        if (productCode != null && !productCode.isEmpty()) {
-//            query.where(product.productCode.eq(productCode));
-//        }
-//        if (productName != null && !productName.isEmpty()) {
-//            query.where(product.productName.eq(productName));
-//        }
 
         BooleanExpression productLinePredicate = null;
         BooleanExpression productScalePredicate = null;
@@ -259,6 +242,7 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
         BooleanExpression quantityInStockPredicate = null;
         BooleanExpression quantityInStockMin = null;
         BooleanExpression quantityInStockMax = null;
+        BooleanExpression searchExpression = null;
 
         if (productLine != null && !productLine.isEmpty() && !productLine.equals("All"))
             productLinePredicate = product.productLine.productLine.eq(productLine);
@@ -266,13 +250,13 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
             productScalePredicate = product.productScale.eq("1:" + productScale);
         if (productVendor != null && !productVendor.isEmpty() && !productVendor.equals("All"))
             productVendorPredicate = product.productVendor.eq(productVendor);
+        if (search != null && !search.isEmpty())
+            searchExpression = product.productCode.containsIgnoreCase(search)
+                    .or(product.productName.containsIgnoreCase(search));
 
-//        if (productDescription != null && !productDescription.isEmpty()) {
-//            query.where(product.productDescription.eq(productDescription));
-//        }
+        System.out.println(searchExpression);
+
         if (quantityInStock != null) {
-            // null check
-
             if (quantityInStock.min() > quantityInStock.max())
                 throw new BadRequestException("Min quantity in stock must be less than max quantity in stock");
             if (quantityInStock.min() > 0) {
@@ -285,6 +269,7 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
         }
 
         return query.where(
+                searchExpression,
                 productLinePredicate,
                 productScalePredicate,
                 productVendorPredicate,

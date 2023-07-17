@@ -8,12 +8,10 @@ import lombok.ToString;
 @Setter
 @ToString
 public class ProductSearchFilter {
-    //    private String productCode;
-//    private String productName;
     private String productLine;
     private Integer productScale;
     private String productVendor;
-    //    private String productDescription;
     private QuantityInStock quantityInStock;
+    private String search;
 }
 
