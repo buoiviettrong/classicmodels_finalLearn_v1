@@ -520,17 +520,20 @@ const customers = {
     loadCustomerEachMonthToTable: function (response) {
         emptyTable();
         tableHead.append(customers.head);
+        if (response["customers"].length === 0) {
+            tableBody.append(`
+                <tr>
+                    <td colspan="4" class="text-center">Không có dữ liệu</td>
+                </tr>
+            `);
+            return;
+        }
         response["customers"].forEach(item => {
             let row = `
-                <tr>
+                <tr onclick="customers.event.getOrderDetail('${item['customerNumber']}')">
                     <td>${item["customerNumber"]}</td>
                     <td>${item["customerName"]}</td>
-                    <td class="pe-auto"
-                        style="cursor: pointer;"
-                        onclick="customers.event.getOrderDetail('${item['customerNumber']}')"
-                    >
-                        ${item["totalOrder"] === null ? 0 : item["totalOrder"]}
-                    </td>
+                    <td class="pe-auto">${item["totalOrder"] === null ? 0 : item["totalOrder"]}</td>
                     <td>${item["totalAmount"] === null ? 0 : item["totalAmount"]}</td>
                 `;
             tableBody.append(row);
