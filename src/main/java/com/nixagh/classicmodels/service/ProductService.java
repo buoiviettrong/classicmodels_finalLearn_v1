@@ -145,7 +145,7 @@ public class ProductService {
                 .map(tuple -> ProductStatisticDTO.builder()
                         .productCode(tuple.get("productCode", String.class))
                         .productName(tuple.get("productName", String.class))
-                        .totalSoldQuantity(tuple.get("totalSoldQuantity", BigDecimal.class).longValue())
+                        .totalSoldQuantity(tuple.get("totalSoldQuantity", BigDecimal.class) == null ? 0 : tuple.get("totalSoldQuantity", BigDecimal.class).longValue())
                         .totalAmount(tuple.get("totalAmount", Double.class))
                         .build())
                 .toList();

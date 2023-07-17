@@ -58,33 +58,37 @@ public interface ProductNoDSLRepository extends JpaRepository<Product, String> {
     long countProductStatistical(Date from, Date to);
 
     @Query(value = """
-            SELECT p.productCode AS productCode,
-                    p.productName AS productName,
-                    SUM(od.quantityOrdered) AS totalSoldQuantity,
-                    ROUND(SUM(od.quantityOrdered * od.priceEach), 2) AS totalAmount
-            FROM order_details od
-            RIGHT JOIN products p ON od.productCode = p.productCode
-            JOIN orders o on o.orderNumber = od.orderNumber
-            WHERE year(o.orderDate) = :year AND month(o.orderDate) = :month
-                AND o.status = 'Shipped'
-            GROUP BY p.productCode, p.productName
-            ORDER BY totalAmount DESC
+            SELECT p.productCode, p.productName, t.totalSoldQuantity, t.totalAmount
+            FROM products p
+            LEFT JOIN (
+                SELECT
+                    od.productCode,
+                    SUM(od.quantityOrdered) as totalSoldQuantity,
+                    ROUND(SUM(od.priceEach*od.quantityOrdered), 2) as totalAmount
+                FROM order_details od
+                JOIN orders o on o.orderNumber = od.orderNumber
+                WHERE year(o.orderDate) = :year AND month(o.orderDate) = :month
+                GROUP BY od.productCode
+            ) t on t.productCode = p.productCode
+            ORDER BY t.totalAmount DESC
             LIMIT :offset, :pageSize
             """, nativeQuery = true)
     List<Tuple> getProductEachMonth(int year, int month, long offset, long pageSize);
 
     @Query(value = """
-            SELECT p.productCode AS productCode,
-                    p.productName AS productName,
-                    SUM(od.quantityOrdered) AS totalSoldQuantity,
-                    ROUND(SUM(od.quantityOrdered * od.priceEach), 2) AS totalAmount
-            FROM order_details od
-            RIGHT JOIN products p ON od.productCode = p.productCode
-            JOIN orders o on o.orderNumber = od.orderNumber
-            WHERE year(o.orderDate) = :year AND month(o.orderDate) = :month
-                AND o.status = 'Shipped'
-            GROUP BY p.productCode, p.productName
-            ORDER BY totalAmount DESC
+            SELECT p.productCode, p.productName, t.totalSoldQuantity, t.totalAmount
+            FROM products p
+            LEFT JOIN (
+                SELECT
+                    od.productCode,
+                    SUM(od.quantityOrdered) as totalSoldQuantity,
+                    ROUND(SUM(od.priceEach*od.quantityOrdered), 2) as totalAmount
+                FROM order_details od
+                JOIN orders o on o.orderNumber = od.orderNumber
+                WHERE year(o.orderDate) = :year AND month(o.orderDate) = :month
+                GROUP BY od.productCode
+            ) t on t.productCode = p.productCode
+            ORDER BY t.totalAmount DESC
             """, nativeQuery = true)
     List<Tuple> countProductEachMonth(int year, int month);
 }
