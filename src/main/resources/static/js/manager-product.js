@@ -17,6 +17,9 @@ const products = {
                             <div class="btn-group">
                                 <h5>Price: ${product['msrp'] || 0} / each</h5>
                             </div>
+                            <div class="btn-group">
+                                ${product['quantityInStock'] > 10 ? `<h5 class="text-success">In Stock</h5>` : `<h5 class="text-danger">Out Of Stock</h5>`}
+                            </div>
                         </div>
                     </div>
                     <div class="card-footer d-flex justify-content-between align-items-center">
