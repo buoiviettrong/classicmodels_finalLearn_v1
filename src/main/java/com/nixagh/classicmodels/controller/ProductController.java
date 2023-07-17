@@ -64,4 +64,22 @@ public class ProductController {
     public ProductSearchResponse managerSearch(@RequestBody ProductManagerSearchRequest request) {
         return productService.managerSearch(request);
     }
+
+    @GetMapping("/out-of-stock")
+    public List<ProductOutOfStockResponse> getOutOfStockProducts() {
+        return productService.getOutOfStockProducts();
+    }
+
+    public record ProductOutOfStockResponse(String productCode, String productName, Integer quantityInStock) {
+    }
+
+    @PutMapping("/update-quantity-in-stock/{productCode}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public Map<String, String> updateQuantityInStock(
+            @PathVariable(name = "productCode") String productCode,
+            @RequestBody Map<String, Integer> request
+    ) {
+        var quantityInStock = request.get("quantityInStock");
+        return productService.updateQuantityInStock(productCode, quantityInStock);
+    }
 }

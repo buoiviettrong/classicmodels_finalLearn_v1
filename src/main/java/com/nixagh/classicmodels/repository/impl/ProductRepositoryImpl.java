@@ -1,5 +1,6 @@
 package com.nixagh.classicmodels.repository.impl;
 
+import com.nixagh.classicmodels.controller.ProductController;
 import com.nixagh.classicmodels.dto.product.search.ProductSearchResponseDTO;
 import com.nixagh.classicmodels.dto.product.search.QuantityInStock;
 import com.nixagh.classicmodels.entity.Product;
@@ -218,6 +219,22 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
                 .from(product)
                 .where(searchExpression)
                 .fetchFirst();
+    }
+
+    @Override
+    public List<ProductController.ProductOutOfStockResponse> getOutOfStockProducts() {
+        int MINIMUM_QUANTITY = 10;
+
+        return jpaQueryFactory
+                .select(Projections.constructor(
+                        ProductController.ProductOutOfStockResponse.class,
+                        product.productCode,
+                        product.productName,
+                        product.quantityInStock
+                ))
+                .from(product)
+                .where(product.quantityInStock.lt(MINIMUM_QUANTITY))
+                .fetch();
     }
 
     private <T> JPAQuery<T> getfilter(

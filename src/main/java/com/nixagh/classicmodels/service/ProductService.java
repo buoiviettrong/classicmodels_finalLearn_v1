@@ -1,5 +1,6 @@
 package com.nixagh.classicmodels.service;
 
+import com.nixagh.classicmodels.controller.ProductController;
 import com.nixagh.classicmodels.dto.PageResponseInfo;
 import com.nixagh.classicmodels.dto.product.ProductAddRequest;
 import com.nixagh.classicmodels.dto.product.edit.ProductUpdateRequest;
@@ -309,5 +310,22 @@ public class ProductService {
                 (long) products.size()
         ));
         return response;
+    }
+
+    public List<ProductController.ProductOutOfStockResponse> getOutOfStockProducts() {
+        return productRepository.getOutOfStockProducts();
+    }
+
+    public Map<String, String> updateQuantityInStock(String productCode, Integer quantityInStock) {
+        // quantity in stock must be greater than 0 and greater than 100
+        if (quantityInStock == null || quantityInStock < 0 || quantityInStock <= 100)
+            throw new BadRequestException("Quantity in stock must be greater than 0 and greater than 100");
+
+        Product product = productRepository.findByProductCode(productCode)
+                .orElseThrow(() -> new NotFoundEntity("Product code is not existed"));
+
+        product.setQuantityInStock(quantityInStock);
+        productRepository.save(product);
+        return new HashMap<>(Map.of("productCode", productCode));
     }
 }

@@ -445,12 +445,15 @@ const modalGenerate = {
             const headerRow = $('#header-row');
             headerRow.append('<div class="col-12 row m-2" id="filter-row" style="display: none"></div>');
         },
-        toggle: () => {
+        toggle: async () => {
             const filterRow = $('#filter-row');
 
             if (filterRow.is(':visible')) filterRow.hide();
             else {
                 filterRow.empty().append(modalGenerate.filter.content);
+                loadScale();
+                loadVendor();
+                await loadProductLine();
                 filterRow.show();
             }
         },
@@ -599,7 +602,7 @@ const products = {
 
 (async () => {
     await products.init();
-
+    await outOfStock.init();
     const confirmDelete = $('#confirm-delete');
 // Bind click to OK button within popup
     confirmDelete.on('click', '.btn-ok', function (e) {
@@ -637,3 +640,45 @@ const previousPage = async () => {
     await products.filter();
 }
 
+const outOfStock = {
+    init: async () => {
+        await outOfStock.addToTable();
+    },
+    loadData: () => {
+        return callAPI.get(productURL + "/out-of-stock");
+    },
+    addToTable: async () => {
+        const data = await outOfStock.loadData();
+        const table = $('#stock-is-about-to-run-out');
+        table.empty();
+        data.forEach(item => {
+            const row = `
+                <tr>
+                    <td>${item['productCode']}</td>
+                    <td>${item['productName']}</td>
+                    <td>
+                        <input type="number" min="1" value="${item['quantityInStock']}" id="quantityInStock_${item['productCode']}">
+                    </td>
+                    <td>
+                        <button class="btn btn-primary" onclick="outOfStock.editProduct('${item.productCode}')">Edit</button>
+                    </td>
+                </tr>
+            `
+            table.append(row);
+        })
+    },
+    editProduct: async function (id) {
+        const quantityInStock = $('#quantityInStock_' + id).val();
+        const data = await callAPI.put(productURL + "/update-quantity-in-stock/" + id, {
+            quantityInStock: quantityInStock
+        });
+
+        if (data.message !== undefined && data.message !== null) {
+            modalGenerate.showAlert('danger', data.message);
+            return;
+        }
+
+        modalGenerate.showAlert('success', 'Update product successfully');
+        await outOfStock.addToTable();
+    },
+}
