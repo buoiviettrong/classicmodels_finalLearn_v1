@@ -109,6 +109,10 @@ const modals = {
                 </thead>
                 <tbody class="body-content"></tbody>
               </table>
+              <table class="modal-body table table-bordered table-hover table" id="productDetails">
+                <thead class="head-content-product"></thead>
+                <tbody class="body-content-product"></tbody>
+              </table>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
               </div>
@@ -142,7 +146,7 @@ const modals = {
             const bodyContent = modal.find('.body-content');
             response.forEach(item => {
                 let row = `
-                    <tr>
+                    <tr onclick="modals.customerOrderDetails.detailsOfProduct('${item["orderNumber"]}')">
                         <td>${item["orderNumber"]}</td>
                         <td>${formatDay(item["orderDate"])}</td>
                         <td>${formatDay(item["shippedDate"])}</td>
@@ -174,6 +178,36 @@ const modals = {
                     statusInfo.find(`#${key}`).text(`${key}: ${response[key]}`);
                 }
             }
+        },
+        detailsOfProduct: async (orderNumber) => {
+            const url = `${orderURL}/${orderNumber}/orderDetail`;
+            const data = await callAPI.get(url);
+            modals.customerOrderDetails.loadProductDetails(data);
+        },
+        loadProductDetails: function (response) {
+            const modal = $('#productDetails');
+            const headContent = modal.find('.head-content-product');
+            const bodyContent = modal.find('.body-content-product');
+            bodyContent.empty();
+            headContent.empty().append(`
+                <tr>
+                    <th scope="col">Mã Sản Phẩm</th>
+                    <th scope="col">Tên Sản Phẩm</th>
+                    <th scope="col">Số Lượng</th>
+                    <th scope="col">Giá</th>
+                </tr
+            `);
+            response.forEach(item => {
+                let row = `
+                    <tr>
+                        <td>${item["productCode"]}</td>
+                        <td>${item["productName"]}</td>
+                        <td>${item["quantityOrdered"]}</td>
+                        <td>${item["priceEach"]}</td>
+                    </tr>
+                `;
+                bodyContent.append(row);
+            });
         }
     },
     orderDetails: {
