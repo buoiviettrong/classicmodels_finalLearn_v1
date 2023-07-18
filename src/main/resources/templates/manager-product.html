@@ -88,7 +88,7 @@
             </div>
         </div>
         <div class="row">
-            <div class="col-12">
+            <div class="col-6">
                 <div class="input-group mb-3">
                     <input type="text" class="form-control" placeholder="Search name, code" aria-label="Search"
                            aria-describedby="basic-addon2" id="searchInput">
@@ -97,6 +97,14 @@
                             Search
                         </button>
                     </div>
+                </div>
+            </div>
+            <div class="col-6">
+                <div class="input-group mb-3">
+                    <label for="product-line-select" class="input-group-text">Product Line</label>
+                    <select class="custom-select form-control" id="product-line-select"
+                            onchange="products.event.search()">
+                    </select>
                 </div>
             </div>
         </div>

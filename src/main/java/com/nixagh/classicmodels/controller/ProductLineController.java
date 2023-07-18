@@ -4,7 +4,6 @@ import com.nixagh.classicmodels.dto.product_line.ProductLineUpdateRequest;
 import com.nixagh.classicmodels.entity.ProductLinee;
 import com.nixagh.classicmodels.service.ProductLineService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.http.HttpStatus;
@@ -18,7 +17,7 @@ import java.util.List;
 @RequestMapping("/api/v1/product-lines")
 @RequiredArgsConstructor
 @EnableCaching
-@PreAuthorize("hasRole('ADMIN')")
+@PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
 public class ProductLineController {
     public final ProductLineService productLineService;
 
@@ -46,7 +45,6 @@ public class ProductLineController {
     }
 
     @DeleteMapping("/{productLine}")
-    @CacheEvict
     public ResponseEntity<?> deleteProductLine(@PathVariable String productLine) {
         productLineService.deleteProductLine(productLine);
         return new ResponseEntity<>(HttpStatus.OK);

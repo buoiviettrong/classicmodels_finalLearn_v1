@@ -37,9 +37,9 @@ public interface ProductRepository extends BaseRepository<Product, String> {
 
     ProductSearchResponseDTO getProduct(String productCode);
 
-    List<ProductSearchResponseDTO> managerSearch(String search, Long offset, Long pageSize);
+    List<ProductSearchResponseDTO> managerSearch(String search, String productLine, Long offset, Long pageSize);
 
-    Long countManagerSearch(String search);
+    Long countManagerSearch(String search, String productLine);
 
     List<ProductController.ProductOutOfStockResponse> getOutOfStockProducts();
 }

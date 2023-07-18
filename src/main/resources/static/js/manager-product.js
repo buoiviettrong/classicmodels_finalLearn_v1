@@ -84,7 +84,8 @@ const products = {
                 pageNumber: $('#current-page').text() || 1,
                 pageSize: 6
             },
-            search: $('#searchInput').val()
+            search: $('#searchInput').val(),
+            productLine: $('#product-line-select').val()
         }
         const data = await callAPI.post(url, request);
         // update page info
@@ -253,7 +254,20 @@ const carts = {
     }
 };
 
+const loadProductLine = async () => {
+    const url = productLineURL + '/select';
+    const data = await callAPI.get(url);
+    const productLineSelect = $('#product-line-select');
+    productLineSelect.empty();
+    productLineSelect.append(`<option value="all">All</option>`);
+    data.forEach(productLine => {
+            productLineSelect.append(`<option value="${productLine}">${productLine}</option>`);
+        }
+    );
+};
+
 (async () => {
     await products.init();
     carts.init();
+    await loadProductLine();
 })();

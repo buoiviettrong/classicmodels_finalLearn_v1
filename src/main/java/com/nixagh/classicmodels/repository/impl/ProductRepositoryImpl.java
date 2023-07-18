@@ -7,6 +7,7 @@ import com.nixagh.classicmodels.entity.Product;
 import com.nixagh.classicmodels.exception.BadRequestException;
 import com.nixagh.classicmodels.repository.ProductRepository;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberExpression;
@@ -168,14 +169,7 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
     }
 
     @Override
-    public List<ProductSearchResponseDTO> managerSearch(String search, Long offset, Long pageSize) {
-        BooleanExpression searchExpression = null;
-
-        if (search != null)
-            searchExpression = product.productCode.containsIgnoreCase(search)
-                    .or(product.productName.containsIgnoreCase(search))
-                    .or(product.productLine.productLine.containsIgnoreCase(search));
-
+    public List<ProductSearchResponseDTO> managerSearch(String search, String productLine, Long offset, Long pageSize) {
         return jpaQueryFactory
                 .select(Projections.constructor(
                         ProductSearchResponseDTO.class,
@@ -190,25 +184,37 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
                         product.msrp
                 ))
                 .from(product)
-                .where(searchExpression)
+                .where(managerSearchFilter(search, productLine))
                 .offset(offset)
                 .limit(pageSize)
                 .fetch();
     }
 
-    @Override
-    public Long countManagerSearch(String search) {
+    private Predicate[] managerSearchFilter(String search, String productLine) {
         BooleanExpression searchExpression = null;
+        BooleanExpression productLineExpression = null;
 
         if (search != null)
             searchExpression = product.productCode.containsIgnoreCase(search)
                     .or(product.productName.containsIgnoreCase(search))
                     .or(product.productLine.productLine.containsIgnoreCase(search));
 
+        if (productLine != null && !productLine.equalsIgnoreCase("all"))
+            productLineExpression = product.productLine.productLine.eq(productLine);
+
+        Predicate[] predicates = new Predicate[2];
+        predicates[0] = searchExpression;
+        predicates[1] = productLineExpression;
+        return predicates;
+    }
+
+    @Override
+    public Long countManagerSearch(String search, String productLine) {
+
         return jpaQueryFactory
                 .select(product.countDistinct())
                 .from(product)
-                .where(searchExpression)
+                .where(managerSearchFilter(search, productLine))
                 .fetchFirst();
     }
 

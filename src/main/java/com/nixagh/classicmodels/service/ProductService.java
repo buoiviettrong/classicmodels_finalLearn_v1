@@ -286,14 +286,24 @@ public class ProductService {
         Long offset = request.getPageInfo().getPageSize() * (request.getPageInfo().getPageNumber() - 1);
         Long pageSize = request.getPageInfo().getPageSize();
         String search = request.getSearch();
+        String productLine = request.getProductLine();
+
+        // check product line
+        if (productLine != null) {
+            ProductLinee productLinee = entityManager.getReference(ProductLinee.class, productLine);
+            if (productLinee == null) {
+                throw new BadRequestException("Product line is not existed");
+            }
+        }
 
         List<ProductSearchResponseDTO> products = productRepository.managerSearch(
                 search,
+                productLine,
                 offset,
                 pageSize
         );
 
-        Long totalItems = productRepository.countManagerSearch(search);
+        Long totalItems = productRepository.countManagerSearch(search, productLine);
 
         ProductSearchResponse response = new ProductSearchResponse();
         response.setProducts(products);
