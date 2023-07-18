@@ -110,9 +110,9 @@ const modals = {
                 <tbody class="body-content"></tbody>
               </table>
               <table class="modal-body table table-bordered table-hover table" id="productDetails">
-                <thead class="head-content-product"></thead>
-                <tbody class="body-content-product"></tbody>
-              </table>
+                    <thead class="head-content-product"></thead>
+                    <tbody class="body-content-product"></tbody>
+                </table>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
               </div>
@@ -282,6 +282,7 @@ const modals = {
                 </thead>
                 <tbody class="body-content"></tbody>
               </table>
+              <div id="productDetails"></div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
               </div>
@@ -319,7 +320,7 @@ const modals = {
             }
             response['orders'].forEach(item => {
                 let row = `
-                    <tr>
+                    <tr onclick="modals.orderDetails.loadProductDetails('${item["orderNumber"]}')">
                         <td>${item["orderNumber"]}</td>
                         <td>${item['customerNumber']}</td>
                         <td>${item['customerName']}</td>
@@ -340,6 +341,44 @@ const modals = {
             __.updateStatusFilter();
             __.updateTotalOrders(response['pageResponseInfo']['totalElements'], response['pageResponseInfo']['totalPages']);
             modal['modal']('show');
+        },
+        loadProductDetails: async function (orderNumber) {
+            const modal = $('#productDetails');
+            modal.empty();
+            modal.append(`<div class="font-weight-bold">Chi Tiết Sản Phẩm</div>`)
+            modal.append(`<div class="font-weight-bold">Mã Đơn Hàng: ${orderNumber}</div>`)
+            modal.append(
+                `<table class="modal-body table table-bordered table-hover table">
+                    <thead class="head-content-product"></thead>
+                    <tbody class="body-content-product"></tbody>
+                </table>
+                `
+            )
+            const headContent = modal.find('.head-content-product');
+            const bodyContent = modal.find('.body-content-product');
+
+            headContent.append(`
+                <tr>
+                    <th scope="col">Mã Sản Phẩm</th>
+                    <th scope="col">Tên Sản Phẩm</th>
+                    <th scope="col">Số Lượng</th>
+                    <th scope="col">Đơn Giá</th>
+                </tr>
+            `)
+            const url = `${orderURL}/${orderNumber}/orderDetail`;
+            const data = await callAPI.get(url);
+
+            data.forEach(item => {
+                let row = `
+                    <tr>
+                        <td>${item['productCode']}</td>
+                        <td>${item['productName']}</td>
+                        <td>${item['quantityOrdered']}</td>
+                        <td>${item['priceEach']}</td>
+                    </tr>
+                `
+                bodyContent.append(row);
+            })
         },
         updateTableInfo: function (yearValue, monthValue) {
             const tableInfo = $('#tableInfo');
