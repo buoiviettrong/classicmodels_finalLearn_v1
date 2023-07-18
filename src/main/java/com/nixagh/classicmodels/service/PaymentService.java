@@ -2,21 +2,27 @@ package com.nixagh.classicmodels.service;
 
 import com.nixagh.classicmodels.config.VnPayConfig;
 import com.nixagh.classicmodels.controller.PaymentController;
+import com.nixagh.classicmodels.entity.Order;
 import com.nixagh.classicmodels.entity.Payment;
+import com.nixagh.classicmodels.entity.enums.PaymentStatus;
+import com.nixagh.classicmodels.repository.OrderRepository;
 import com.nixagh.classicmodels.repository.PaymentRepository;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -24,6 +30,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class PaymentService {
     private final PaymentRepository paymentRepository;
+    private final OrderRepository orderRepository;
 
     public List<Payment> getAll() {
         return paymentRepository.getAll();
@@ -117,26 +124,36 @@ public class PaymentService {
         return ResponseEntity.ok(new PaymentResponse(paymentUrl));
     }
 
-    public ResponseEntity<?> vnPayReturn(Long vnpAmount,
-                                         String vnpBankCode,
-                                         String vnpBankTranNo,
-                                         String vnpCardType,
-                                         String vnpOrderInfo,
-                                         String vnpPayDate,
-                                         String vnpResponseCode,
-                                         String vnpTmnCode,
-                                         String vnpTransactionNo,
-                                         String vnpTxnRef,
-                                         String vnpSecureHash,
-                                         String vnpTransactionStatus
-    ) {
+    public void vnPayReturn(
+            HttpServletResponse response,
+            Long vnpAmount,
+            String vnpBankCode,
+            String vnpBankTranNo,
+            String vnpCardType,
+            String vnpOrderInfo,
+            String vnpPayDate,
+            String vnpResponseCode,
+            String vnpTmnCode,
+            String vnpTransactionNo,
+            String vnpTxnRef,
+            String vnpSecureHash,
+            String vnpTransactionStatus
+    ) throws ParseException, IOException {
+        var redirectUrl = "http://localhost:8080/manager/order-history";
         if (!vnpResponseCode.equals("00")) {
-            return ResponseEntity.ok("Thanh toán thất bại");
+            response.sendRedirect(redirectUrl);
         }
 
         // cap nhat trang thai don hang
-        String orderNumber = vnpTxnRef;
+        Long orderNumber = Long.valueOf(vnpTxnRef);
 
-        return ResponseEntity.ok("Thanh toán thành công");
+        Date paymentDate = new SimpleDateFormat("yyyyMMddHHmmss").parse(vnpPayDate);
+
+        Order order = orderRepository.getOrderByOrderNumber(orderNumber);
+        order.setPaymentStatus(PaymentStatus.PAID);
+        order.setPaymentDate(paymentDate);
+        orderRepository.save(order);
+
+        response.sendRedirect(redirectUrl);
     }
 }

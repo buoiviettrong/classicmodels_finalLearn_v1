@@ -1,6 +1,7 @@
 package com.nixagh.classicmodels.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.nixagh.classicmodels.entity.enums.PaymentStatus;
 import com.nixagh.classicmodels.entity.enums.ShippingStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -45,6 +46,14 @@ public class Order implements Serializable {
 
     @Column(name = "status")
     private String status = ShippingStatus.INPROC.getShippingStatus();
+
+    @Column(name = "paymentStatus")
+    @Enumerated(EnumType.STRING)
+    private PaymentStatus paymentStatus = PaymentStatus.UNPAID;
+
+    @Column(name = "paymentDate")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date paymentDate;
 
     @Column(name = "comments")
     private String comments;

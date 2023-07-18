@@ -235,7 +235,7 @@ const carts = {
                 };
                 const data_ = await callAPI.post(url_, request_);
 
-                if (data['status'] === 'Ok') {
+                if (data_['status'] === 'Ok') {
                     window.location.href = data_['paymentUrl'];
                     alert('Checkout successfully!');
                     this.lists = {};

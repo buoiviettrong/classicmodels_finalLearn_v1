@@ -3,6 +3,7 @@ package com.nixagh.classicmodels.controller;
 import com.nixagh.classicmodels.entity.Payment;
 import com.nixagh.classicmodels.service.PaymentService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -10,9 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
+import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
 
@@ -57,7 +60,7 @@ public class PaymentController {
     }
 
     @GetMapping("/vnpay_return")
-    public ResponseEntity<?> vnPayReturn(
+    public void vnPayReturn(
             @PathParam("vnp_Amount") Long vnp_Amount,
             @PathParam("vnp_BankCode") String vnp_BankCode,
             @PathParam("vnp_BankTranNo") String vnp_BankTranNo,
@@ -69,10 +72,12 @@ public class PaymentController {
             @PathParam("vnp_TransactionNo") String vnp_TransactionNo,
             @PathParam("vnp_TxnRef") String vnp_TxnRef,
             @PathParam("vnp_SecureHash") String vnp_SecureHash,
-            @PathParam("vnp_TransactionStatus") String vnp_TransactionStatus
-    ) {
+            @PathParam("vnp_TransactionStatus") String vnp_TransactionStatus,
+            HttpServletResponse response
+    ) throws ParseException, IOException {
 
-        return paymentService.vnPayReturn(
+        paymentService.vnPayReturn(
+                response,
                 vnp_Amount,
                 vnp_BankCode,
                 vnp_BankTranNo,
