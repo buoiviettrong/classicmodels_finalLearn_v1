@@ -201,28 +201,7 @@ const carts = {
             alert('Your cart is empty!');
             return;
         }
-        // // check if user is logged in
-        // if (!user) {
-        //     alert('Please login to checkout!');
-        //     return;
-        // }
-        // // check if user is manager
-        // if (user['role'] !== 'MANAGER') {
-        //     alert('Only manager can checkout!');
-        //     return;
-        // }
-        // // check if user has enough money
-        // if (user['balance'] < $('#total-price').text()) {
-        //     alert('You do not have enough money to checkout!');
-        //     return;
-        // }
-        // // check if user has enough quantity
-        // for (let key in this.lists) {
-        //     if (this.lists[key]['quantity'] > this.lists[key]['quantityInStock']) {
-        //         alert(`You do not have enough quantity of ${this.lists[key]['productName']} to checkout!`);
-        //         return;
-        //     }
-        // }
+
         // checkout
         const url = '/api/v1/orders/checkout';
         const postProducts = [];
@@ -241,15 +220,28 @@ const carts = {
         };
         console.log(request);
         callAPI.post(url, request)
-            .then(data => {
+            .then(async data => {
                 console.log(data);
                 if (data.message !== undefined) {
                     alert(data.message);
                     return;
                 }
-                alert('Checkout successfully!');
-                this.lists = {};
-                this.render();
+
+                const url_ = '/api/v1/payments/create-payment';
+                const request_ = {
+                    customerNumber: user['customerNumber'],
+                    orderNumber: data['orderNumber'],
+                    amount: $('#total-price').text()
+                };
+                const data_ = await callAPI.post(url_, request_);
+
+                if (data['status'] === 'Ok') {
+                    window.location.href = data_['paymentUrl'];
+                    alert('Checkout successfully!');
+                    this.lists = {};
+                    this.render();
+                }
+
             })
     }
 };

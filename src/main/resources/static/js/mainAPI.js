@@ -29,8 +29,8 @@ const callAPI = {
     post: (url, data) => {
         return callAPI.base("POST", url, data);
     },
-    get: (url) => {
-        return callAPI.base("GET", url);
+    get: (url, data) => {
+        return callAPI.base("GET", url, data);
     },
     put: (url, data) => {
         return callAPI.base("PUT", url, data);

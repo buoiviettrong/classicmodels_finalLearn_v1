@@ -60,4 +60,8 @@ public class GetPage {
         return "manager-order-history";
     }
 
+    @GetMapping("/user/profile")
+    public String getUserProfilePage() {
+        return "profile";
+    }
 }

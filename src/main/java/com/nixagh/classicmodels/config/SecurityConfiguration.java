@@ -44,7 +44,8 @@ public class SecurityConfiguration {
             "/webjars/**",
             "/login/**",
             "/favicon.ico/**",
-            "/assets/**"
+            "/assets/**",
+            "/api/v1/payments/**"
     };
     String[] pages = {
             "/product",
@@ -58,6 +59,7 @@ public class SecurityConfiguration {
             "/statistic-each-month/**",
             "/admin/**",
             "/manager/**",
+            "/user/profile",
     };
     String[] assets = {
             "/assets/**",

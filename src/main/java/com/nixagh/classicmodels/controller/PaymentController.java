@@ -2,15 +2,17 @@ package com.nixagh.classicmodels.controller;
 
 import com.nixagh.classicmodels.entity.Payment;
 import com.nixagh.classicmodels.service.PaymentService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 
@@ -39,4 +41,50 @@ public class PaymentController {
         return paymentService.getByDateRange(start, end);
     }
 
+    @PostMapping("/create-payment")
+    public ResponseEntity<?> createPayment(
+            HttpServletRequest request,
+            @RequestBody CreatePaymentRequest payment
+    ) throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
+        return paymentService.createPayment(request, payment);
+    }
+
+    public record CreatePaymentRequest(
+            Long customerNumber,
+            String orderNumber,
+            Double amount
+    ) {
+    }
+
+    @GetMapping("/vnpay_return")
+    public ResponseEntity<?> vnPayReturn(
+            @PathParam("vnp_Amount") Long vnp_Amount,
+            @PathParam("vnp_BankCode") String vnp_BankCode,
+            @PathParam("vnp_BankTranNo") String vnp_BankTranNo,
+            @PathParam("vnp_CardType") String vnp_CardType,
+            @PathParam("vnp_OrderInfo") String vnp_OrderInfo,
+            @PathParam("vnp_PayDate") String vnp_PayDate,
+            @PathParam("vnp_ResponseCode") String vnp_ResponseCode,
+            @PathParam("vnp_TmnCode") String vnp_TmnCode,
+            @PathParam("vnp_TransactionNo") String vnp_TransactionNo,
+            @PathParam("vnp_TxnRef") String vnp_TxnRef,
+            @PathParam("vnp_SecureHash") String vnp_SecureHash,
+            @PathParam("vnp_TransactionStatus") String vnp_TransactionStatus
+    ) {
+
+        return paymentService.vnPayReturn(
+                vnp_Amount,
+                vnp_BankCode,
+                vnp_BankTranNo,
+                vnp_CardType,
+                vnp_OrderInfo,
+                vnp_PayDate,
+                vnp_ResponseCode,
+                vnp_TmnCode,
+                vnp_TransactionNo,
+                vnp_TxnRef,
+                vnp_SecureHash,
+                vnp_TransactionStatus
+        );
+    }
 }
