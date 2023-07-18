@@ -10,9 +10,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.List;
 
 @Entity
 @Table(name = "orders")
@@ -57,5 +57,5 @@ public class Order implements Serializable {
 
     @OneToMany(mappedBy = "order")
     @JsonIgnore
-    private Set<OrderDetail> orderDetail = new HashSet<OrderDetail>();
+    private List<OrderDetail> orderDetail = new ArrayList<>();
 }

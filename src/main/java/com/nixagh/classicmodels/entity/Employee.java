@@ -9,9 +9,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "employees")
@@ -50,7 +48,7 @@ public class Employee implements Serializable {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "reportsTo")
     @JsonIgnore
-    private Set<Employee> employees = new HashSet<>();
+    private List<Employee> employees = new ArrayList<>();
 
     @OneToMany(mappedBy = "salesRepEmployeeNumber", cascade = CascadeType.ALL)
     @JsonIgnore

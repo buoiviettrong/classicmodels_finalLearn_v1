@@ -5,8 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "products")
@@ -49,6 +49,6 @@ public class Product implements Serializable {
 
     @JsonIgnore
     @OneToMany(mappedBy = "product")
-    private Set<OrderDetail> orderDetail = new HashSet<OrderDetail>();
+    private List<OrderDetail> orderDetail = new ArrayList<>();
 }
 

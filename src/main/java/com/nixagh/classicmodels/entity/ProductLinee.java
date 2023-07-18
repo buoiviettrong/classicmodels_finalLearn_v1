@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "product_lines")
@@ -34,5 +34,5 @@ public class ProductLinee implements Serializable {
     @OneToMany(targetEntity = Product.class)
     @JoinColumn(name = "productLine", referencedColumnName = "productLine")
 //  @Fetch(FetchMode.JOIN)
-    private Set<Product> productsList = new HashSet<>();
+    private List<Product> productsList = new ArrayList<>();
 }

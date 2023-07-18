@@ -9,9 +9,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "customers")
@@ -22,37 +20,37 @@ import java.util.Set;
 public class Customer implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "customerNumber", nullable = false)
+    @Column(name = "customerNumber")
     private Long customerNumber;
 
-    @Column(name = "customerName", nullable = false, length = 50)
+    @Column(name = "customerName")
     private String customerName;
 
-    @Column(name = "contactLastName", nullable = false, length = 50)
+    @Column(name = "contactLastName")
     private String contactLastName;
 
-    @Column(name = "contactFirstName", nullable = false, length = 50)
+    @Column(name = "contactFirstName")
     private String contactFirstName;
 
-    @Column(name = "phone", nullable = false, length = 50)
+    @Column(name = "phone")
     private String phone;
 
-    @Column(name = "addressLine1", nullable = false, length = 50)
+    @Column(name = "addressLine1")
     private String addressLine1;
 
-    @Column(name = "addressLine2", length = 50)
+    @Column(name = "addressLine2")
     private String addressLine2;
 
-    @Column(name = "city", nullable = false, length = 50)
+    @Column(name = "city")
     private String city;
 
-    @Column(name = "state", length = 50)
+    @Column(name = "state")
     private String state;
 
-    @Column(name = "postalCode", length = 15)
+    @Column(name = "postalCode")
     private String postalCode;
 
-    @Column(name = "country", nullable = false, length = 50)
+    @Column(name = "country")
     private String country;
 
     @ManyToOne
@@ -60,15 +58,15 @@ public class Customer implements Serializable {
 //	@JsonIgnore
     private Employee salesRepEmployeeNumber;
 
-    @Column(name = "creditLimit", precision = 10)
+    @Column(name = "creditLimit")
     private Double creditLimit;
 
     @OneToMany(targetEntity = Order.class, mappedBy = "customer")
     @JsonIgnore
     private List<Order> ordersList = new ArrayList<>();
 
-    @OneToMany(mappedBy = "customer", targetEntity = Payment.class)
+    @OneToMany(mappedBy = "customer")
     @JsonIgnore
-    private Set<Payment> payments = new HashSet<>();
+    private List<Payment> payments = new ArrayList<>();
 
 }

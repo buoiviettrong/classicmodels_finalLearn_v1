@@ -31,6 +31,6 @@ public class Payment implements Serializable {
     private Double amount;
 
     @ManyToOne
-    @JoinColumn(name = "customerNumber", nullable = false)
+    @JoinColumn(name = "customerNumber")
     private Customer customer;
 }
