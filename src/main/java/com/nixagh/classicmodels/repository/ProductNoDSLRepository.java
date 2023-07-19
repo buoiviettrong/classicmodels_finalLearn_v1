@@ -58,13 +58,21 @@ public interface ProductNoDSLRepository extends JpaRepository<Product, String> {
     long countProductStatistical(Date from, Date to);
 
     @Query(value = """
-            SELECT p.productCode, p.productName, t.totalSoldQuantity, t.totalAmount
+            SELECT
+                p.productCode,
+                p.productName,
+                t.totalSoldQuantity,
+                t.totalAmount,
+                p.buyPrice,
+                ROUND(t.totalAmount - p.buyPrice * t.totalSoldQuantity, 2) as totalProfit,
+                t.priceEach as soldPrice
             FROM products p
             LEFT JOIN (
                 SELECT
                     od.productCode,
                     SUM(od.quantityOrdered) as totalSoldQuantity,
-                    ROUND(SUM(od.priceEach*od.quantityOrdered), 2) as totalAmount
+                    ROUND(SUM(od.priceEach*od.quantityOrdered), 2) as totalAmount,
+                    od.priceEach
                 FROM order_details od
                 JOIN orders o on o.orderNumber = od.orderNumber
                 WHERE year(o.orderDate) = :year AND month(o.orderDate) = :month
@@ -76,7 +84,7 @@ public interface ProductNoDSLRepository extends JpaRepository<Product, String> {
     List<Tuple> getProductEachMonth(int year, int month, long offset, long pageSize);
 
     @Query(value = """
-            SELECT p.productCode, p.productName, t.totalSoldQuantity, t.totalAmount
+            SELECT p.productCode, p.productName, t.totalSoldQuantity, t.totalAmount, p.buyPrice
             FROM products p
             LEFT JOIN (
                 SELECT

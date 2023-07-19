@@ -517,7 +517,10 @@ const products = {
         <th scope="col">Mã Sản Phẩm</th>
         <th scope="col">Tên Sản Phẩm</th>
         <th scope="col">Số Sản Phẩm Đã Bán</th>
+        <th scope="col">Giá Bán</th>
         <th scope="col">Tiền Bán Được</th>
+        <th scope="col">Giá Nhập</th>
+        <th scope="col">Lợi Nhuận</th>
     `,
     getProductData: function (yearValue, monthValue, pageNumber, pageSize) {
         const url = `${statisticURL}/product-each-month?year=${yearValue}&month=${monthValue}&pageNumber=${pageNumber}&pageSize=${pageSize}`;
@@ -535,7 +538,11 @@ const products = {
                     <td>${item["productCode"]}</td>
                     <td>${item["productName"]}</td>
                     <td>${item["totalSoldQuantity"] === null ? 0 : item["totalSoldQuantity"]}</td>
+                    <td>${item["soldPrice"] || 0}</td>
                     <td>${item["totalAmount"] === null ? 0 : item["totalAmount"]}</td>
+                    <td>${item["buyPrice"] === null ? 0 : item["buyPrice"]}</td>
+                    <td>${item["totalProfit"] === null ? 0 : item["totalProfit"]}</td>
+                </tr>   
                 `;
             tableBody.append(row);
         });
