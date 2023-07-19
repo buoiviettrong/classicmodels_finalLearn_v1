@@ -17,11 +17,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -44,13 +41,7 @@ public class PaymentService {
         return paymentRepository.getByCustomerNumber(customerNumber);
     }
 
-    public ResponseEntity<?> createPayment(HttpServletRequest request, PaymentController.CreatePaymentRequest payment) throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
-
-//        String vnp_Version = "2.1.0";
-//        String vnp_Command = "pay";
-//        String orderType = req.getParameter("ordertype");
-//        long amount = Integer.parseInt(req.getParameter("amount"))*100;
-//        String bankCode = req.getParameter("bankCode");
+    public ResponseEntity<?> createPayment(HttpServletRequest request, PaymentController.CreatePaymentRequest payment) {
         int amount = (int) (payment.amount() * 100);
 
         String vnp_TxnRef = payment.orderNumber();
@@ -86,8 +77,8 @@ public class PaymentService {
         StringBuilder query = new StringBuilder();
         Iterator<String> itr = fieldNames.iterator();
         while (itr.hasNext()) {
-            String fieldName = (String) itr.next();
-            String fieldValue = (String) vnp_Params.get(fieldName);
+            String fieldName = itr.next();
+            String fieldValue = vnp_Params.get(fieldName);
             if ((fieldValue != null) && (fieldValue.length() > 0)) {
                 //Build hash data
                 hashData.append(fieldName);

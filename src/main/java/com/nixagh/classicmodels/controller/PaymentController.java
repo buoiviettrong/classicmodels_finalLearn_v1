@@ -12,9 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
 import java.text.ParseException;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +45,7 @@ public class PaymentController {
     public ResponseEntity<?> createPayment(
             HttpServletRequest request,
             @RequestBody CreatePaymentRequest payment
-    ) throws NoSuchAlgorithmException, InvalidKeyException, UnsupportedEncodingException {
+    ) {
         return paymentService.createPayment(request, payment);
     }
 
