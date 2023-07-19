@@ -5,11 +5,20 @@ import com.nixagh.classicmodels.dto.statistical.request.StatisticDTO;
 import com.nixagh.classicmodels.dto.statistical.request.StatisticalRequest;
 import com.nixagh.classicmodels.dto.statistical.response.*;
 import com.nixagh.classicmodels.service.StatisticalService;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -94,5 +103,31 @@ public class StatisticalController {
             @RequestParam("pageSize") int pageSize
     ) {
         return statisticalService.getCustomerEachMonth(customerName, year, month, pageNumber, pageSize);
+    }
+
+    @GetMapping("/export-product")
+    public ResponseEntity<?> getExportProduct(
+            @RequestParam("year") int year,
+            @RequestParam("month") int month
+    ) throws IOException, NoSuchFieldException, IllegalAccessException {
+        var resource = statisticalService.getExportProduct(year, month);
+
+        String contentType = "application/vnd.ms-excel";
+        String headerValue = "attachment; filename=\"" + resource.getFileName() + "\"";
+
+        InputStreamResource file = new InputStreamResource(resource.getBis());
+
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
+                .body(file);
+    }
+
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    public static class ByteArrayInputStreamResponse {
+        ByteArrayInputStream bis;
+        String fileName;
     }
 }

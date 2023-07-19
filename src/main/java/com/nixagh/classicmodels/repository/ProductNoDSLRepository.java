@@ -99,4 +99,29 @@ public interface ProductNoDSLRepository extends JpaRepository<Product, String> {
             ORDER BY t.totalAmount DESC
             """, nativeQuery = true)
     List<Tuple> countProductEachMonth(int year, int month);
+
+    @Query(value = """
+            SELECT
+                p.productCode,
+                p.productName,
+                t.totalSoldQuantity,
+                t.totalAmount,
+                p.buyPrice,
+                ROUND(t.totalAmount - p.buyPrice * t.totalSoldQuantity, 2) as totalProfit,
+                t.priceEach as soldPrice
+            FROM products p
+            LEFT JOIN (
+                SELECT
+                    od.productCode,
+                    SUM(od.quantityOrdered) as totalSoldQuantity,
+                    ROUND(SUM(od.priceEach*od.quantityOrdered), 2) as totalAmount,
+                    od.priceEach
+                FROM order_details od
+                JOIN orders o on o.orderNumber = od.orderNumber
+                WHERE year(o.orderDate) = :year AND month(o.orderDate) = :month
+                GROUP BY od.productCode
+            ) t on t.productCode = p.productCode
+            ORDER BY t.totalAmount DESC
+            """, nativeQuery = true)
+    List<Tuple> getExportProduct(int year, int month);
 }

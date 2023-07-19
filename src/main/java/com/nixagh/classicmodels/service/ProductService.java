@@ -1,6 +1,7 @@
 package com.nixagh.classicmodels.service;
 
 import com.nixagh.classicmodels.controller.ProductController;
+import com.nixagh.classicmodels.controller.StatisticalController;
 import com.nixagh.classicmodels.dto.PageResponseInfo;
 import com.nixagh.classicmodels.dto.product.ProductAddRequest;
 import com.nixagh.classicmodels.dto.product.edit.ProductUpdateRequest;
@@ -23,12 +24,16 @@ import com.nixagh.classicmodels.exception.NotFoundEntity;
 import com.nixagh.classicmodels.repository.ProductNoDSLRepository;
 import com.nixagh.classicmodels.repository.ProductRepository;
 import com.nixagh.classicmodels.utils.PageUtil;
+import com.nixagh.classicmodels.utils.excel.ExcelConfig;
+import com.nixagh.classicmodels.utils.excel.ExcelUtil;
 import com.querydsl.core.Tuple;
 import jakarta.persistence.EntityManager;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -338,4 +343,51 @@ public class ProductService {
         productRepository.save(product);
         return new HashMap<>(Map.of("productCode", productCode));
     }
+
+    @AllArgsConstructor
+    @Getter
+    @Setter
+    @ToString
+    public static class ProductExportResponse {
+        private String productCode;
+        private String productName;
+        private BigDecimal totalSoldQuantity;
+        private Double soldPrice;
+        private Double totalAmount;
+        private Double buyPrice;
+        private Double totalProfit;
+    }
+
+
+    public StatisticalController.ByteArrayInputStreamResponse getExportProduct(int year, int month) throws IOException, NoSuchFieldException, IllegalAccessException {
+        List<ProductExportResponse> products = productNoDSLRepository.getExportProduct(year, month)
+                .stream()
+                .map(product -> new ProductExportResponse(
+                        product.get("productCode", String.class),
+                        product.get("productName", String.class),
+                        product.get("totalSoldQuantity", BigDecimal.class),
+                        product.get("soldPrice", Double.class),
+                        product.get("totalAmount", Double.class),
+                        product.get("buyPrice", Double.class),
+                        product.get("totalProfit", Double.class)
+                ))
+                .toList();
+        if (products.isEmpty()) {
+            throw new NotFoundEntity("No product to export");
+        }
+
+        // create excel file
+        String[] columns = {"Product Code", "Product Name", "Total Sold Quantity", "Sold Price", "Total Amount", "Buy Price", "Total Profit"};
+        String excelFile = "src/main/resources/excel/";
+        System.out.println(excelFile);
+        ExcelConfig excelConfig = new ExcelConfig();
+        excelConfig.setSheetName("Product");
+        excelConfig.setExcelPath(excelFile);
+        excelConfig.setFileName("product_" + new SimpleDateFormat("yyyyMMddHHss").format(new Date()) + ".xlsx");
+        excelConfig.setHeader(columns);
+        excelConfig.setStartRow(1);
+
+        return ExcelUtil.writeExcel(excelConfig, products);
+    }
+
 }

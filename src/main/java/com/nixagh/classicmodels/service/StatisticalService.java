@@ -1,5 +1,6 @@
 package com.nixagh.classicmodels.service;
 
+import com.nixagh.classicmodels.controller.StatisticalController;
 import com.nixagh.classicmodels.dto.DateRange;
 import com.nixagh.classicmodels.dto.statistical.request.*;
 import com.nixagh.classicmodels.dto.statistical.response.*;
@@ -7,6 +8,7 @@ import com.nixagh.classicmodels.utils.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -86,5 +88,9 @@ public class StatisticalService {
 
     public CustomerEachMonth getCustomerEachMonth(String customerName, int year, int month, int pageNumber, int pageSize) {
         return customerService.getCustomerEachMonth(customerName, year, month, pageNumber, pageSize);
+    }
+
+    public StatisticalController.ByteArrayInputStreamResponse getExportProduct(int year, int month) throws IOException, NoSuchFieldException, IllegalAccessException {
+        return productService.getExportProduct(year, month);
     }
 }

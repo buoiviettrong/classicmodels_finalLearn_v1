@@ -553,6 +553,26 @@ const products = {
         totalPage.val(pageInfo["totalPages"]);
         pageSize.val(pageInfo["pageSize"]);
         totalRecord.val(pageInfo["totalElements"]);
+    },
+    exportProduct: async function (year, month) {
+        const data = await fetch(`${statisticURL}/export-product?year=${year}&month=${month}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem('token')
+            }
+        });
+        const blob = await data.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        // get file name from response header or default file name
+        const fileName = data.headers.get('Content-Disposition').split('filename=')[1];
+        a.download = fileName.substring(1, fileName.length - 1);
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        window.URL.revokeObjectURL(url);
     }
 }
 
@@ -662,5 +682,14 @@ const load = (val) => {
         case "customer":
             customers.getCustomerData(customers.filter.getFilterValue(), year.val(), month.val(), currentPage.val(), pageSize.val());
             break;
+    }
+}
+
+const exportExcel = () => {
+    const type = $('#type').val();
+
+    if (type === "product") products.exportProduct(year.val(), month.val());
+    else {
+        alert("Chức năng đang được phát triển");
     }
 }

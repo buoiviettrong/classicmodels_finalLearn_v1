@@ -42,4 +42,5 @@ public interface ProductRepository extends BaseRepository<Product, String> {
     Long countManagerSearch(String search, String productLine);
 
     List<ProductController.ProductOutOfStockResponse> getOutOfStockProducts();
+
 }
