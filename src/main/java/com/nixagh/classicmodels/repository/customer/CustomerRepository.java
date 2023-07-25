@@ -1,6 +1,5 @@
 package com.nixagh.classicmodels.repository.customer;
 
-import com.nixagh.classicmodels.dto._statistic.overview.OverviewTop;
 import com.nixagh.classicmodels.entity.Customer;
 import com.nixagh.classicmodels.entity.Employee;
 import com.nixagh.classicmodels.repository.BaseRepository;
@@ -22,5 +21,5 @@ public interface CustomerRepository extends BaseRepository<Customer, Long> {
 
     Long countCustomerStatistical(Date from, Date to);
 
-    OverviewTop.Customer getTop1Customer(String from, String to);
+    Tuple getTop1Customer(String from, String to);
 }

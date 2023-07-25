@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OverviewTotal {
-    private Long totalInvoice;
-    private Double totalMoney;
-    private Long totalSoldProduct;
+    private Long totalInvoice = 0L;
+    private Double totalMoney = 0.0;
+    private Long totalSoldProduct = 0L;
 }

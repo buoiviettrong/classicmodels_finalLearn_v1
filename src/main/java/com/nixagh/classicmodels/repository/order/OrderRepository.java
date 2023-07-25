@@ -1,6 +1,5 @@
 package com.nixagh.classicmodels.repository.order;
 
-import com.nixagh.classicmodels.dto._statistic.overview.OverviewTop;
 import com.nixagh.classicmodels.dto.orders.HighestOrderResponse;
 import com.nixagh.classicmodels.dto.orders.OrderFilter;
 import com.nixagh.classicmodels.entity.Order;
@@ -44,7 +43,7 @@ public interface OrderRepository extends BaseRepository<Order, Long> {
 
     Long getTotalOrder(String from, String to);
 
-    OverviewTop.Invoice getTop1Order(String from, String to);
+    Tuple getTop1Order(String from, String to);
 
     List<Tuple> getOrderByEachTime(String from, String to);
 }

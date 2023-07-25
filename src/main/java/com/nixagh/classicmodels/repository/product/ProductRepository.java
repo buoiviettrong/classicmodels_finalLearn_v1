@@ -1,7 +1,6 @@
 package com.nixagh.classicmodels.repository.product;
 
 import com.nixagh.classicmodels.controller.ProductController;
-import com.nixagh.classicmodels.dto._statistic.overview.OverviewTop;
 import com.nixagh.classicmodels.dto.product.search.ProductSearchResponseDTO;
 import com.nixagh.classicmodels.dto.product.search.QuantityInStock;
 import com.nixagh.classicmodels.entity.Product;
@@ -47,7 +46,11 @@ public interface ProductRepository extends BaseRepository<Product, String> {
 
     Tuple getTotalSoldProductAndProfit(String from, String to);
 
-    OverviewTop.Product getTop1Product(String from, String to);
+    Tuple getTop1Product(String from, String to);
 
-    OverviewTop.ProductLine getTop1ProductLine(String from, String to);
+    Tuple getTop1ProductLine(String from, String to);
+
+    Long getTotalProduct(String from, String to);
+
+    List<Tuple> getSyntheticProductLine(String from, String to);
 }

@@ -2,6 +2,8 @@ package com.nixagh.classicmodels.dto._statistic.overview;
 
 import lombok.*;
 
+import java.util.Date;
+
 @Getter
 @Setter
 @Builder
@@ -17,8 +19,8 @@ public class OverviewTop {
     @Setter
     @Builder
     public static class Invoice {
-        private Integer orderNumber;
-        private String orderDate;
+        private Long orderNumber;
+        private Date orderDate;
         private Double totalMoney;
     }
 
@@ -28,7 +30,7 @@ public class OverviewTop {
     public static class Product {
         private String productCode;
         private String productName;
-        private Integer quantity;
+        private Long quantity;
     }
 
     @Getter
@@ -36,14 +38,14 @@ public class OverviewTop {
     @Builder
     public static class ProductLine {
         private String ProductLineCode;
-        private Integer quantity;
+        private Long quantity;
     }
 
     @Getter
     @Setter
     @Builder
     public static class Customer {
-        private Integer CustomerNumber;
+        private Long CustomerNumber;
         private String customerName;
         private Integer quantityInvoice;
         private Double totalMoney;

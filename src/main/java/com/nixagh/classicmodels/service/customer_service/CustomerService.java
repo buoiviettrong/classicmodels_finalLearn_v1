@@ -11,7 +11,9 @@ import com.nixagh.classicmodels.exception.exceptions.NotFoundEntity;
 import com.nixagh.classicmodels.repository.customer.CustomerNoDSLRepository;
 import com.nixagh.classicmodels.repository.customer.CustomerRepository;
 import com.nixagh.classicmodels.repository.employer.EmployeeRepository;
+import com.nixagh.classicmodels.utils.math.RoundUtil;
 import com.nixagh.classicmodels.utils.page.PageUtil;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -107,6 +109,19 @@ public class CustomerService implements ICustomerService {
 
     @Override
     public OverviewTop.Customer getTop1Customer(String from, String to) {
-        return customerRepository.getTop1Customer(from, to);
+        Tuple tuple = customerRepository.getTop1Customer(from, to);
+        if (tuple == null)
+            return OverviewTop.Customer.builder()
+                    .CustomerNumber(-1L)
+                    .customerName("No customer")
+                    .quantityInvoice(0)
+                    .totalMoney(0.0)
+                    .build();
+        return OverviewTop.Customer.builder()
+                .CustomerNumber(tuple.get(0, Long.class))
+                .customerName(tuple.get(1, String.class))
+                .quantityInvoice(tuple.get(2, Integer.class))
+                .totalMoney(RoundUtil.convert(tuple.get(3, Double.class), 2))
+                .build();
     }
 }

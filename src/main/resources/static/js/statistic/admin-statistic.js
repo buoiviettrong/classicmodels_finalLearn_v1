@@ -34,14 +34,13 @@ class AdminStatistic {
                 }
             }
         };
-        this.$detailData = [{
-            month: 1,
-            totalInvoice: 0,
-            totalMoney: 0,
-            totalSoldProduct: 0
-        }];
+        this.$detailData = {
+            totalProduct: 0,
+            syntheticProductLine: [{productLineCode: '', totalSoldProduct: 0, totalMoney: 0.0}]
+        };
         this.$overview = $('#overview');
         this.$detail = $('#detail');
+        this.$table = $('#table');
         await this.getData();
     }
 
@@ -52,16 +51,17 @@ class AdminStatistic {
             to: $('#to-date').val(),
             type: ''
         }
-        console.log(request);
         const data = await callAPI.post(url, request);
         this.$overviewData = data.overview;
-        this.$detailData = data.detail;
+        this.$detailData = data['syntheticProduct'];
         this.setOverview();
-        this.setDetails();
+        // this.setDetails();
+        this.setTable();
     }
 
     setOverview() {
         this.$overview.empty();
+
         const overviewTemplateTotal = `
         <div class="col-4 card">
             <div class="row d-flex justify-content-between">
@@ -89,7 +89,7 @@ class AdminStatistic {
                     </div>
                     <div class="row">
                         <div class="col">Ngày đặt</div>
-                        <div class="col">${this.$overviewData.overviewTop.invoice.orderDate}</div>
+                        <div class="col">${Utility.formatDate(this.$overviewData.overviewTop.invoice.orderDate)}</div>
                         
                     </div>
                     <div class="row">
@@ -104,7 +104,7 @@ class AdminStatistic {
                 <div class="col">
                     <div class="row">
                         <div class="col">Mã sản phẩm</div>
-                        <div class="col">${this.$overviewData.overviewTop.product.productCode}</div>
+                        <a class="col">${this.$overviewData.overviewTop.product.productCode}</a>
                     </div>
                     <div class="row">
                         <div class="col">Tên sản phẩm</div>
@@ -122,7 +122,7 @@ class AdminStatistic {
                 <div class="col">
                     <div class="row">
                         <div class="col">Mã dòng sản phẩm</div>
-                        <div class="col">${this.$overviewData.overviewTop.productLine.productLineCode}</div>
+                        <a class="col">${this.$overviewData.overviewTop.productLine.productLineCode}</a>
                     </div>
                     <div class="row">
                         <div class="col">Số lượng đặt mua</div>
@@ -136,7 +136,7 @@ class AdminStatistic {
                 <div class="col">
                     <div class="row">
                         <div class="col">Mã khách hàng</div>
-                        <div class="col">${this.$overviewData.overviewTop.customer.customerNumber}</div>
+                        <a class="col">${this.$overviewData.overviewTop.customer.customerNumber}</a>
                     </div>
                     <div class="row">
                         <div class="col">Tên khách hàng</div>
@@ -158,19 +158,46 @@ class AdminStatistic {
         this.$overview.append(overviewTemplateTop);
     };
 
+    setTable() {
+        this.$table.empty();
+        const tableHeader = `
+            <thead class="table-header">
+                <th>Mã Dòng Sản Phẩm</th>
+                <th>Số Lượng Bán Được</th>
+                <th>Tổng Tiền</th>
+            </thead>
+        `;
+        let tableRow = ``;
+        this.$detailData.syntheticProductLine.forEach(item => {
+            tableRow += `
+                <tr class="table-row">
+                    <td>${item.productLineCode}</td>
+                    <td>${item.totalSoldProduct}</td>
+                    <td>${item.totalMoney}</td>
+                </tr>
+            `
+        })
+        const tableBody = `<tbody class="table-body">${tableRow}</tbody>`;
+        const tableTemplate = `<table class="table">${tableHeader}${tableBody}</table`;
+        this.$table.append(tableTemplate);
+    }
+
     setDetails() {
         this.$detail.empty();
         const detailTemplate = `
-        <canvas style="position: absolute;" id="myChart" width="400" height="400"></canvas>
+        <div class="chart-container" style="position: relative; height:40vh; width:80vw">
+            <canvas id="myChart"></canvas>
+        </div>
         `;
         this.$detail.append(detailTemplate);
         const ctx = document.getElementById('myChart').getContext('2d');
 
         const labels = this.$detailData.map((item) => {
-            return item.date;
+            return Utility.formatDate(item.date);
         });
         const datasets = {
             label: 'Doanh thu',
+            backgroundColor: 'green',
             data: this.$detailData.map((item) => {
                 return item.totalMoney;
             })
@@ -185,10 +212,12 @@ class Chart_ {
             type: 'bar',
             data: {
                 labels: labels,
+                colors: 'green',
                 datasets: [{
                     label: datasets.label,
                     data: datasets.data,
-                    borderWidth: 1
+                    borderWidth: 1,
+                    backgroundColor: datasets.backgroundColor
                 }]
             },
             options: {
@@ -196,7 +225,7 @@ class Chart_ {
                     y: {
                         beginAtZero: true
                     }
-                }
+                },
             }
         });
     }
@@ -233,7 +262,8 @@ class Utility {
         return `${year}-${month}-${day}`;
     };
 
-    static formatDate(date) {
+    static formatDate(date_) {
+        const date = new Date(date_);
         const month = date.getMonth() + 1 < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
         const year = date.getFullYear();
         const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();

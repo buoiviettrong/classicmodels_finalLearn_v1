@@ -1,11 +1,9 @@
 package com.nixagh.classicmodels.repository.customer;
 
-import com.nixagh.classicmodels.dto._statistic.overview.OverviewTop;
 import com.nixagh.classicmodels.entity.Customer;
 import com.nixagh.classicmodels.entity.Employee;
 import com.nixagh.classicmodels.repository.BaseRepositoryImpl;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.Projections;
 import jakarta.persistence.EntityManager;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -95,16 +93,14 @@ public class CustomerRepositoryImpl extends BaseRepositoryImpl<Customer, Long> i
     }
 
     @Override
-    public OverviewTop.Customer getTop1Customer(String from, String to) {
+    public Tuple getTop1Customer(String from, String to) {
         return jpaQueryFactory
                 .select(
-                        Projections.constructor(
-                                OverviewTop.Customer.class,
-                                customer.customerName,
-                                customer.customerNumber,
-                                customer.ordersList.size().as("quantityInvoice"),
-                                orderDetail.priceEach.multiply(orderDetail.quantityOrdered).sum().as("totalMoney")
-                        )
+                        customer.customerNumber,
+                        customer.customerName,
+                        customer.ordersList.size().as("quantityInvoice"),
+                        orderDetail.priceEach.multiply(orderDetail.quantityOrdered).sum().as("totalMoney")
+
                 )
                 .from(customer)
                 .join(customer.ordersList, order)

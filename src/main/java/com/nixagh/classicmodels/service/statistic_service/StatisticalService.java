@@ -3,7 +3,7 @@ package com.nixagh.classicmodels.service.statistic_service;
 import com.nixagh.classicmodels.controller.StatisticalController;
 import com.nixagh.classicmodels.dto._statistic.SyntheticStatisticRequest;
 import com.nixagh.classicmodels.dto._statistic.SyntheticStatisticResponse;
-import com.nixagh.classicmodels.dto._statistic.details.Details;
+import com.nixagh.classicmodels.dto._statistic.details.SyntheticProduct;
 import com.nixagh.classicmodels.dto._statistic.overview.Overview;
 import com.nixagh.classicmodels.dto._statistic.overview.OverviewTop;
 import com.nixagh.classicmodels.dto._statistic.overview.OverviewTotal;
@@ -123,15 +123,18 @@ public class StatisticalService implements IStatisticalService {
 
         var from = syntheticStatisticRequest.getFrom();
         var to = syntheticStatisticRequest.getTo();
-        var type = syntheticStatisticRequest.getType();
+//        var type = syntheticStatisticRequest.getType();
 
         // create overview
         Overview overview = new Overview();
         // get overview total
         // get total order
-        Long totalOrder = orderService.getTotalOrder(from, to);
+        Long totalOrder = orderService.getTotalOrder(from, to) == null ? 0 : orderService.getTotalOrder(from, to);
         // get total sold product and total profit
         OverviewTotal totalSoldProductAndProfit = productService.getTotalSoldProductAndProfit(from, to);
+        totalSoldProductAndProfit.setTotalMoney(totalSoldProductAndProfit.getTotalMoney() == null ? 0 : totalSoldProductAndProfit.getTotalMoney());
+        totalSoldProductAndProfit.setTotalSoldProduct(totalSoldProductAndProfit.getTotalSoldProduct() == null ? 0 : totalSoldProductAndProfit.getTotalSoldProduct());
+
         totalSoldProductAndProfit.setTotalInvoice(totalOrder);
 
         // get overview top
@@ -149,11 +152,17 @@ public class StatisticalService implements IStatisticalService {
         // set overview total
         overview.setOverviewTotal(totalSoldProductAndProfit);
 
-        // create overview each time
-        List<Details> overviewEachTime = orderService.getOrderByEachTime(from, to);
-        // get overview each time
+        // create new product statistic
+        SyntheticProduct syntheticProduct = new SyntheticProduct();
+        // get total product
+        Long totalProduct = totalSoldProductAndProfit.getTotalSoldProduct();
+        // get synthetic product line
+        List<SyntheticProduct.SyntheticProductLine> syntheticProductLine = productService.getSyntheticProductLine(from, to);
+        // set synthetic product
+        syntheticProduct.setTotalProduct(totalProduct);
+        syntheticProduct.setSyntheticProductLine(syntheticProductLine);
 
-        response.setDetails(overviewEachTime);
+        response.setSyntheticProduct(syntheticProduct);
         response.setOverview(overview);
         return response;
     }

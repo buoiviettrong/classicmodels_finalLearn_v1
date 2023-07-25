@@ -3,6 +3,7 @@ package com.nixagh.classicmodels.service.product_service;
 import com.nixagh.classicmodels.config.excel.ExcelConfig;
 import com.nixagh.classicmodels.controller.ProductController;
 import com.nixagh.classicmodels.controller.StatisticalController;
+import com.nixagh.classicmodels.dto._statistic.details.SyntheticProduct;
 import com.nixagh.classicmodels.dto._statistic.overview.OverviewTop;
 import com.nixagh.classicmodels.dto._statistic.overview.OverviewTotal;
 import com.nixagh.classicmodels.dto.page.PageResponseInfo;
@@ -27,6 +28,7 @@ import com.nixagh.classicmodels.exception.exceptions.NotFoundEntity;
 import com.nixagh.classicmodels.repository.product.ProductNoDSLRepository;
 import com.nixagh.classicmodels.repository.product.ProductRepository;
 import com.nixagh.classicmodels.utils.excel.ExcelUtil;
+import com.nixagh.classicmodels.utils.math.RoundUtil;
 import com.nixagh.classicmodels.utils.page.PageUtil;
 import com.querydsl.core.Tuple;
 import jakarta.persistence.EntityManager;
@@ -40,6 +42,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -93,11 +96,10 @@ public class ProductService implements IProductService {
 
     @Override
     public StatisticDTO getAllStatistical() {
-        StatisticDTO statisticDTO = new StatisticDTO();
         // lấy danh sách các tuple (tháng, customerNumber, customerName,  productCode, productName, totalSoldQuantity, totalProfit)
-        List<Tuple> tuples = productRepository.findAllStatistic();
+//        List<Tuple> tuples = productRepository.findAllStatistic();
         // duyệt danh sách các tuple và thêm vào StatisticDTO
-        return statisticDTO;
+        return new StatisticDTO();
     }
 
     @Override
@@ -400,20 +402,61 @@ public class ProductService implements IProductService {
     @Override
     public OverviewTotal getTotalSoldProductAndProfit(String from, String to) {
         Tuple tuple = productRepository.getTotalSoldProductAndProfit(from, to);
+
+        if (tuple == null) return OverviewTotal.builder().build();
+
+        Long totalSoldProduct = tuple.get(0, Long.class);
+        Double totalProfit = tuple.get(1, Double.class) == null ? 0.0 : tuple.get(1, Double.class);
+
+
+        assert totalProfit != null;
         return OverviewTotal.builder()
-                .totalSoldProduct(tuple.get(0, Long.class))
-                .totalMoney(tuple.get(1, Double.class))
+                .totalSoldProduct(totalSoldProduct)
+                .totalMoney(RoundUtil.convert(totalProfit, 2))
                 .build();
     }
 
     @Override
     public OverviewTop.Product getTop1Product(String from, String to) {
-        return productRepository.getTop1Product(from, to);
+        Tuple tuple = productRepository.getTop1Product(from, to);
+        if (tuple == null)
+            return OverviewTop.Product.builder()
+                    .productCode("Product code is not existed")
+                    .productName("Product name is not existed")
+                    .quantity(0L)
+                    .build();
+        return OverviewTop.Product.builder()
+                .productCode(tuple.get(0, String.class) == null ? "Product code is not existed" : tuple.get(0, String.class))
+                .productName(tuple.get(1, String.class) == null ? "Product name is not existed" : tuple.get(1, String.class))
+                .quantity(tuple.get(2, Long.class) == null ? 0L : tuple.get(2, Long.class))
+                .build();
     }
 
     @Override
     public OverviewTop.ProductLine getTop1ProductLine(String from, String to) {
-        return productRepository.getTop1ProductLine(from, to);
+        Tuple tuple = productRepository.getTop1ProductLine(from, to);
+        if (tuple == null)
+            return OverviewTop.ProductLine.builder()
+                    .ProductLineCode("Product line code is not existed")
+                    .quantity(0L)
+                    .build();
+        return OverviewTop.ProductLine.builder()
+                .ProductLineCode(tuple.get(0, String.class))
+                .quantity(tuple.get(1, Long.class))
+                .build();
+    }
+
+    @Override
+    public Long getTotalProduct(String from, String to) {
+        return productRepository.getTotalProduct(from, to);
+    }
+
+    @Override
+    public List<SyntheticProduct.SyntheticProductLine> getSyntheticProductLine(String from, String to) {
+        return productRepository.getSyntheticProductLine(from, to)
+                .stream()
+                .map(SyntheticProduct.SyntheticProductLine::fromTuple)
+                .collect(Collectors.toList());
     }
 
     @AllArgsConstructor

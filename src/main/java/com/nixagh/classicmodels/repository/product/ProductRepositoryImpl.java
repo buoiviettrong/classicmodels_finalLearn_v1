@@ -1,7 +1,6 @@
 package com.nixagh.classicmodels.repository.product;
 
 import com.nixagh.classicmodels.controller.ProductController;
-import com.nixagh.classicmodels.dto._statistic.overview.OverviewTop;
 import com.nixagh.classicmodels.dto.product.search.ProductSearchResponseDTO;
 import com.nixagh.classicmodels.dto.product.search.QuantityInStock;
 import com.nixagh.classicmodels.entity.Product;
@@ -241,50 +240,70 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
         return jpaQueryFactory
                 .select(
                         orderDetail.quantityOrdered.sum().as("totalSoldProduct"),
-                        orderDetail.quantityOrdered.multiply(orderDetail.priceEach).sum().as("totalProfit")
+                        orderDetail.priceEach.multiply(orderDetail.quantityOrdered).sum().as("totalProfit")
                 )
+                .from(order)
                 .leftJoin(order.orderDetail, orderDetail)
                 .where(order.orderDate.between(Date.valueOf(from), Date.valueOf(to)))
-                .groupBy(order.orderDate)
                 .fetchFirst();
     }
 
     @Override
-    public OverviewTop.Product getTop1Product(String from, String to) {
+    public Tuple getTop1Product(String from, String to) {
         return jpaQueryFactory
                 .select(
-                        Projections.constructor(
-                                OverviewTop.Product.class,
-                                product.productCode,
-                                product.productName,
-                                orderDetail.quantityOrdered.sum().as("totalSoldProduct"),
-                                orderDetail.quantityOrdered.multiply(orderDetail.priceEach).sum().as("totalProfit")
-                        )
+                        product.productCode,
+                        product.productName,
+                        orderDetail.quantityOrdered.sum().as("totalSoldProduct"),
+                        orderDetail.quantityOrdered.multiply(orderDetail.priceEach).sum().as("totalProfit")
+
                 )
                 .from(order)
                 .join(order.orderDetail, orderDetail)
                 .where(order.orderDate.between(Date.valueOf(from), Date.valueOf(to)))
-                .orderBy(orderDetail.quantityOrdered.sum().as("totalSoldProduct").desc())
+                .groupBy(product.productCode, product.productName)
+                .orderBy(orderDetail.quantityOrdered.sum().desc())
                 .fetchFirst();
     }
 
     @Override
-    public OverviewTop.ProductLine getTop1ProductLine(String from, String to) {
+    public Tuple getTop1ProductLine(String from, String to) {
         return jpaQueryFactory
                 .select(
-                        Projections.constructor(
-                                OverviewTop.ProductLine.class,
-                                product.productLine.productLine.as("ProductLineCode"),
-                                product.productLine.productLine.count().as("quantity")
-                        )
+                        product.productLine.productLine.as("ProductLineCode"),
+                        product.productLine.productLine.count().as("quantity")
+
                 )
                 .from(order)
                 .join(order.orderDetail, orderDetail)
                 .join(orderDetail.product, product)
                 .where(order.orderDate.between(Date.valueOf(from), Date.valueOf(to)))
                 .groupBy(product.productLine.productLine)
-                .orderBy(product.productLine.productLine.count().as("quantity").desc())
+                .orderBy(product.productLine.productLine.count().desc())
                 .fetchFirst();
+    }
+
+    @Override
+    public Long getTotalProduct(String from, String to) {
+        return 0L;
+    }
+
+    @Override
+    public List<Tuple> getSyntheticProductLine(String from, String to) {
+        return jpaQueryFactory
+                .select(
+                        productLine.productLine,
+                        orderDetail.quantityOrdered.sum().as("totalSoldProduct"),
+                        orderDetail.priceEach.multiply(orderDetail.quantityOrdered).sum().as("totalMoney")
+                )
+                .from(productLine)
+                .leftJoin(productLine.productsList, product)
+                .leftJoin(product.orderDetail, orderDetail)
+                .leftJoin(orderDetail.order, order)
+                .where(order.orderDate.between(Date.valueOf(from), Date.valueOf(to)))
+                .groupBy(productLine.productLine)
+                .orderBy(productLine.productLine.asc())
+                .fetch();
     }
 
     private <T> JPAQuery<T> getfilter(

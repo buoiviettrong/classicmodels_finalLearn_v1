@@ -30,6 +30,7 @@ import com.nixagh.classicmodels.repository.order_detail.OrderDetailRepository;
 import com.nixagh.classicmodels.repository.product.ProductRepository;
 import com.nixagh.classicmodels.utils.math.RoundUtil;
 import com.nixagh.classicmodels.utils.page.PageUtil;
+import com.querydsl.core.Tuple;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.stereotype.Service;
@@ -250,7 +251,18 @@ public class OrderService implements IOrderService {
 
     @Override
     public OverviewTop.Invoice getTop1Order(String from, String to) {
-        return orderRepository.getTop1Order(from, to);
+        Tuple tuple = orderRepository.getTop1Order(from, to);
+        if (tuple == null) return OverviewTop.Invoice.builder()
+                .orderNumber(-1L)
+                .orderDate(new Date())
+                .totalMoney(0.0)
+                .build();
+
+        return OverviewTop.Invoice.builder()
+                .orderNumber(tuple.get(0, Long.class) == null ? -1L : tuple.get(0, Long.class))
+                .orderDate(tuple.get(1, Date.class) == null ? new Date(0) : tuple.get(1, Date.class))
+                .totalMoney(tuple.get(2, Double.class) == null ? 0.0 : RoundUtil.convert(tuple.get(2, Double.class), 2))
+                .build();
     }
 
     @Override
@@ -258,8 +270,8 @@ public class OrderService implements IOrderService {
         return orderRepository.getOrderByEachTime(from, to)
                 .stream()
                 .map(tuple -> Details.builder()
-                        .date(tuple.get(0, String.class))
-                        .totalMoney(tuple.get(1, Double.class))
+                        .date(tuple.get(0, Date.class))
+                        .totalMoney(RoundUtil.convert(tuple.get(1, Double.class), 2))
                         .build())
                 .collect(Collectors.toList());
     }

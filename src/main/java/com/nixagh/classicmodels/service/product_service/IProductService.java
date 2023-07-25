@@ -2,6 +2,7 @@ package com.nixagh.classicmodels.service.product_service;
 
 import com.nixagh.classicmodels.controller.ProductController;
 import com.nixagh.classicmodels.controller.StatisticalController;
+import com.nixagh.classicmodels.dto._statistic.details.SyntheticProduct;
 import com.nixagh.classicmodels.dto._statistic.overview.OverviewTop;
 import com.nixagh.classicmodels.dto._statistic.overview.OverviewTotal;
 import com.nixagh.classicmodels.dto.product.ProductAddRequest;
@@ -63,4 +64,8 @@ public interface IProductService {
     OverviewTop.Product getTop1Product(String from, String to);
 
     OverviewTop.ProductLine getTop1ProductLine(String from, String to);
+
+    Long getTotalProduct(String from, String to);
+
+    List<SyntheticProduct.SyntheticProductLine> getSyntheticProductLine(String from, String to);
 }
