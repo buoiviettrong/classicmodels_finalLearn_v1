@@ -1,9 +1,9 @@
 package com.nixagh.classicmodels.controller;
 
-import com.nixagh.classicmodels._common.auth.AuthenticateRequest;
-import com.nixagh.classicmodels._common.auth.AuthenticationResponse;
-import com.nixagh.classicmodels._common.auth.AuthenticationService;
-import com.nixagh.classicmodels._common.auth.RegisterRequest;
+import com.nixagh.classicmodels.dto.auth.AuthenticateRequest;
+import com.nixagh.classicmodels.dto.auth.AuthenticationResponse;
+import com.nixagh.classicmodels.dto.auth.RegisterRequest;
+import com.nixagh.classicmodels.service.auth_service.AuthenticationService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;

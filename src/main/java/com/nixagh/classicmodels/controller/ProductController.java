@@ -7,7 +7,7 @@ import com.nixagh.classicmodels.dto.product.search.ProductSearchRequest;
 import com.nixagh.classicmodels.dto.product.search.ProductSearchResponse;
 import com.nixagh.classicmodels.dto.product.search.ProductSearchResponseDTO;
 import com.nixagh.classicmodels.entity.Product;
-import com.nixagh.classicmodels.service.ProductService;
+import com.nixagh.classicmodels.service.product_service.IProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +20,7 @@ import java.util.Map;
 @RequestMapping("/api/v1/products")
 public class ProductController {
 
-    private final ProductService productService;
+    private final IProductService productService;
 
     @GetMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -70,9 +70,6 @@ public class ProductController {
         return productService.getOutOfStockProducts();
     }
 
-    public record ProductOutOfStockResponse(String productCode, String productName, Integer quantityInStock) {
-    }
-
     @PutMapping("/update-quantity-in-stock/{productCode}")
     @PreAuthorize("hasRole('ADMIN')")
     public Map<String, String> updateQuantityInStock(
@@ -81,5 +78,8 @@ public class ProductController {
     ) {
         var quantityInStock = request.get("quantityInStock");
         return productService.updateQuantityInStock(productCode, quantityInStock);
+    }
+
+    public record ProductOutOfStockResponse(String productCode, String productName, Integer quantityInStock) {
     }
 }

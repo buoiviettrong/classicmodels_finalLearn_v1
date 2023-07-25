@@ -1,10 +1,12 @@
 package com.nixagh.classicmodels.controller;
 
+import com.nixagh.classicmodels.dto._statistic.SyntheticStatisticRequest;
+import com.nixagh.classicmodels.dto._statistic.SyntheticStatisticResponse;
 import com.nixagh.classicmodels.dto.statistical.request.ProductsEachMonthInYear;
 import com.nixagh.classicmodels.dto.statistical.request.StatisticDTO;
 import com.nixagh.classicmodels.dto.statistical.request.StatisticalRequest;
 import com.nixagh.classicmodels.dto.statistical.response.*;
-import com.nixagh.classicmodels.service.StatisticalService;
+import com.nixagh.classicmodels.service.statistic_service.IStatisticalService;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +30,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 @PreAuthorize("hasRole('ADMIN')")
 public class StatisticalController {
-    private final StatisticalService statisticalService;
+    private final IStatisticalService statisticalService;
 
     @PostMapping
     public StatisticalResponse getStatistical(@RequestBody StatisticalRequest statisticalRequest) {
@@ -110,13 +112,18 @@ public class StatisticalController {
             @RequestParam("year") int year,
             @RequestParam("month") int month
     ) throws IOException, NoSuchFieldException, IllegalAccessException {
+
+        // get resource from service layer
         var resource = statisticalService.getExportProduct(year, month);
 
+        // set headers for response
         String contentType = "application/vnd.ms-excel";
         String headerValue = "attachment; filename=\"" + resource.getFileName() + "\"";
 
+        // create response entity with file
         InputStreamResource file = new InputStreamResource(resource.getBis());
 
+        // return response entity
         return ResponseEntity.ok()
                 .contentType(MediaType.parseMediaType(contentType))
                 .header(HttpHeaders.CONTENT_DISPOSITION, headerValue)
@@ -129,5 +136,11 @@ public class StatisticalController {
     public static class ByteArrayInputStreamResponse {
         ByteArrayInputStream bis;
         String fileName;
+    }
+
+    @PostMapping("/admin-statistical")
+    public SyntheticStatisticResponse getSyntheticStatistic(@RequestBody SyntheticStatisticRequest syntheticStatisticRequest) {
+        System.out.println(syntheticStatisticRequest);
+        return statisticalService.getSyntheticStatistic(syntheticStatisticRequest);
     }
 }

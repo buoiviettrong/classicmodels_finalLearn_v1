@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Statistic Each Month</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+    <script crossorigin="anonymous"
             integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+            src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script crossorigin="anonymous"
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+            src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+    <script crossorigin="anonymous"
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
+            src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
     <!-- base JS File -->
     <script src="/js/const.js"></script>
     <script src="/js/mainAPI.js"></script>
@@ -27,8 +27,9 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+            class="navbar-toggler"
+            data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
         <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -47,11 +48,12 @@
                 <a class="nav-link" href="/product-line">Product Line</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="false">
+                <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown"
+                   href="#"
+                   id="navbarDropdown" role="button">
                     Statistic
                 </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <div aria-labelledby="navbarDropdown" class="dropdown-menu">
                     <a class="dropdown-item" href="/statistic">Thống Kê Khoảng Thời Gian</a>
                     <a class="dropdown-item" href="/statistic-each-month">Thống Kê Theo Tháng Của Năm</a>
                     <div class="dropdown-divider"></div>
@@ -60,7 +62,7 @@
             </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <input aria-label="Search" class="form-control mr-sm-2" placeholder="Search" type="search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
     </div>
@@ -73,25 +75,13 @@
 <div>
     <div class="">
         <div class="card-header">
-            <h3>Thống Kê Theo Tháng Của Năm</h3>
+            <h1>Thống Kê Chi Tiết</h1>
         </div>
         <div class="card-body">
             <div class="row">
-                <!-- Year -->
-                <div class="col-2">
-                    <label for="year">Năm</label>
-                    <select class="form-control" id="year">
-                    </select>
-                </div>
-                <!-- Month -->
-                <div class="col-2">
-                    <label for="month">Tháng</label>
-                    <select class="form-control" id="month">
-                    </select>
-                </div>
                 <!-- Type -->
                 <div class="col-2">
-                    <label for="type">Loại</label>
+                    <label for="type" class="h3">Loại Thống Kê</label>
                     <select class="form-control" id="type">
                         <option value="order">Hóa Đơn</option>
                         <option value="customer">Khách Hàng</option>
@@ -99,6 +89,72 @@
                     </select>
                 </div>
             </div>
+            <br>
+            <br>
+            <div class="row">
+                <div class="col">
+                    <div class="row h3">Kiểu Thống Kê</div>
+                    <div class="row">
+                        <div class="col-2 input-group">
+                            <label class="input-group-text" for="checkbox-year-month">Theo Năm / Tháng</label>
+                            <input class="form-control" id="checkbox-year-month" type="checkbox">
+                        </div>
+                        <!-- Year -->
+                        <div class="col-2 input-group">
+                            <label class="input-group-text" for="year">Năm</label>
+                            <select class="form-control" id="year">
+                            </select>
+                        </div>
+                        <!-- Month -->
+                        <div class="col-2 input-group">
+                            <label class="input-group-text" for="month">Tháng</label>
+                            <select class="form-control" id="month">
+                            </select>
+                        </div>
+                    </div>
+                    <br>
+                    <!-- date range -->
+                    <div class="row">
+                        <div class="col-2 input-group">
+                            <label class="input-group-text" for="checkbox-date-range">Theo Khoảng Thời Gian</label>
+                            <input class="form-control" id="checkbox-date-range" type="checkbox">
+                        </div>
+                        <div class="col-2 input-group">
+                            <label class="input-group-text" for="from-date">Từ</label>
+                            <input class="form-control" id="from-date" type="date">
+                        </div>
+                        <div class="col-2 input-group">
+                            <label class="input-group-text" for="to-date">Đến</label>
+                            <input class="form-control" id="to-date" type="date">
+                        </div>
+                    </div>
+                    <br>
+                    <button class="btn btn-primary" id="btn-search">Tìm Kiếm</button>
+                </div>
+
+            </div>
+            <br>
+            <br>
+            <!-- statistic info -->
+            <div class="row d-flex flex-column">
+                <div class="h4">Tổng Quan</div>
+                <div class="col-2 input-group">
+                    <label class="input-group-text" for="totalOrder">Tổng Đơn Hàng</label>
+                    <input class="form-control border-0 bg-transparent text-right fw-bold h1" disabled id="totalOrder"
+                           type="text" value="0">
+                </div>
+                <div class="col-2 input-group">
+                    <label class="input-group-text" for="totalMoney">Tổng Tiền</label>
+                    <input class="form-control border-0 bg-transparent text-right fw-bold h1" disabled id="totalMoney"
+                           type="text" value="0">
+                </div>
+                <div class="col-2 input-group">
+                    <label class="input-group-text" for="totalProfit">Tổng Thực Thu</label>
+                    <input class="form-control border-0 bg-transparent text-right fw-bold h1" disabled id="totalProfit"
+                           type="text" value="0">
+                </div>
+            </div>
+            <br>
             <br>
             <!-- pagination -->
             <div class="row justify-content-between" id="pagination">
@@ -113,24 +169,24 @@
                     <!-- current page -->
                     <div class="col">
                         <label for="current-page">Trang Hiện Tại</label>
-                        <input type="text" class="form-control" id="current-page" disabled>
+                        <input class="form-control" disabled id="current-page" type="text">
                     </div>
                     <!-- total page -->
                     <div class="col">
                         <label for="total-page">Tổng Số Trang</label>
-                        <input type="text" class="form-control" id="total-page" disabled>
+                        <input class="form-control" disabled id="total-page" type="text">
                     </div>
                     <!-- total record -->
                     <div class="col">
                         <label for="total-record">Tổng Số Bản Ghi</label>
-                        <input type="text" class="form-control" id="total-record" disabled>
+                        <input class="form-control" disabled id="total-record" type="text">
                     </div>
                     <!-- page size -->
                     <div class="col">
                         <label for="page-size">Số Bản Ghi Trên Mỗi Trang</label>
-                        <select id="page-size" class="form-control">
+                        <select class="form-control" id="page-size">
                             <option value="5">5</option>
-                            <option value="10" selected>10</option>
+                            <option selected value="10">10</option>
                             <option value="15">15</option>
                             <option value="20">20</option>
                         </select>
@@ -165,7 +221,7 @@
             <h3>Biểu Đồ Thống Kê</h3>
         </div>
         <div class="card-body">
-            <canvas id="myChart" width="400" height="200"></canvas>
+            <canvas height="200" id="myChart" width="400"></canvas>
         </div>
     </div>
 </div>

@@ -1,7 +1,6 @@
 package com.nixagh.classicmodels.entity.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nixagh.classicmodels.entity.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

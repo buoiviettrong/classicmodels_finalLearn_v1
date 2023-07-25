@@ -1,7 +1,7 @@
 package com.nixagh.classicmodels.controller;
 
 import com.nixagh.classicmodels.entity.Employee;
-import com.nixagh.classicmodels.service.EmployeeService;
+import com.nixagh.classicmodels.service.employer_service.IEmployeeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -19,7 +19,7 @@ import java.util.List;
 @EnableCaching
 @PreAuthorize("hasRole('ADMIN')")
 public class EmployeeController {
-    private final EmployeeService employeeService;
+    private final IEmployeeService employeeService;
 
     @GetMapping
     @Cacheable(value = "employees", cacheManager = "cacheManager")
@@ -30,7 +30,7 @@ public class EmployeeController {
     @GetMapping("/{employeeNumber}")
     @Cacheable(value = "employee", key = "#employeeNumber.toString()", cacheManager = "cacheManager")
     public Employee getEmployeeById(@PathVariable Long employeeNumber) {
-        return employeeService.findById(employeeNumber);
+        return employeeService.getEmployeeById(employeeNumber);
     }
 
     @PostMapping

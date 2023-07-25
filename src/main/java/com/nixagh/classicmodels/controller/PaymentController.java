@@ -1,7 +1,7 @@
 package com.nixagh.classicmodels.controller;
 
 import com.nixagh.classicmodels.entity.Payment;
-import com.nixagh.classicmodels.service.PaymentService;
+import com.nixagh.classicmodels.service.payment_service.IPaymentService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.websocket.server.PathParam;
@@ -20,7 +20,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/payments")
 public class PaymentController {
-    private final PaymentService paymentService;
+    private final IPaymentService paymentService;
 
     @GetMapping
     public List<Payment> getAll() {
@@ -47,13 +47,6 @@ public class PaymentController {
             @RequestBody CreatePaymentRequest payment
     ) {
         return paymentService.createPayment(request, payment);
-    }
-
-    public record CreatePaymentRequest(
-            Long customerNumber,
-            String orderNumber,
-            Double amount
-    ) {
     }
 
     @GetMapping("/vnpay_return")
@@ -88,5 +81,12 @@ public class PaymentController {
                 vnp_SecureHash,
                 vnp_TransactionStatus
         );
+    }
+
+    public record CreatePaymentRequest(
+            Long customerNumber,
+            String orderNumber,
+            Double amount
+    ) {
     }
 }

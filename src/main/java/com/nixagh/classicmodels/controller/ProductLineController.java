@@ -2,7 +2,7 @@ package com.nixagh.classicmodels.controller;
 
 import com.nixagh.classicmodels.dto.product_line.ProductLineUpdateRequest;
 import com.nixagh.classicmodels.entity.ProductLinee;
-import com.nixagh.classicmodels.service.ProductLineService;
+import com.nixagh.classicmodels.service.product_line_service.IProductLineService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
@@ -19,7 +19,7 @@ import java.util.List;
 @EnableCaching
 @PreAuthorize("hasAnyRole('ADMIN', 'MANAGER')")
 public class ProductLineController {
-    public final ProductLineService productLineService;
+    public final IProductLineService productLineService;
 
     @GetMapping
     @Cacheable(value = "productLines", cacheManager = "cacheManager")

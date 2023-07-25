@@ -2,7 +2,7 @@ package com.nixagh.classicmodels._ATestNewContent;
 
 public class LongestSubarray {
     public static void main(String[] args) {
-        int[] nums = new int[]{1,1,0,0,1,1,1,0,1};
+        int[] nums = new int[]{1, 1, 0, 0, 1, 1, 1, 0, 1};
         System.out.println(longestSubarray(nums));
     }
 
@@ -19,6 +19,6 @@ public class LongestSubarray {
             last = count;
             count = 0;
         }
-        return  Math.max(last + count, max) - flag;
+        return Math.max(last + count, max) - flag;
     }
 }

@@ -1,7 +1,8 @@
 package com.nixagh.classicmodels.controller;
 
 import com.nixagh.classicmodels.entity.Customer;
-import com.nixagh.classicmodels.service.CustomerService;
+import com.nixagh.classicmodels.service.customer_service.CustomerService;
+import com.nixagh.classicmodels.service.customer_service.ICustomerService;
 import jakarta.websocket.server.PathParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,7 +15,7 @@ import java.util.List;
 @PreAuthorize("hasRole('ADMIN')")
 public class CustomerController {
 
-    private final CustomerService customerService;
+    private final ICustomerService customerService;
 
     @Autowired
     public CustomerController(CustomerService customerService) {

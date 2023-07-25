@@ -1,12 +1,12 @@
 package com.nixagh.classicmodels;
 
-import com.nixagh.classicmodels._common.auth.AuthenticationService;
-import com.nixagh.classicmodels._common.auth.RegisterRequest;
+import com.nixagh.classicmodels.dto.auth.RegisterRequest;
 import com.nixagh.classicmodels.entity.auth.Permission;
 import com.nixagh.classicmodels.entity.auth.Role;
-import com.nixagh.classicmodels.entity.user.LoginType;
-import com.nixagh.classicmodels.service.PermissionService;
-import com.nixagh.classicmodels.service.RoleService;
+import com.nixagh.classicmodels.entity.enums.LoginType;
+import com.nixagh.classicmodels.service.auth_service.AuthenticationService;
+import com.nixagh.classicmodels.service.auth_service.PermissionService;
+import com.nixagh.classicmodels.service.auth_service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

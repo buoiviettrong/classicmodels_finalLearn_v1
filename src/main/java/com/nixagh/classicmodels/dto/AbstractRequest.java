@@ -1,5 +1,6 @@
 package com.nixagh.classicmodels.dto;
 
+import com.nixagh.classicmodels.dto.page.PageRequestInfo;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;

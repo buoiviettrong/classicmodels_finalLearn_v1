@@ -1,8 +1,8 @@
 package com.nixagh.classicmodels.controller;
 
-import com.nixagh.classicmodels._common.auth.AuthenticationResponse;
-import com.nixagh.classicmodels.service.OAuth2User.OAuth2UserDetail;
-import com.nixagh.classicmodels.service.OAuthService;
+import com.nixagh.classicmodels.dto.auth.AuthenticationResponse;
+import com.nixagh.classicmodels.entity.oauth2.OAuth2UserDetail;
+import com.nixagh.classicmodels.service.auth_service.OAuthService;
 import io.swagger.v3.oas.annotations.Hidden;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

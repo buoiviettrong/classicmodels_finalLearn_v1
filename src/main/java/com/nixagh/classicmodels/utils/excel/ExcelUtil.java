@@ -1,5 +1,6 @@
 package com.nixagh.classicmodels.utils.excel;
 
+import com.nixagh.classicmodels.config.excel.ExcelConfig;
 import com.nixagh.classicmodels.controller.StatisticalController;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -14,9 +15,8 @@ import java.util.List;
 
 @Transactional
 public class ExcelUtil {
-    public static <T> StatisticalController.ByteArrayInputStreamResponse writeExcel(ExcelConfig config, List<T> data) throws IOException, NoSuchFieldException, IllegalAccessException {
-        // create excel file
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
+    public static <T> StatisticalController.ByteArrayInputStreamResponse writeExcel(ExcelConfig config, List<T> data)
+            throws IOException, NoSuchFieldException, IllegalAccessException {
 
         // create workbook
         Workbook workbook = new XSSFWorkbook();
@@ -25,8 +25,6 @@ public class ExcelUtil {
         // write header
         writeHeader(sheet, config.getHeader(), config.getStartRow());
 
-        int rowNum = config.getStartRow() + 1;
-
         // get fields from data
         String[] fields = Arrays.stream(config.getHeader()).map(h -> {
             String temp = h.replaceAll(" ", "");
@@ -34,6 +32,8 @@ public class ExcelUtil {
         }).toArray(String[]::new);
 
         // write data
+        int rowNum = config.getStartRow() + 1;
+
         for (T d : data) {
             Row row = sheet.createRow(rowNum++);
             int colNum = 0;
@@ -62,8 +62,10 @@ public class ExcelUtil {
             }
         }
 
-
-        workbook.write(out);
+        // create excel file
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        workbook.write(out)
+        ;
         // return output stream
         return new StatisticalController.ByteArrayInputStreamResponse(new ByteArrayInputStream(out.toByteArray()), config.getFileName());
     }

@@ -32,7 +32,7 @@ public class GetPage {
 
     @GetMapping("/statistic")
     public String getStatisticPage() {
-        return "statistic";
+        return "admin-statistic";
     }
 
     @GetMapping("/statistic-each-month")

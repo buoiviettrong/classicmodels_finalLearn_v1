@@ -1,5 +1,6 @@
 package com.nixagh.classicmodels.dto;
 
+import com.nixagh.classicmodels.dto.page.PageResponseInfo;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

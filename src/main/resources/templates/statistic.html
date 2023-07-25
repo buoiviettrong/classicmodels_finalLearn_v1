@@ -3,17 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Statistic</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
+    <script crossorigin="anonymous"
             integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+            src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script crossorigin="anonymous"
             integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-            crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+            src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+    <script crossorigin="anonymous"
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
-            crossorigin="anonymous"></script>
+            src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"></script>
     <!-- base JS File -->
     <script src="/js/const.js"></script>
     <script src="/js/mainAPI.js"></script>
@@ -23,8 +23,9 @@
 <body>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <a class="navbar-brand" href="#">Navbar</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
-            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+            class="navbar-toggler"
+            data-target="#navbarSupportedContent" data-toggle="collapse" type="button">
         <span class="navbar-toggler-icon"></span>
     </button>
 
@@ -43,11 +44,12 @@
                 <a class="nav-link" href="/product-line">Product Line</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown"
-                   aria-haspopup="true" aria-expanded="false">
+                <a aria-expanded="false" aria-haspopup="true" class="nav-link dropdown-toggle" data-toggle="dropdown"
+                   href="#"
+                   id="navbarDropdown" role="button">
                     Statistic
                 </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                <div aria-labelledby="navbarDropdown" class="dropdown-menu">
                     <a class="dropdown-item" href="/statistic">Thống Kê Khoảng Thời Gian</a>
                     <a class="dropdown-item" href="/statistic-each-month">Thống Kê Theo Tháng Của Năm</a>
                     <div class="dropdown-divider"></div>
@@ -56,22 +58,22 @@
             </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search">
+            <input aria-label="Search" class="form-control mr-sm-2" placeholder="Search" type="search">
             <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
         </form>
     </div>
 </nav>
 
 <div id="timestamp">
-    <label for="from">Từ</label><input type="date" id="from" min="1999-01-01"/>
-    <label for="to">Đến</label><input type="date" id="to" min="1999-01-01"/>
+    <label for="from">Từ</label><input id="from" min="1999-01-01" type="date"/>
+    <label for="to">Đến</label><input id="to" min="1999-01-01" type="date"/>
     <button id="btn-timestamp" onclick="getStatistical()">Xem</button>
 </div>
 
 <div><h1>Thống kê</h1></div>
 <div id="statistic">
     <!-- statistic order -->
-    <div id="statistic-order" class="mt-3">
+    <div class="mt-3" id="statistic-order">
         <h2>Đơn hàng</h2>
         <div id="statistic-order-table">
             <!-- status table -->
@@ -144,11 +146,11 @@
                     </td>
                     <td class="d-flex">
                         <!-- current page -->
-                        <button id="statistic-order-table-current-page" class="border-bottom" value="1" disabled>1
+                        <button class="border-bottom" disabled id="statistic-order-table-current-page" value="1">1
                         </button>
                         <div> /</div>
                         <!-- total page -->
-                        <button id="statistic-order-table-total-page" class="border-bottom" value="1" disabled>1
+                        <button class="border-bottom" disabled id="statistic-order-table-total-page" value="1">1
                         </button>
                     </td>
                     <td>
@@ -158,7 +160,7 @@
                         </label>
                         <select id="statistic-order-table-page-size">
                             <option value="5">5</option>
-                            <option value="10" selected>10</option>
+                            <option selected value="10">10</option>
                             <option value="20">20</option>
                             <option value="50">50</option>
                         </select>
@@ -181,7 +183,7 @@
         </div>
     </div>
     <!-- statistic customer -->
-    <div id="statistic-customer" class="mt-3">
+    <div class="mt-3" id="statistic-customer">
         <h2>Khách hàng</h2>
         <div id="statistic-customer-table">
             <table class="table table-striped">
@@ -200,11 +202,11 @@
                     </td>
                     <td class="d-flex">
                         <!-- current page -->
-                        <button id="statistic-customer-table-current-page" class="border-bottom" value="1" disabled>1
+                        <button class="border-bottom" disabled id="statistic-customer-table-current-page" value="1">1
                         </button>
                         <div> /</div>
                         <!-- total page -->
-                        <button id="statistic-customer-table-total-page" class="border-bottom" value="1" disabled>1
+                        <button class="border-bottom" disabled id="statistic-customer-table-total-page" value="1">1
                         </button>
                     </td>
                     <td>
@@ -214,7 +216,7 @@
                         </label>
                         <select id="statistic-customer-table-page-size">
                             <option value="5">5</option>
-                            <option value="10" selected>10</option>
+                            <option selected value="10">10</option>
                             <option value="20">20</option>
                             <option value="50">50</option>
                         </select>
@@ -241,7 +243,7 @@
         </div>
     </div>
     <!-- statistic product -->
-    <div id="statistic-product" class="mt-3">
+    <div class="mt-3" id="statistic-product">
         <h2>Sản phẩm</h2>
         <div id="statistic-product-table">
             <table class="table table-striped">
@@ -259,11 +261,11 @@
                     </td>
                     <td class="d-flex">
                         <!-- current page -->
-                        <button id="statistic-product-table-current-page" class="border-bottom" value="1" disabled>1
+                        <button class="border-bottom" disabled id="statistic-product-table-current-page" value="1">1
                         </button>
                         <div> /</div>
                         <!-- total page -->
-                        <button id="statistic-product-table-total-page" class="border-bottom" value="1" disabled>1
+                        <button class="border-bottom" disabled id="statistic-product-table-total-page" value="1">1
                         </button>
                     </td>
                     <td>
@@ -273,7 +275,7 @@
                         </label>
                         <select id="statistic-product-table-page-size">
                             <option value="5">5</option>
-                            <option value="10" selected>10</option>
+                            <option selected value="10">10</option>
                             <option value="20">20</option>
                             <option value="50">50</option>
                         </select>
@@ -301,20 +303,20 @@
 </div>
 
 <!-- change status modal -->
-<div class="modal fade" id="change-status-order-modal" tabindex="1" aria-labelledby="change-status-order-modal"
-     aria-hidden="true">
+<div aria-hidden="true" aria-labelledby="change-status-order-modal" class="modal fade" id="change-status-order-modal"
+     tabindex="1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5">Change Status</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
             </div>
             <div class="modal-body">
                 <!-- change status form -->
-                <input type="hidden" name="change-status-order-number" id="change-status-order-number" readonly>
+                <input id="change-status-order-number" name="change-status-order-number" readonly type="hidden">
                 <!-- status select -->
                 <div class="mb-3">
-                    <label for="change-status-order-status" class="form-label">Status</label>
+                    <label class="form-label" for="change-status-order-status">Status</label>
                     <select class="form-select" id="change-status-order-status">
                         <option value="In Process">In Process</option>
                         <option value="Shipped">Shipped</option>
@@ -326,27 +328,27 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="saveChangeStatusOrder()">Save changes</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+                <button class="btn btn-primary" onclick="saveChangeStatusOrder()" type="button">Save changes</button>
             </div>
         </div>
     </div>
 </div>
 <!-- order detail modal -->
-<div class="modal fade" id="change-status-order-modal" tabindex="1" aria-labelledby="change-status-order-modal"
-     aria-hidden="true">
+<div aria-hidden="true" aria-labelledby="change-status-order-modal" class="modal fade" id="change-status-order-modal"
+     tabindex="1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5">Change Status</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
             </div>
             <div class="modal-body">
                 <!-- change status form -->
-                <input type="hidden" name="change-status-order-number" id="change-status-order-number" readonly>
+                <input id="change-status-order-number" name="change-status-order-number" readonly type="hidden">
                 <!-- status select -->
                 <div class="mb-3">
-                    <label for="change-status-order-status" class="form-label">Status</label>
+                    <label class="form-label" for="change-status-order-status">Status</label>
                     <select class="form-select" id="change-status-order-status">
                         <option value="In Process">In Process</option>
                         <option value="Shipped">Shipped</option>
@@ -358,23 +360,23 @@
                 </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="saveChangeStatusOrder()">Save changes</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+                <button class="btn btn-primary" onclick="saveChangeStatusOrder()" type="button">Save changes</button>
             </div>
         </div>
     </div>
 </div>
-<div class="modal fade" id="order-detail-modal" tabindex="1" aria-labelledby="change-status-order-modal"
-     aria-hidden="true">
+<div aria-hidden="true" aria-labelledby="change-status-order-modal" class="modal fade" id="order-detail-modal"
+     tabindex="1">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5">Order Detail</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
             </div>
             <div class="modal-body">
                 <label for="order-detail-order-number">Order Number</label>
-                <input type="text" name="" id="order-detail-order-number" readonly>
+                <input id="order-detail-order-number" name="" readonly type="text">
                 <table class="table table-striped">
                     <thead>
                     <tr>
@@ -388,12 +390,12 @@
                 </table>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
             </div>
         </div>
     </div>
 </div>
 <!-- Statistic JS File -->
-<script type="text/javascript" src="/js/statistic.js"></script>
+<script src="/js/statistic.js" type="text/javascript"></script>
 </body>
 </html>

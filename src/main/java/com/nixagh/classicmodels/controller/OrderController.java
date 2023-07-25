@@ -6,7 +6,7 @@ import com.nixagh.classicmodels.dto.orders.admin.statictis.order.OrderDetailResp
 import com.nixagh.classicmodels.dto.orders.manager.history.OrderHistoryResponse;
 import com.nixagh.classicmodels.dto.product.ProductDTO;
 import com.nixagh.classicmodels.entity.Order;
-import com.nixagh.classicmodels.service.OrderService;
+import com.nixagh.classicmodels.service.order_service.IOrderService;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ import java.util.Map;
 @EnableCaching
 @Slf4j
 public class OrderController {
-    private final OrderService orderService;
+    private final IOrderService orderService;
     private final String cacheName = "orders";
     private final String cacheFilter = "ordersFilter";
     private final String cacheDetail = "ordersDetail";
@@ -50,7 +50,7 @@ public class OrderController {
     @GetMapping("/{orderNumber}/orderDetail")
     @Cacheable(value = cacheDetail, key = "#orderNumber.toString()", cacheManager = "cacheManager", unless = "#result == null")
     public List<ProductDTO> getDetail(@PathVariable(value = "orderNumber") Long orderNumber) {
-        return orderService.getOrderDetail(orderNumber);
+        return orderService.getOrderDetailByOrderNumber(orderNumber);
     }
 
     @PutMapping("/{orderNumber}")
@@ -68,7 +68,7 @@ public class OrderController {
     @GetMapping("/{orderNumber}")
     @Cacheable(value = cacheName, key = "#orderNumber.toString()", cacheManager = "cacheManager", unless = "#result == null")
     public Order getOrder(@PathVariable(value = "orderNumber") Long orderNumber) {
-        return orderService.getOrder(orderNumber);
+        return orderService.getOrderByOrderNumber(orderNumber);
     }
 
     @GetMapping("/highestOrder")
@@ -87,16 +87,13 @@ public class OrderController {
         return orderService.changeStatus(request.orderNumber, request.status);
     }
 
-    private record changeStatus(Long orderNumber, String status) {
-    }
-
     @GetMapping("/customer-order-details")
     public List<CustomerOrderDetailResponse> getCustomerOrderDetails(
             @PathParam(value = "customerNumber") Long customerNumber,
             @PathParam(value = "year") Integer year,
             @PathParam(value = "month") Integer month
     ) {
-        return orderService.getCustomerOrderDetails(customerNumber, year, month);
+        return orderService.getOrderDetailByCustomerNumber(customerNumber, year, month);
     }
 
     @GetMapping("/order-details")
@@ -108,5 +105,8 @@ public class OrderController {
             @PathParam(value = "pageSize") Long pageSize
     ) {
         return orderService.getOrderDetails(year, month, status, pageNumber, pageSize);
+    }
+
+    private record changeStatus(Long orderNumber, String status) {
     }
 }

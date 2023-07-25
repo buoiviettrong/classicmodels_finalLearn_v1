@@ -1,7 +1,9 @@
 package com.nixagh.classicmodels.config;
 
-import com.nixagh.classicmodels._common.auth.CustomerOAuth2Service;
-import com.nixagh.classicmodels.repository.authRepo.UserRepository;
+import com.nixagh.classicmodels.config.sercurity.CustomAuthenticationEntryPoint;
+import com.nixagh.classicmodels.config.sercurity.CustomAuthorizationEntryPoint;
+import com.nixagh.classicmodels.repository.user.UserRepository;
+import com.nixagh.classicmodels.service.auth_service.CustomerOAuth2Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

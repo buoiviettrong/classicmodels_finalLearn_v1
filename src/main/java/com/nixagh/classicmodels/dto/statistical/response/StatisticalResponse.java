@@ -1,6 +1,6 @@
 package com.nixagh.classicmodels.dto.statistical.response;
 
-import com.nixagh.classicmodels.dto.DateRange;
+import com.nixagh.classicmodels.dto.date.DateRange;
 import com.nixagh.classicmodels.dto.statistical.request.OrderStatistic;
 import lombok.*;
 
