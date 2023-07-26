@@ -21,5 +21,5 @@ public interface CustomerRepository extends BaseRepository<Customer, Long> {
 
     Long countCustomerStatistical(Date from, Date to);
 
-    Tuple getTop1Customer(String from, String to);
+    Tuple getTop1Customer(Date from, Date to);
 }

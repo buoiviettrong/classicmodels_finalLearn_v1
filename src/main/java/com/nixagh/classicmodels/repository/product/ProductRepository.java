@@ -7,6 +7,7 @@ import com.nixagh.classicmodels.entity.Product;
 import com.nixagh.classicmodels.repository.BaseRepository;
 import com.querydsl.core.Tuple;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,13 +45,19 @@ public interface ProductRepository extends BaseRepository<Product, String> {
 
     List<ProductController.ProductOutOfStockResponse> getOutOfStockProducts();
 
-    Tuple getTotalSoldProductAndProfit(String from, String to);
+    Tuple getTotalSoldProductAndProfit(Date from, Date to);
 
-    Tuple getTop1Product(String from, String to);
+    Tuple getTop1Product(Date from, Date to);
 
-    Tuple getTop1ProductLine(String from, String to);
+    Tuple getTop1ProductLine(Date from, Date to);
 
-    Long getTotalProduct(String from, String to);
+    Long getTotalProduct(Date from, Date to);
 
-    List<Tuple> getSyntheticProductLine(String from, String to);
+    List<Tuple> getSyntheticProductLineDSL(Date from, Date to);
+
+    Tuple getTotalSoldProductAndProfit(Date from, Date to, String typeProductLine, String search);
+
+    List<Tuple> getDetailStatisticDetail(Date from, Date to, String typeProductLine, String search, long offset, long pageSize);
+
+    Long countDetailStatisticDetail(java.sql.Date sqlFrom, java.sql.Date sqlTo, String typeProductLine, String search);
 }

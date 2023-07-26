@@ -1,7 +1,7 @@
 package com.nixagh.classicmodels.service.order_service;
 
-import com.nixagh.classicmodels.dto._statistic.details.Details;
-import com.nixagh.classicmodels.dto._statistic.overview.OverviewTop;
+import com.nixagh.classicmodels.dto._statistic.Synthetic.details.Details;
+import com.nixagh.classicmodels.dto._statistic.Synthetic.overview.OverviewTop;
 import com.nixagh.classicmodels.dto.orders.*;
 import com.nixagh.classicmodels.dto.orders.admin.statictis.customer.orders.detail.CustomerOrderDetailResponse;
 import com.nixagh.classicmodels.dto.orders.admin.statictis.order.OrderDetailResponse;
@@ -15,6 +15,7 @@ import com.nixagh.classicmodels.dto.statistical.response.OrderStatusStatisticRes
 import com.nixagh.classicmodels.entity.Order;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -56,9 +57,9 @@ public interface IOrderService {
     List<OrderWithProfit> getOrderByTimeRange(@DateTimeFormat(pattern = "yyyy-MM-dd") java.sql.Date from,
                                               @DateTimeFormat(pattern = "yyyy-MM-dd") java.sql.Date to);
 
-    Long getTotalOrder(String from, String to);
+    Long getTotalOrder(Date from, Date to);
 
-    OverviewTop.Invoice getTop1Order(String from, String to);
+    OverviewTop.Invoice getTop1Order(Date from, Date to);
 
-    List<Details> getOrderByEachTime(String from, String to);
+    List<Details> getOrderByEachTime(Date from, Date to);
 }

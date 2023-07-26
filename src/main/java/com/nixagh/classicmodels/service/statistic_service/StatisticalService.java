@@ -1,12 +1,13 @@
 package com.nixagh.classicmodels.service.statistic_service;
 
 import com.nixagh.classicmodels.controller.StatisticalController;
-import com.nixagh.classicmodels.dto._statistic.SyntheticStatisticRequest;
-import com.nixagh.classicmodels.dto._statistic.SyntheticStatisticResponse;
-import com.nixagh.classicmodels.dto._statistic.details.SyntheticProduct;
-import com.nixagh.classicmodels.dto._statistic.overview.Overview;
-import com.nixagh.classicmodels.dto._statistic.overview.OverviewTop;
-import com.nixagh.classicmodels.dto._statistic.overview.OverviewTotal;
+import com.nixagh.classicmodels.dto._statistic.Details.*;
+import com.nixagh.classicmodels.dto._statistic.Synthetic.SyntheticStatisticRequest;
+import com.nixagh.classicmodels.dto._statistic.Synthetic.SyntheticStatisticResponse;
+import com.nixagh.classicmodels.dto._statistic.Synthetic.details.SyntheticProduct;
+import com.nixagh.classicmodels.dto._statistic.Synthetic.overview.Overview;
+import com.nixagh.classicmodels.dto._statistic.Synthetic.overview.OverviewTop;
+import com.nixagh.classicmodels.dto._statistic.Synthetic.overview.OverviewTotal;
 import com.nixagh.classicmodels.dto.date.DateRange;
 import com.nixagh.classicmodels.dto.statistical.request.*;
 import com.nixagh.classicmodels.dto.statistical.response.*;
@@ -121,9 +122,12 @@ public class StatisticalService implements IStatisticalService {
     public SyntheticStatisticResponse getSyntheticStatistic(SyntheticStatisticRequest syntheticStatisticRequest) {
         SyntheticStatisticResponse response = new SyntheticStatisticResponse();
 
-        var from = syntheticStatisticRequest.getFrom();
-        var to = syntheticStatisticRequest.getTo();
+        var from_ = syntheticStatisticRequest.getFrom();
+        var to_ = syntheticStatisticRequest.getTo();
 //        var type = syntheticStatisticRequest.getType();
+
+        var from = new java.sql.Date(from_.getTime());
+        var to = new java.sql.Date(to_.getTime());
 
         // create overview
         Overview overview = new Overview();
@@ -164,6 +168,56 @@ public class StatisticalService implements IStatisticalService {
 
         response.setSyntheticProduct(syntheticProduct);
         response.setOverview(overview);
+        return response;
+    }
+
+    @Override
+    public DetailsStatisticResponse getDetailStatisticDetail(DetailsStatisticRequest detailsStatisticRequest, Long pageNumber, Long pageSize) {
+
+        var PRODUCT_LINE_ALL = "0";
+
+        var from = detailsStatisticRequest.getFrom();
+        var to = detailsStatisticRequest.getTo();
+        var typeProductLine = detailsStatisticRequest.getTypeProductLine();
+        var search = detailsStatisticRequest.getSearch();
+
+        if (pageNumber == null || pageNumber == 0) {
+            pageNumber = 1L;
+        }
+
+        if (pageSize == null || pageSize == 0) {
+            pageSize = 10L;
+        }
+
+        if (search == null || search.equals("null") || search.equals("undefined")) {
+            search = "";
+        }
+
+        var offset = (Long) pageSize * (pageNumber - 1);
+
+        if (PRODUCT_LINE_ALL.equalsIgnoreCase(typeProductLine)) {
+            typeProductLine = "";
+        }
+
+        java.sql.Date sqlFrom = new java.sql.Date(from.getTime());
+        java.sql.Date sqlTo = new java.sql.Date(to.getTime());
+
+        DetailsStatisticResponse response = new DetailsStatisticResponse();
+        DetailsOverview overview = productService.getTotalSoldProductAndProfit(sqlFrom, sqlTo, typeProductLine, search);
+        DetailsTable table = new DetailsTable();
+        List<DetailsProduct> products = productService.getDetailStatisticDetail(sqlFrom, sqlTo, typeProductLine, search, offset, pageSize);
+        Long totalProduct = productService.countDetailStatisticDetail(sqlFrom, sqlTo, typeProductLine, search, offset, pageSize);
+        table.setProducts(products);
+        table.setTotalQuantity(products.stream().map(DetailsProduct::getQuantitySold).reduce(0L, Long::sum));
+        table.setTotalMoney(products.stream().map(DetailsProduct::getTotalMoney).reduce(0.00, Double::sum));
+
+        if ("".equalsIgnoreCase(typeProductLine)) {
+            overview.setProductLineCode("All");
+        }
+        table.setPageResponseInfo(PageUtil.getResponse(pageNumber, pageSize, totalProduct, (long) products.size()));
+
+        response.setOverview(overview);
+        response.setTable(table);
         return response;
     }
 }

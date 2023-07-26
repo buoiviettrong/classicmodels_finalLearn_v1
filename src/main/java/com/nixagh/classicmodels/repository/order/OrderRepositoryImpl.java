@@ -243,17 +243,16 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> impleme
     }
 
     @Override
-    public Long getTotalOrder(String from, String to) {
-        System.out.println(Date.valueOf(from));
+    public Long getTotalOrder(java.util.Date from, java.util.Date to) {
         return jpaQueryFactory
                 .select(order.orderNumber.count())
                 .from(order)
-                .where(order.orderDate.between(Date.valueOf(from), Date.valueOf(to)))
+                .where(order.orderDate.between(from, to))
                 .fetchFirst();
     }
 
     @Override
-    public Tuple getTop1Order(String from, String to) {
+    public Tuple getTop1Order(java.util.Date from, java.util.Date to) {
         return jpaQueryFactory
                 .select(
                         order.orderNumber,
@@ -262,14 +261,14 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> impleme
                 )
                 .from(order)
                 .join(order.orderDetail, orderDetail)
-                .where(order.orderDate.between(Date.valueOf(from), Date.valueOf(to)))
+                .where(order.orderDate.between(from, to))
                 .groupBy(order.orderNumber, order.orderDate)
                 .orderBy(orderDetail.priceEach.multiply(orderDetail.quantityOrdered).sum().desc())
                 .fetchFirst();
     }
 
     @Override
-    public List<Tuple> getOrderByEachTime(String from, String to) {
+    public List<Tuple> getOrderByEachTime(java.util.Date from, java.util.Date to) {
         return jpaQueryFactory
                 .select(
                         order.orderDate,
@@ -277,7 +276,7 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> impleme
                 )
                 .from(order)
                 .join(order.orderDetail, orderDetail)
-                .where(order.orderDate.between(Date.valueOf(from), Date.valueOf(to)))
+                .where(order.orderDate.between(from, to))
                 .groupBy(order.orderDate)
                 .orderBy(order.orderDate.asc())
                 .fetch();

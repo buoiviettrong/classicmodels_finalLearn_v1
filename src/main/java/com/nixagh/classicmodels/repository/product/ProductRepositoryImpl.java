@@ -14,7 +14,7 @@ import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import jakarta.persistence.EntityManager;
 
-import java.sql.Date;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -236,7 +236,7 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
     }
 
     @Override
-    public Tuple getTotalSoldProductAndProfit(String from, String to) {
+    public Tuple getTotalSoldProductAndProfit(java.util.Date from, java.util.Date to) {
         return jpaQueryFactory
                 .select(
                         orderDetail.quantityOrdered.sum().as("totalSoldProduct"),
@@ -244,12 +244,12 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
                 )
                 .from(order)
                 .leftJoin(order.orderDetail, orderDetail)
-                .where(order.orderDate.between(Date.valueOf(from), Date.valueOf(to)))
+                .where(order.orderDate.between(from, to).and(order.status.eq("Shipped")))
                 .fetchFirst();
     }
 
     @Override
-    public Tuple getTop1Product(String from, String to) {
+    public Tuple getTop1Product(java.util.Date from, java.util.Date to) {
         return jpaQueryFactory
                 .select(
                         product.productCode,
@@ -260,14 +260,14 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
                 )
                 .from(order)
                 .join(order.orderDetail, orderDetail)
-                .where(order.orderDate.between(Date.valueOf(from), Date.valueOf(to)))
+                .where(order.orderDate.between(from, to).and(order.status.eq("Shipped")))
                 .groupBy(product.productCode, product.productName)
                 .orderBy(orderDetail.quantityOrdered.sum().desc())
                 .fetchFirst();
     }
 
     @Override
-    public Tuple getTop1ProductLine(String from, String to) {
+    public Tuple getTop1ProductLine(java.util.Date from, java.util.Date to) {
         return jpaQueryFactory
                 .select(
                         product.productLine.productLine.as("ProductLineCode"),
@@ -277,19 +277,19 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
                 .from(order)
                 .join(order.orderDetail, orderDetail)
                 .join(orderDetail.product, product)
-                .where(order.orderDate.between(Date.valueOf(from), Date.valueOf(to)))
+                .where(order.orderDate.between(from, to))
                 .groupBy(product.productLine.productLine)
                 .orderBy(product.productLine.productLine.count().desc())
                 .fetchFirst();
     }
 
     @Override
-    public Long getTotalProduct(String from, String to) {
+    public Long getTotalProduct(Date from, Date to) {
         return 0L;
     }
 
     @Override
-    public List<Tuple> getSyntheticProductLine(String from, String to) {
+    public List<Tuple> getSyntheticProductLineDSL(java.util.Date from, java.util.Date to) {
         return jpaQueryFactory
                 .select(
                         productLine.productLine,
@@ -300,10 +300,77 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
                 .leftJoin(productLine.productsList, product)
                 .leftJoin(product.orderDetail, orderDetail)
                 .leftJoin(orderDetail.order, order)
-                .where(order.orderDate.between(Date.valueOf(from), Date.valueOf(to)))
+                .where(order.orderDate.between(from, to).and(order.status.eq("Shipped")))
                 .groupBy(productLine.productLine)
                 .orderBy(productLine.productLine.asc())
                 .fetch();
+    }
+
+    @Override
+    public Tuple getTotalSoldProductAndProfit(java.util.Date from, java.util.Date to, String typeProductLine, String search) {
+        return jpaQueryFactory
+                .select(
+                        product.productLine.productLine,
+                        orderDetail.quantityOrdered.sum().as("totalSold"),
+                        orderDetail.priceEach.multiply(orderDetail.quantityOrdered).sum().as("totalMoney")
+                )
+                .from(order)
+                .join(order.orderDetail, orderDetail)
+                .join(orderDetail.product, product)
+                .where(
+                        order.orderDate.between(from, to)
+                                .and(order.status.eq("Shipped"))
+                                .and(product.productLine.productLine.containsIgnoreCase(typeProductLine))
+                                .and(product.productCode.containsIgnoreCase(search)
+                                        .or(product.productName.containsIgnoreCase(search)))
+                )
+                .fetchFirst();
+    }
+
+    @Override
+    public List<Tuple> getDetailStatisticDetail(Date from, Date to, String typeProductLine, String search, long offset, long pageSize) {
+        JPAQuery<Tuple> query = jpaQueryFactory
+                .select(
+                        product.productCode,
+                        product.productName,
+                        product.productLine.productLine,
+                        orderDetail.quantityOrdered.sum().as("totalSold"),
+                        orderDetail.priceEach.multiply(orderDetail.quantityOrdered).sum().as("totalMoney")
+                )
+                .from(order)
+                .join(order.orderDetail, orderDetail)
+                .join(orderDetail.product, product)
+                .where(
+                        order.orderDate.between(from, to)
+                                .and(order.status.eq("Shipped"))
+                                .and(product.productLine.productLine.containsIgnoreCase(typeProductLine))
+                                .and(product.productCode.containsIgnoreCase(search)
+                                        .or(product.productName.containsIgnoreCase(search)))
+                )
+                .groupBy(product.productCode, product.productName, product.productLine.productLine)
+                .orderBy(orderDetail.quantityOrdered.sum().desc())
+                .offset(offset)
+                .limit(pageSize);
+        return query.fetch();
+    }
+
+    @Override
+    public Long countDetailStatisticDetail(java.sql.Date sqlFrom, java.sql.Date sqlTo, String typeProductLine, String search) {
+        JPAQuery<Long> query = jpaQueryFactory
+                .select(
+                        product.productCode.countDistinct()
+                )
+                .from(order)
+                .join(order.orderDetail, orderDetail)
+                .join(orderDetail.product, product)
+                .where(
+                        order.orderDate.between(sqlFrom, sqlTo)
+                                .and(order.status.eq("Shipped"))
+                                .and(product.productLine.productLine.containsIgnoreCase(typeProductLine))
+                                .and(product.productCode.containsIgnoreCase(search)
+                                        .or(product.productName.containsIgnoreCase(search)))
+                );
+        return query.fetchFirst();
     }
 
     private <T> JPAQuery<T> getfilter(

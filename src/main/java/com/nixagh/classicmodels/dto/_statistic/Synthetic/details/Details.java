@@ -1,4 +1,4 @@
-package com.nixagh.classicmodels.dto._statistic.details;
+package com.nixagh.classicmodels.dto._statistic.Synthetic.details;
 
 import lombok.*;
 

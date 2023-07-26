@@ -2,9 +2,11 @@ package com.nixagh.classicmodels.service.product_service;
 
 import com.nixagh.classicmodels.controller.ProductController;
 import com.nixagh.classicmodels.controller.StatisticalController;
-import com.nixagh.classicmodels.dto._statistic.details.SyntheticProduct;
-import com.nixagh.classicmodels.dto._statistic.overview.OverviewTop;
-import com.nixagh.classicmodels.dto._statistic.overview.OverviewTotal;
+import com.nixagh.classicmodels.dto._statistic.Details.DetailsOverview;
+import com.nixagh.classicmodels.dto._statistic.Details.DetailsProduct;
+import com.nixagh.classicmodels.dto._statistic.Synthetic.details.SyntheticProduct;
+import com.nixagh.classicmodels.dto._statistic.Synthetic.overview.OverviewTop;
+import com.nixagh.classicmodels.dto._statistic.Synthetic.overview.OverviewTotal;
 import com.nixagh.classicmodels.dto.product.ProductAddRequest;
 import com.nixagh.classicmodels.dto.product.edit.ProductUpdateRequest;
 import com.nixagh.classicmodels.dto.product.manager.search.request.ProductManagerSearchRequest;
@@ -59,13 +61,19 @@ public interface IProductService {
     StatisticalController.ByteArrayInputStreamResponse getExportProduct(int year, int month)
             throws IOException, NoSuchFieldException, IllegalAccessException;
 
-    OverviewTotal getTotalSoldProductAndProfit(String from, String to);
+    OverviewTotal getTotalSoldProductAndProfit(java.sql.Date from, java.sql.Date to);
 
-    OverviewTop.Product getTop1Product(String from, String to);
+    OverviewTop.Product getTop1Product(Date from, Date to);
 
-    OverviewTop.ProductLine getTop1ProductLine(String from, String to);
+    OverviewTop.ProductLine getTop1ProductLine(Date from, Date to);
 
-    Long getTotalProduct(String from, String to);
+    Long getTotalProduct(java.sql.Date from, java.sql.Date to);
 
-    List<SyntheticProduct.SyntheticProductLine> getSyntheticProductLine(String from, String to);
+    List<SyntheticProduct.SyntheticProductLine> getSyntheticProductLine(java.sql.Date from, java.sql.Date to);
+
+    DetailsOverview getTotalSoldProductAndProfit(java.sql.Date from, java.sql.Date to, String typeProductLine, String search);
+
+    List<DetailsProduct> getDetailStatisticDetail(java.sql.Date from, java.sql.Date to, String typeProductLine, String search, long offset, long pageSize);
+
+    Long countDetailStatisticDetail(java.sql.Date sqlFrom, java.sql.Date sqlTo, String typeProductLine, String search, long offset, long pageSize);
 }

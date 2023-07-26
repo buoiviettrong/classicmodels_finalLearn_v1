@@ -1,6 +1,6 @@
 package com.nixagh.classicmodels.service.customer_service;
 
-import com.nixagh.classicmodels.dto._statistic.overview.OverviewTop;
+import com.nixagh.classicmodels.dto._statistic.Synthetic.overview.OverviewTop;
 import com.nixagh.classicmodels.dto.statistical.request.CustomerStatisticDTO;
 import com.nixagh.classicmodels.dto.statistical.request.StatisticalRequest;
 import com.nixagh.classicmodels.dto.statistical.response.CustomerEachMonth;
@@ -108,7 +108,7 @@ public class CustomerService implements ICustomerService {
     }
 
     @Override
-    public OverviewTop.Customer getTop1Customer(String from, String to) {
+    public OverviewTop.Customer getTop1Customer(Date from, Date to) {
         Tuple tuple = customerRepository.getTop1Customer(from, to);
         if (tuple == null)
             return OverviewTop.Customer.builder()

@@ -4,6 +4,7 @@ import com.nixagh.classicmodels.entity.Product;
 import jakarta.persistence.Tuple;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -124,4 +125,105 @@ public interface ProductNoDSLRepository extends JpaRepository<Product, String> {
             ORDER BY t.totalAmount DESC
             """, nativeQuery = true)
     List<Tuple> getExportProduct(int year, int month);
+
+    @Query(value = """
+            SELECT  pl.productLine AS 'productLineCode',
+                    t.totalSoldProduct AS 'totalSoldProduct',
+                    t.totalMoney AS 'totalMoney'
+            FROM product_lines pl
+            LEFT JOIN (
+            	SELECT  p.productLine,
+            			SUM(od.quantityOrdered) AS 'totalSoldProduct',
+            			SUM(od.priceEach * od.quantityOrdered) AS 'totalMoney'
+            	FROM products p
+            	LEFT JOIN order_details od ON od.productCode = p.productCode
+            	LEFT JOIN orders o ON o.orderNumber = od.orderNumber
+            	WHERE o.orderDate BETWEEN :from AND :to
+            	    AND o.status = 'Shipped'
+            	GROUP BY p.productLine
+            	ORDER BY p.productLine ASC
+            ) t ON t.productLine = pl.productLine
+            """, nativeQuery = true)
+    List<Tuple> getSyntheticProductLine(java.sql.Date from, java.sql.Date to);
+
+    @Query(value = """
+            SELECT  pl.productLine AS 'productLineCode',
+                    t.totalSoldProduct AS 'totalSoldProduct',
+                    t.totalMoney AS 'totalMoney'
+            FROM product_lines pl
+            LEFT JOIN (
+            	SELECT  p.productLine,
+            			SUM(od.quantityOrdered) AS 'totalSoldProduct',
+            			SUM(od.priceEach * od.quantityOrdered) AS 'totalMoney'
+            	FROM products p
+            	LEFT JOIN order_details od ON od.productCode = p.productCode
+            	LEFT JOIN orders o ON o.orderNumber = od.orderNumber
+            	WHERE o.orderDate BETWEEN :from AND :to
+            	    AND o.status = 'Shipped'
+            	    AND LOWER(p.productLine) LIKE :typeProductLine
+            	    AND (LOWER(p.productCode) LIKE :search OR LOWER(p.productName) LIKE :search)
+            	GROUP BY p.productLine
+            	ORDER BY p.productLine ASC
+            ) t ON t.productLine = pl.productLine
+            """, nativeQuery = true)
+    List<Tuple> getSyntheticProductLine(@Param("from") java.sql.Date from,
+                                        @Param("to") java.sql.Date to,
+                                        @Param("typeProductLine") String typeProductLine,
+                                        @Param("search") String search);
+
+    @Query(value = """
+            SELECT  p.productLine AS 'productLineCode',
+                    p.productCode AS 'productCode',
+                    p.productName AS 'productName',
+                    SUM(od.quantityOrdered) AS 'totalSold',
+                    SUM(od.priceEach * od.quantityOrdered) AS 'totalMoney' FROM products p
+            JOIN order_details od ON od.productCode = p.productCode
+            JOIN orders o ON o.orderNumber = od.orderNumber
+            WHERE o.orderDate >= DATE(:from) AND o.orderDate <= DATE(:to)
+                AND o.status = 'Shipped' AND LOWER(p.productLine) LIKE :typeProductLine
+                AND (LOWER(p.productCode) LIKE :search OR LOWER(p.productName) LIKE :search)
+            GROUP BY p.productLine,
+                    p.productName,
+                    p.productCode
+            ORDER BY totalMoney DESC
+            LIMIT :offset, :pageSize
+            """, nativeQuery = true, name = "getDetailStatisticDetail")
+    List<Tuple> getDetailStatisticDetail(@Param("from") java.sql.Date from, @Param("to") java.sql.Date to, String typeProductLine, String search, int offset, int pageSize);
+
+
+    @Query(value = """
+            SELECT  p.productLine AS 'productLineCode',
+                    SUM(od.quantityOrdered) AS 'totalSold',
+                    SUM(od.priceEach * od.quantityOrdered) AS 'totalMoney'
+            FROM products p
+            JOIN order_details od ON od.productCode = p.productCode
+            JOIN orders o ON o.orderNumber = od.orderNumber
+            WHERE o.orderDate >= :from AND o.orderDate <= :to
+                AND  o.status = 'Shipped'
+                AND LOWER(p.productLine) LIKE :typeProductLine
+                AND (LOWER(p.productCode) LIKE :search OR LOWER(p.productName) LIKE :search)
+            GROUP BY p.productLine
+            """, nativeQuery = true)
+    List<Tuple> getTotalSoldProductAndProfit(@Param("from") java.sql.Date from, @Param("to") java.sql.Date to, String typeProductLine, String search);
+
+//    @Query(value = """
+//            SELECT  p.productLine AS 'productLineCode',
+//                    p.productCode AS 'productCode',
+//                    p.productName AS 'productName',
+//                    SUM(od.quantityOrdered) AS 'totalSold',
+//                    SUM(od.priceEach * od.quantityOrdered) AS 'totalMoney'
+//            FROM products p
+//            JOIN order_details od ON od.productCode = p.productCode
+//            JOIN orders o ON o.orderNumber = od.orderNumber
+//            WHERE o.orderDate >= :from AND o.orderDate <= :to
+//                AND o.status = 'Shipped'
+//                AND LOWER(p.productLine) LIKE :typeProductLine
+//                AND (LOWER(p.productCode) LIKE :search OR LOWER(p.productName) LIKE :search)
+//            GROUP BY    p.productLine,
+//                        p.productName,
+//                        p.productCode
+//            ORDER BY totalMoney DESC
+//            LIMIT :offset, :pageSize
+//            """, nativeQuery = true, name = "getDetailStatisticDetail")
+//    List<Tuple> getDetailStatisticDetail(@Param("from") java.sql.Date from, @Param("to") java.sql.Date to, String typeProductLine, String search, int offset, int pageSize);
 }

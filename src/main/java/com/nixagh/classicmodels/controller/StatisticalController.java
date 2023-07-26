@@ -1,7 +1,9 @@
 package com.nixagh.classicmodels.controller;
 
-import com.nixagh.classicmodels.dto._statistic.SyntheticStatisticRequest;
-import com.nixagh.classicmodels.dto._statistic.SyntheticStatisticResponse;
+import com.nixagh.classicmodels.dto._statistic.Details.DetailsStatisticRequest;
+import com.nixagh.classicmodels.dto._statistic.Details.DetailsStatisticResponse;
+import com.nixagh.classicmodels.dto._statistic.Synthetic.SyntheticStatisticRequest;
+import com.nixagh.classicmodels.dto._statistic.Synthetic.SyntheticStatisticResponse;
 import com.nixagh.classicmodels.dto.statistical.request.ProductsEachMonthInYear;
 import com.nixagh.classicmodels.dto.statistical.request.StatisticDTO;
 import com.nixagh.classicmodels.dto.statistical.request.StatisticalRequest;
@@ -142,5 +144,15 @@ public class StatisticalController {
     public SyntheticStatisticResponse getSyntheticStatistic(@RequestBody SyntheticStatisticRequest syntheticStatisticRequest) {
         System.out.println(syntheticStatisticRequest);
         return statisticalService.getSyntheticStatistic(syntheticStatisticRequest);
+    }
+
+    @PostMapping("/admin-statistical-detail")
+    public DetailsStatisticResponse getDetailStatisticDetail(
+            @RequestBody DetailsStatisticRequest detailsStatisticRequest,
+            @RequestParam("pageNumber") Long pageNumber,
+            @RequestParam("pageSize") Long pageSize
+    ) {
+        System.out.println(detailsStatisticRequest);
+        return statisticalService.getDetailStatisticDetail(detailsStatisticRequest, pageNumber, pageSize);
     }
 }

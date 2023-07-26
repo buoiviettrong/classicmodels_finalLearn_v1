@@ -93,7 +93,7 @@ public class CustomerRepositoryImpl extends BaseRepositoryImpl<Customer, Long> i
     }
 
     @Override
-    public Tuple getTop1Customer(String from, String to) {
+    public Tuple getTop1Customer(Date from, Date to) {
         return jpaQueryFactory
                 .select(
                         customer.customerNumber,
@@ -105,7 +105,7 @@ public class CustomerRepositoryImpl extends BaseRepositoryImpl<Customer, Long> i
                 .from(customer)
                 .join(customer.ordersList, order)
                 .join(order.orderDetail, orderDetail)
-                .where(order.orderDate.between(java.sql.Date.valueOf(from), java.sql.Date.valueOf(to))
+                .where(order.orderDate.between(from, to)
                         .and(order.status.eq("Shipped"))
                 )
                 .groupBy(customer.customerNumber)

@@ -1,9 +1,10 @@
-package com.nixagh.classicmodels.dto._statistic.details;
+package com.nixagh.classicmodels.dto._statistic.Synthetic.details;
 
 import com.nixagh.classicmodels.utils.math.RoundUtil;
-import com.querydsl.core.Tuple;
+import jakarta.persistence.Tuple;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,13 +28,14 @@ public class SyntheticProduct {
         private Double totalMoney = 0.0;
 
         public static SyntheticProductLine fromTuple(Tuple tuple) {
-            var productLineCode = tuple.get(0, String.class);
-            var totalSoldProduct = tuple.get(1, Long.class);
-            var totalMoney = RoundUtil.convert(tuple.get(2, Double.class), 2);
+            var productLineCode = tuple.get("productLineCode", String.class);
+            var totalSoldProduct = tuple.get("totalSoldProduct", BigDecimal.class);
+            var totalMoney = tuple.get("totalMoney", Double.class);
+
             return SyntheticProductLine.builder()
-                    .productLineCode(productLineCode)
-                    .totalSoldProduct(totalSoldProduct)
-                    .totalMoney(totalMoney)
+                    .productLineCode(productLineCode == null ? "" : productLineCode)
+                    .totalSoldProduct(totalSoldProduct == null ? 0L : totalSoldProduct.longValue())
+                    .totalMoney(totalMoney == null ? 0.0 : RoundUtil.convert(totalMoney, 2))
                     .build();
         }
     }

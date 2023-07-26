@@ -41,9 +41,9 @@ public interface OrderRepository extends BaseRepository<Order, Long> {
 
     List<Tuple> countOrderDetails(Integer year, Integer month);
 
-    Long getTotalOrder(String from, String to);
+    Long getTotalOrder(java.util.Date from, java.util.Date to);
 
-    Tuple getTop1Order(String from, String to);
+    Tuple getTop1Order(java.util.Date from, java.util.Date to);
 
-    List<Tuple> getOrderByEachTime(String from, String to);
+    List<Tuple> getOrderByEachTime(java.util.Date from, java.util.Date to);
 }

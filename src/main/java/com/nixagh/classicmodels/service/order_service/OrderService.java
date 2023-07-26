@@ -1,7 +1,7 @@
 package com.nixagh.classicmodels.service.order_service;
 
-import com.nixagh.classicmodels.dto._statistic.details.Details;
-import com.nixagh.classicmodels.dto._statistic.overview.OverviewTop;
+import com.nixagh.classicmodels.dto._statistic.Synthetic.details.Details;
+import com.nixagh.classicmodels.dto._statistic.Synthetic.overview.OverviewTop;
 import com.nixagh.classicmodels.dto.orders.*;
 import com.nixagh.classicmodels.dto.orders.admin.statictis.customer.orders.detail.CustomerOrderDetailResponse;
 import com.nixagh.classicmodels.dto.orders.admin.statictis.order.OrderDetailResponse;
@@ -245,12 +245,12 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public Long getTotalOrder(String from, String to) {
+    public Long getTotalOrder(Date from, Date to) {
         return orderRepository.getTotalOrder(from, to);
     }
 
     @Override
-    public OverviewTop.Invoice getTop1Order(String from, String to) {
+    public OverviewTop.Invoice getTop1Order(Date from, Date to) {
         Tuple tuple = orderRepository.getTop1Order(from, to);
         if (tuple == null) return OverviewTop.Invoice.builder()
                 .orderNumber(-1L)
@@ -266,7 +266,7 @@ public class OrderService implements IOrderService {
     }
 
     @Override
-    public List<Details> getOrderByEachTime(String from, String to) {
+    public List<Details> getOrderByEachTime(Date from, Date to) {
         return orderRepository.getOrderByEachTime(from, to)
                 .stream()
                 .map(tuple -> Details.builder()

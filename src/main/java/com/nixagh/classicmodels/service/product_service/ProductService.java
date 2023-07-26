@@ -3,9 +3,11 @@ package com.nixagh.classicmodels.service.product_service;
 import com.nixagh.classicmodels.config.excel.ExcelConfig;
 import com.nixagh.classicmodels.controller.ProductController;
 import com.nixagh.classicmodels.controller.StatisticalController;
-import com.nixagh.classicmodels.dto._statistic.details.SyntheticProduct;
-import com.nixagh.classicmodels.dto._statistic.overview.OverviewTop;
-import com.nixagh.classicmodels.dto._statistic.overview.OverviewTotal;
+import com.nixagh.classicmodels.dto._statistic.Details.DetailsOverview;
+import com.nixagh.classicmodels.dto._statistic.Details.DetailsProduct;
+import com.nixagh.classicmodels.dto._statistic.Synthetic.details.SyntheticProduct;
+import com.nixagh.classicmodels.dto._statistic.Synthetic.overview.OverviewTop;
+import com.nixagh.classicmodels.dto._statistic.Synthetic.overview.OverviewTotal;
 import com.nixagh.classicmodels.dto.page.PageResponseInfo;
 import com.nixagh.classicmodels.dto.product.ProductAddRequest;
 import com.nixagh.classicmodels.dto.product.edit.ProductUpdateRequest;
@@ -400,7 +402,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public OverviewTotal getTotalSoldProductAndProfit(String from, String to) {
+    public OverviewTotal getTotalSoldProductAndProfit(java.sql.Date from, java.sql.Date to) {
         Tuple tuple = productRepository.getTotalSoldProductAndProfit(from, to);
 
         if (tuple == null) return OverviewTotal.builder().build();
@@ -417,7 +419,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public OverviewTop.Product getTop1Product(String from, String to) {
+    public OverviewTop.Product getTop1Product(Date from, Date to) {
         Tuple tuple = productRepository.getTop1Product(from, to);
         if (tuple == null)
             return OverviewTop.Product.builder()
@@ -433,7 +435,7 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public OverviewTop.ProductLine getTop1ProductLine(String from, String to) {
+    public OverviewTop.ProductLine getTop1ProductLine(Date from, Date to) {
         Tuple tuple = productRepository.getTop1ProductLine(from, to);
         if (tuple == null)
             return OverviewTop.ProductLine.builder()
@@ -447,16 +449,33 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public Long getTotalProduct(String from, String to) {
+    public Long getTotalProduct(java.sql.Date from, java.sql.Date to) {
         return productRepository.getTotalProduct(from, to);
     }
 
     @Override
-    public List<SyntheticProduct.SyntheticProductLine> getSyntheticProductLine(String from, String to) {
-        return productRepository.getSyntheticProductLine(from, to)
+    public List<SyntheticProduct.SyntheticProductLine> getSyntheticProductLine(java.sql.Date from, java.sql.Date to) {
+        return productNoDSLRepository.getSyntheticProductLine(from, to)
                 .stream()
                 .map(SyntheticProduct.SyntheticProductLine::fromTuple)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public DetailsOverview getTotalSoldProductAndProfit(java.sql.Date from, java.sql.Date to, String typeProductLine, String search) {
+        Tuple tuple2 = productRepository.getTotalSoldProductAndProfit(from, to, typeProductLine, search);
+        return DetailsOverview.fromTuple(tuple2);
+    }
+
+    @Override
+    public List<DetailsProduct> getDetailStatisticDetail(java.sql.Date from, java.sql.Date to, String typeProductLine, String search, long offset, long pageSize) {
+        List<Tuple> result = productRepository.getDetailStatisticDetail(from, to, typeProductLine, search, offset, pageSize);
+        return result.stream().map(DetailsProduct::fromTuple).collect(Collectors.toList());
+    }
+
+    @Override
+    public Long countDetailStatisticDetail(java.sql.Date sqlFrom, java.sql.Date sqlTo, String typeProductLine, String search, long offset, long pageSize) {
+        return productRepository.countDetailStatisticDetail(sqlFrom, sqlTo, typeProductLine, search);
     }
 
     @AllArgsConstructor
