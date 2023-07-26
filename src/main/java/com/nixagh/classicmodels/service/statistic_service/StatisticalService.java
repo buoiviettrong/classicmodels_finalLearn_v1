@@ -14,6 +14,7 @@ import com.nixagh.classicmodels.dto.statistical.response.*;
 import com.nixagh.classicmodels.service.customer_service.ICustomerService;
 import com.nixagh.classicmodels.service.order_service.IOrderService;
 import com.nixagh.classicmodels.service.product_service.IProductService;
+import com.nixagh.classicmodels.utils.math.RoundUtil;
 import com.nixagh.classicmodels.utils.page.PageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -193,7 +194,7 @@ public class StatisticalService implements IStatisticalService {
             search = "";
         }
 
-        var offset = (Long) pageSize * (pageNumber - 1);
+        var offset = pageSize * (pageNumber - 1);
 
         if (PRODUCT_LINE_ALL.equalsIgnoreCase(typeProductLine)) {
             typeProductLine = "";
@@ -209,7 +210,7 @@ public class StatisticalService implements IStatisticalService {
         Long totalProduct = productService.countDetailStatisticDetail(sqlFrom, sqlTo, typeProductLine, search, offset, pageSize);
         table.setProducts(products);
         table.setTotalQuantity(products.stream().map(DetailsProduct::getQuantitySold).reduce(0L, Long::sum));
-        table.setTotalMoney(products.stream().map(DetailsProduct::getTotalMoney).reduce(0.00, Double::sum));
+        table.setTotalMoney(RoundUtil.convert(products.stream().map(DetailsProduct::getTotalMoney).reduce(0.00, Double::sum), 2));
 
         if ("".equalsIgnoreCase(typeProductLine)) {
             overview.setProductLineCode("All");

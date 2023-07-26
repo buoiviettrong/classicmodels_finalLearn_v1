@@ -337,7 +337,7 @@ class AdminDetailStatistics {
         const tableBody = `<tbody class="table-body">${tableRow}</tbody>`;
         const tableFoot = `
         <tfoot class="table-foot">
-            <tr class="bg-light">
+            <tr class="bg-light hover-bg-dark-green">
                 <th colspan="3">Tổng</th>
                 <th>${this.$tableData.totalQuantity}</th>
                 <th>${this.$tableData.totalMoney}</th>
