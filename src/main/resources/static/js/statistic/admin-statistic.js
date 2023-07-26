@@ -260,7 +260,7 @@ class AdminDetailStatistics {
                 <div class="col-4 form-group ml-3">
                     <div class="row">
                         <label for="product-input" class="input-group-text col">Theo tên sản phẩm</label>
-                        <input type="text" class="form-control col" placeholder="productCode, productName"> 
+                        <input id="product-input" type="text" class="form-control col" placeholder="productCode, productName"> 
                     </div>
                 </div>
         `;
@@ -337,7 +337,7 @@ class AdminDetailStatistics {
         const tableBody = `<tbody class="table-body">${tableRow}</tbody>`;
         const tableFoot = `
         <tfoot class="table-foot">
-            <tr>
+            <tr class="bg-light">
                 <th colspan="3">Tổng</th>
                 <th>${this.$tableData.totalQuantity}</th>
                 <th>${this.$tableData.totalMoney}</th>
