@@ -8,6 +8,6 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DetailsStatisticResponse {
-    private DetailsOverview overview;
-    private DetailsTable table;
+    private DetailsOverview overview; // Tổng quan
+    private DetailsTable table; // Bảng chi tiết
 }

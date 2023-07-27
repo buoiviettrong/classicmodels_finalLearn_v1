@@ -462,19 +462,32 @@ public class ProductService implements IProductService {
     }
 
     @Override
-    public DetailsOverview getTotalSoldProductAndProfit(java.sql.Date from, java.sql.Date to, String typeProductLine, String search) {
+    public DetailsOverview getTotalSoldProductAndProfit(java.sql.Date from,
+                                                        java.sql.Date to,
+                                                        String typeProductLine,
+                                                        String search) {
         Tuple tuple2 = productRepository.getTotalSoldProductAndProfit(from, to, typeProductLine, search);
         return DetailsOverview.fromTuple(tuple2);
     }
 
     @Override
-    public List<DetailsProduct> getDetailStatisticDetail(java.sql.Date from, java.sql.Date to, String typeProductLine, String search, long offset, long pageSize) {
+    public List<DetailsProduct> getDetailStatisticDetail(java.sql.Date from,
+                                                         java.sql.Date to,
+                                                         String typeProductLine,
+                                                         String search,
+                                                         long offset,
+                                                         long pageSize) {
         List<Tuple> result = productRepository.getDetailStatisticDetail(from, to, typeProductLine, search, offset, pageSize);
         return result.stream().map(DetailsProduct::fromTuple).collect(Collectors.toList());
     }
 
     @Override
-    public Long countDetailStatisticDetail(java.sql.Date sqlFrom, java.sql.Date sqlTo, String typeProductLine, String search, long offset, long pageSize) {
+    public Long countDetailStatisticDetail(java.sql.Date sqlFrom,
+                                           java.sql.Date sqlTo,
+                                           String typeProductLine,
+                                           String search,
+                                           long offset,
+                                           long pageSize) {
         return productRepository.countDetailStatisticDetail(sqlFrom, sqlTo, typeProductLine, search);
     }
 

@@ -177,11 +177,13 @@ public class StatisticalService implements IStatisticalService {
 
         var PRODUCT_LINE_ALL = "0";
 
+        // get request info
         var from = detailsStatisticRequest.getFrom();
         var to = detailsStatisticRequest.getTo();
         var typeProductLine = detailsStatisticRequest.getTypeProductLine();
         var search = detailsStatisticRequest.getSearch();
 
+        // set default value
         if (pageNumber == null || pageNumber == 0) {
             pageNumber = 1L;
         }
@@ -200,25 +202,32 @@ public class StatisticalService implements IStatisticalService {
             typeProductLine = "";
         }
 
+        // convert date
         java.sql.Date sqlFrom = new java.sql.Date(from.getTime());
         java.sql.Date sqlTo = new java.sql.Date(to.getTime());
 
+        // create response
         DetailsStatisticResponse response = new DetailsStatisticResponse();
+        // create overview
         DetailsOverview overview = productService.getTotalSoldProductAndProfit(sqlFrom, sqlTo, typeProductLine, search);
+        // create table
         DetailsTable table = new DetailsTable();
         List<DetailsProduct> products = productService.getDetailStatisticDetail(sqlFrom, sqlTo, typeProductLine, search, offset, pageSize);
         Long totalProduct = productService.countDetailStatisticDetail(sqlFrom, sqlTo, typeProductLine, search, offset, pageSize);
+        // set table
         table.setProducts(products);
         table.setTotalQuantity(products.stream().map(DetailsProduct::getQuantitySold).reduce(0L, Long::sum));
         table.setTotalMoney(RoundUtil.convert(products.stream().map(DetailsProduct::getTotalMoney).reduce(0.00, Double::sum), 2));
+        table.setPageResponseInfo(PageUtil.getResponse(pageNumber, pageSize, totalProduct, (long) products.size()));
 
+        // set overview
         if ("".equalsIgnoreCase(typeProductLine)) {
             overview.setProductLineCode("All");
         }
-        table.setPageResponseInfo(PageUtil.getResponse(pageNumber, pageSize, totalProduct, (long) products.size()));
-
+        // set response
         response.setOverview(overview);
         response.setTable(table);
+        // return response
         return response;
     }
 }

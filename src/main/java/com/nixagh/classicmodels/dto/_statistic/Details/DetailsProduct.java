@@ -10,11 +10,11 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DetailsProduct {
-    private String productCode;
-    private String productName;
-    private String productLine;
-    private Long quantitySold;
-    private Double totalMoney;
+    private String productCode; // Mã sản phẩm
+    private String productName; // Tên sản phẩm
+    private String productLine; // Loại sản phẩm
+    private Long quantitySold;  // Số lượng đã bán
+    private Double totalMoney;  // Tổng tiền
 
     public static DetailsProduct fromTuple(Tuple tuple) {
         var productCode = tuple.get("productCode", String.class);

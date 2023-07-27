@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class DetailsTable extends AbstractResponse {
-    private List<DetailsProduct> products;
-    private Long totalQuantity;
-    private Double totalMoney;
+    private List<DetailsProduct> products; // Danh sách sản phẩm
+    private Long totalQuantity; // Tổng số lượng
+    private Double totalMoney; // Tổng tiền
 }

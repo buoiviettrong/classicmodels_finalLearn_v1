@@ -11,10 +11,11 @@ import lombok.*;
 @NoArgsConstructor
 @ToString
 public class DetailsOverview {
-    private String productLineCode;
-    private Long totalSold;
-    private Double totalMoney;
+    private String productLineCode; // Mã loại sản phẩm
+    private Long totalSold; // Tổng số lượng bán được
+    private Double totalMoney; // Tổng tiền bán được
 
+    // Convert from Tuple to DetailsOverview
     public static DetailsOverview fromTuple(Tuple tuple) {
         if (tuple == null) return DetailsOverview.builder()
                 .productLineCode("")
@@ -22,13 +23,18 @@ public class DetailsOverview {
                 .totalMoney(0D)
                 .build();
 
+        var productLineCode = tuple.get("productLineCode", String.class);
+        var totalSold = tuple.get("totalSold", Long.class);
+        var totalMoney = tuple.get("totalMoney", Double.class);
+
         return DetailsOverview.builder()
-                .productLineCode(tuple.get("productLineCode", String.class) == null ? "No Item" : tuple.get("productLineCode", String.class))
-                .totalSold(tuple.get("totalSold", Long.class) == null ? 0L : tuple.get("totalSold", Long.class))
-                .totalMoney(tuple.get("totalMoney", Double.class) == null ? 0D : RoundUtil.convert(tuple.get("totalMoney", Double.class), 2))
+                .productLineCode(productLineCode)
+                .totalSold(totalSold == null ? 0L : totalSold)
+                .totalMoney(totalMoney == null ? 0D : RoundUtil.convert(totalMoney, 2))
                 .build();
     }
 
+    // Convert from Tuple to DetailsOverview
     public static DetailsOverview fromTuple(com.querydsl.core.Tuple tuple) {
         if (tuple == null) return DetailsOverview.builder()
                 .productLineCode("")
@@ -36,10 +42,14 @@ public class DetailsOverview {
                 .totalMoney(0D)
                 .build();
 
+        var productLineCode = tuple.get(0, String.class);
+        var totalSold = tuple.get(1, Long.class);
+        var totalMoney = tuple.get(2, Double.class);
+
         return DetailsOverview.builder()
-                .productLineCode(tuple.get(0, String.class) == null ? "No Item" : tuple.get(0, String.class))
-                .totalSold(tuple.get(1, Long.class) == null ? 0L : tuple.get(1, Long.class))
-                .totalMoney(tuple.get(2, Double.class) == null ? 0D : RoundUtil.convert(tuple.get(2, Double.class), 2))
+                .productLineCode(productLineCode)
+                .totalSold(totalSold == null ? 0L : totalSold)
+                .totalMoney(totalMoney == null ? 0D : RoundUtil.convert(totalMoney, 2))
                 .build();
     }
 }

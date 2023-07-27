@@ -11,8 +11,8 @@ import java.util.Date;
 @NoArgsConstructor
 @ToString
 public class DetailsStatisticRequest {
-    private Date from;
-    private Date to;
-    private String typeProductLine;
-    private String search;
+    private Date from;  // Từ ngày nào
+    private Date to;    // Đến ngày nào
+    private String typeProductLine; // Loại sản phẩm
+    private String search;  // Từ khóa tìm kiếm theo tên sản phẩm hoặc mã sản phẩm
 }

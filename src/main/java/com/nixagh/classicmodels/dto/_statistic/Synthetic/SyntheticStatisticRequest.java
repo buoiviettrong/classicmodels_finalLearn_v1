@@ -13,7 +13,7 @@ import java.util.Date;
 @ToString
 public class SyntheticStatisticRequest {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private Date from;
-    private Date to;
-    private String type;
+    private Date from;  // Ngày bắt đầu
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date to;    // Ngày kết thúc
 }

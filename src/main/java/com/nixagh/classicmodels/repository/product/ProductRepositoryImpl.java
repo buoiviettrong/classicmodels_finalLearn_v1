@@ -277,7 +277,7 @@ public class ProductRepositoryImpl extends BaseRepositoryImpl<Product, String> i
                 .from(order)
                 .join(order.orderDetail, orderDetail)
                 .join(orderDetail.product, product)
-                .where(order.orderDate.between(from, to))
+                .where(order.orderDate.between(from, to).and(order.status.eq("Shipped")))
                 .groupBy(product.productLine.productLine)
                 .orderBy(product.productLine.productLine.count().desc())
                 .fetchFirst();

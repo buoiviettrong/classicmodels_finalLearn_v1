@@ -10,8 +10,8 @@ import lombok.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class SyntheticStatisticResponse {
-    private Overview overview;
-    private SyntheticProduct syntheticProduct;
+    private Overview overview;  // Tổng quan
+    private SyntheticProduct syntheticProduct;  // Danh sách Loai sản phẩm với số lượng bán được và doanh thu
 }
 
 
