@@ -8,8 +8,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class CustomExceptionHandler {
-    @ExceptionHandler(Throwable.class)
-    public <T extends Throwable & BaseException> ResponseEntity<ErrorResponse> handlerException(T e) {
+    @ExceptionHandler(Exception.class)
+    public <T extends Exception & BaseException> ResponseEntity<ErrorResponse> handlerException(T e) {
         var errorResponse = new ErrorResponse(e.getStatus(), e.getMessage());
         return ResponseEntity.status(e.getStatus()).body(errorResponse);
     }

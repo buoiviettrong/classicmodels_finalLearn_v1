@@ -1,6 +1,7 @@
 package com.nixagh.classicmodels.controller;
 
 import com.nixagh.classicmodels.dto.orders.*;
+import com.nixagh.classicmodels.dto.orders.admin.AdminOrderResponse;
 import com.nixagh.classicmodels.dto.orders.admin.statictis.customer.orders.detail.CustomerOrderDetailResponse;
 import com.nixagh.classicmodels.dto.orders.admin.statictis.order.OrderDetailResponse;
 import com.nixagh.classicmodels.dto.orders.manager.history.OrderHistoryResponse;
@@ -30,7 +31,6 @@ public class OrderController {
     private final String cacheName = "orders";
     private final String cacheFilter = "ordersFilter";
     private final String cacheDetail = "ordersDetail";
-
 
     @PostMapping("/filters")
     @Cacheable(value = cacheFilter, key = "#request.toString()", cacheManager = "cacheManager", unless = "#result == null")
@@ -110,5 +110,21 @@ public class OrderController {
     }
 
     private record changeStatus(Long orderNumber, String status) {
+    }
+
+    @GetMapping("/admin")
+    public AdminOrderResponse getAdminOrder(
+            @PathParam(value = "status") String status,
+            @PathParam(value = "paymentStatus") String paymentStatus,
+            @PathParam(value = "fromDate") String fromDate,
+            @PathParam(value = "toDate") String toDate,
+            @PathParam(value = "pageNumber") Long pageNumber,
+            @PathParam(value = "pageSize") Long pageSize
+    ) {
+        System.out.println("getAdminOrder");
+        System.out.println("status: " + status);
+        System.out.println("paymentStatus: " + paymentStatus);
+        
+        return orderService.getAdminOrder(status, paymentStatus, fromDate, toDate, pageNumber, pageSize);
     }
 }

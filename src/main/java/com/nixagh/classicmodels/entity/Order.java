@@ -48,8 +48,7 @@ public class Order implements Serializable {
     private String status = ShippingStatus.INPROC.getShippingStatus();
 
     @Column(name = "paymentStatus")
-    @Enumerated(EnumType.STRING)
-    private PaymentStatus paymentStatus = PaymentStatus.UNPAID;
+    private String paymentStatus = PaymentStatus.UNPAID.getPaymentStatus();
 
     @Column(name = "paymentDate")
     @DateTimeFormat(pattern = "yyyy-MM-dd")

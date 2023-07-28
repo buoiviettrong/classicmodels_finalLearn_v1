@@ -26,5 +26,70 @@
 </head>
 <body>
 <div th:replace="fragment/nav-bar :: nav-bar"></div>
+<div id="root"></div>
+
+<!-- order detail modal -->
+<div aria-hidden="true" aria-labelledby="change-status-order-modal" class="modal fade" id="change-status-order-modal"
+     tabindex="1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Change Status</h1>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+            </div>
+            <div class="modal-body">
+                <!-- change status form -->
+                <input id="change-status-order-number" name="change-status-order-number" readonly type="hidden">
+                <!-- status select -->
+                <div class="mb-3">
+                    <label class="form-label" for="change-status-order-status">Status</label>
+                    <select class="form-select" id="change-status-order-status">
+                        <option value="In Process">In Process</option>
+                        <option value="Shipped">Shipped</option>
+                        <option value="Cancelled">Cancelled</option>
+                        <option value="On Hold">On Hold</option>
+                        <option value="Resolved">Resolved</option>
+                        <option value="Disputed">Disputed</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+                <button class="btn btn-primary" onclick="orderClass.saveChangeStatus()" type="button">Save changes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div aria-hidden="true" aria-labelledby="change-status-order-modal" class="modal fade" id="order-detail-modal"
+     tabindex="1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5">Order Detail</h1>
+                <button aria-label="Close" class="btn-close" data-bs-dismiss="modal" type="button"></button>
+            </div>
+            <div class="modal-body">
+                <label for="order-detail-order-number">Order Number</label>
+                <input id="order-detail-order-number" name="" readonly type="text">
+                <table class="table table-striped">
+                    <thead>
+                    <tr>
+                        <th scope="col">Product Code</th>
+                        <th scope="col">Quantity Ordered</th>
+                        <th scope="col">Price Each</th>
+                    </tr>
+                    </thead>
+                    <tbody id="order-detail-table-body">
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal" type="button">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/admin-order.js"></script>
 </body>
 </html>

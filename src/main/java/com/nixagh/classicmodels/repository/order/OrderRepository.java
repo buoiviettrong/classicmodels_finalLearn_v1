@@ -46,4 +46,8 @@ public interface OrderRepository extends BaseRepository<Order, Long> {
     Tuple getTop1Order(java.util.Date from, java.util.Date to);
 
     List<Tuple> getOrderByEachTime(java.util.Date from, java.util.Date to);
+
+    List<Tuple> getOrders(String status, String paymentStatus, Date fromDate, Date toDate, long offset, Long pageSize);
+
+    Long countOrders(String status, String paymentStatus, Date fromDate, Date toDate);
 }

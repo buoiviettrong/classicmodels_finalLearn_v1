@@ -153,12 +153,12 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> impleme
     @Transactional
     public void updateStatus(Long orderNumber, String status) {
         JPAUpdateClause update = jpaQueryFactory.update(order);
-        if (status.equals("Shipped"))
+        if ("Shipped".equalsIgnoreCase(status)) {
             update.set(order.status, status)
-                    .set(order.shippedDate, new Date(System.currentTimeMillis()))
+                    .set(order.shippedDate, new java.util.Date())
                     .where(order.orderNumber.eq(orderNumber))
                     .execute();
-        else
+        } else
             update.set(order.status, status)
                     .where(order.orderNumber.eq(orderNumber))
                     .execute();
@@ -280,6 +280,46 @@ public class OrderRepositoryImpl extends BaseRepositoryImpl<Order, Long> impleme
                 .groupBy(order.orderDate)
                 .orderBy(order.orderDate.asc())
                 .fetch();
+    }
+
+    @Override
+    public List<Tuple> getOrders(String status, String paymentStatus, Date fromDate, Date toDate, long offset, Long pageSize) {
+        return jpaQueryFactory
+                .select(
+                        order.orderNumber,
+                        order.orderDate,
+                        order.shippedDate,
+                        order.status,
+                        order.customer.customerNumber,
+                        order.comments,
+                        orderDetail.priceEach.multiply(orderDetail.quantityOrdered).sum(),
+                        order.paymentStatus,
+                        order.paymentDate
+                )
+                .from(order)
+                .leftJoin(order.orderDetail, orderDetail)
+                .where(order.orderDate.between(fromDate, toDate)
+                        .and(order.status.containsIgnoreCase(status))
+                        .and(order.paymentStatus.like(paymentStatus + "%"))
+                )
+                .groupBy(order.orderNumber)
+                .orderBy(order.orderDate.desc())
+                .offset(offset)
+                .limit(pageSize)
+                .fetch();
+    }
+
+    @Override
+    public Long countOrders(String status, String paymentStatus, Date fromDate, Date toDate) {
+        return jpaQueryFactory
+                .select(order.orderNumber.count())
+                .from(order)
+                .where(order.orderDate.between(fromDate, toDate)
+                        .and(order.status.containsIgnoreCase(status))
+                        .and(order.paymentStatus.like(paymentStatus + "%"))
+                )
+                .orderBy(order.orderDate.desc())
+                .fetchFirst();
     }
 
 

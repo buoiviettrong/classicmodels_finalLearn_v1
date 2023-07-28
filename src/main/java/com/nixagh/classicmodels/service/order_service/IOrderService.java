@@ -3,6 +3,7 @@ package com.nixagh.classicmodels.service.order_service;
 import com.nixagh.classicmodels.dto._statistic.synthetic.details.Details;
 import com.nixagh.classicmodels.dto._statistic.synthetic.overview.OverviewTop;
 import com.nixagh.classicmodels.dto.orders.*;
+import com.nixagh.classicmodels.dto.orders.admin.AdminOrderResponse;
 import com.nixagh.classicmodels.dto.orders.admin.statictis.customer.orders.detail.CustomerOrderDetailResponse;
 import com.nixagh.classicmodels.dto.orders.admin.statictis.order.OrderDetailResponse;
 import com.nixagh.classicmodels.dto.orders.manager.history.OrderHistoryResponse;
@@ -62,4 +63,6 @@ public interface IOrderService {
     OverviewTop.Invoice getTop1Order(Date from, Date to);
 
     List<Details> getOrderByEachTime(Date from, Date to);
+
+    AdminOrderResponse getAdminOrder(String status, String paymentStatus, String fromDate, String toDate, Long pageNumber, Long pageSize);
 }

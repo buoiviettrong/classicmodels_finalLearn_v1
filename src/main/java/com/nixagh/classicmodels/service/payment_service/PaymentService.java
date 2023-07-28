@@ -146,7 +146,7 @@ public class PaymentService implements IPaymentService {
         Date paymentDate = new SimpleDateFormat("yyyyMMddHHmmss").parse(vnpPayDate);
 
         Order order = orderRepository.getOrderByOrderNumber(orderNumber);
-        order.setPaymentStatus(PaymentStatus.PAID);
+        order.setPaymentStatus(PaymentStatus.PAID.getPaymentStatus());
         order.setPaymentDate(paymentDate);
         orderRepository.save(order);
 

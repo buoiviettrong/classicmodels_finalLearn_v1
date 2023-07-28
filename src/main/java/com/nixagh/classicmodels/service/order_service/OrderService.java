@@ -3,6 +3,7 @@ package com.nixagh.classicmodels.service.order_service;
 import com.nixagh.classicmodels.dto._statistic.synthetic.details.Details;
 import com.nixagh.classicmodels.dto._statistic.synthetic.overview.OverviewTop;
 import com.nixagh.classicmodels.dto.orders.*;
+import com.nixagh.classicmodels.dto.orders.admin.AdminOrderResponse;
 import com.nixagh.classicmodels.dto.orders.admin.statictis.customer.orders.detail.CustomerOrderDetailResponse;
 import com.nixagh.classicmodels.dto.orders.admin.statictis.order.OrderDetailResponse;
 import com.nixagh.classicmodels.dto.orders.admin.statictis.order.OrderDetails;
@@ -274,6 +275,48 @@ public class OrderService implements IOrderService {
                         .totalMoney(RoundUtil.convert(tuple.get(1, Double.class), 2))
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public AdminOrderResponse getAdminOrder(String status, String paymentStatus, String fromDate, String toDate, Long pageNumber, Long pageSize) {
+        AdminOrderResponse response = new AdminOrderResponse();
+
+        if ("All".equalsIgnoreCase(status)) status = "";
+        if ("All".equalsIgnoreCase(paymentStatus)) paymentStatus = "";
+        if (pageNumber == null || pageNumber < 1) pageNumber = 1L;
+        if (pageSize == null || pageSize < 1) pageSize = 10L;
+
+
+        var offset = (pageNumber - 1) * pageSize;
+        var from = fromDate == null ? null : java.sql.Date.valueOf(fromDate);
+        var to = toDate == null ? null : java.sql.Date.valueOf(toDate);
+
+        System.out.println("fromDate: " + fromDate);
+        System.out.println("toDate: " + toDate);
+
+        List<AdminOrderResponse.OrderResponse> orders = orderRepository.getOrders(status, paymentStatus, from, to, offset, pageSize)
+                .stream()
+                .map(tuple -> {
+                    var orderNumber = tuple.get(0, Long.class);
+                    var orderDate = tuple.get(1, Date.class);
+                    var shipDate = tuple.get(2, Date.class);
+                    var status_ = tuple.get(3, String.class);
+                    var customerNumber = tuple.get(4, Long.class);
+                    var comment = tuple.get(5, String.class);
+                    var totalAmount = tuple.get(6, Double.class);
+                    var paymentStatus_ = tuple.get(7, String.class) == null ? "UNPAID" : tuple.get(7, String.class);
+                    var paymentDate = tuple.get(8, Date.class);
+
+                    return new AdminOrderResponse.OrderResponse(orderNumber, orderDate, shipDate, status_, customerNumber, comment, totalAmount, paymentStatus_, paymentDate);
+                })
+                .toList();
+        Long total = orderRepository.countOrders(status, paymentStatus, from, to);
+
+        PageResponseInfo pageResponseInfo = PageUtil.getResponse(pageNumber, pageSize, total == null ? 0L : total, (long) orders.size());
+
+        response.setOrders(orders);
+        response.setPageResponseInfo(pageResponseInfo);
+        return response;
     }
 
     @Override
