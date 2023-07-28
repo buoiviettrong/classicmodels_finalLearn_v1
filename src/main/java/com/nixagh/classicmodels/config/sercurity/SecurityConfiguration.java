@@ -60,6 +60,7 @@ public class SecurityConfiguration {
             "/admin/**",
             "/manager/**",
             "/user/profile",
+            "/admin-order",
     };
     String[] assets = {
             "/assets/**",

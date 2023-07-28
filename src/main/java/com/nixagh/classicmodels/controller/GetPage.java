@@ -22,7 +22,7 @@ public class GetPage {
 
     @GetMapping("/order")
     public String getOrderPage() {
-        return "order";
+        return "admin-order";
     }
 
     @GetMapping("/login")
@@ -35,9 +35,9 @@ public class GetPage {
         return "admin-statistic";
     }
 
-    @GetMapping("/statistic-each-month")
+    @GetMapping("/admin-order")
     public String getStatisticEachMonthPage() {
-        return "statistic-each-month";
+        return "admin-order";
     }
 
     @GetMapping("/admin/dashboard")
