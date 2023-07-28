@@ -1,4 +1,4 @@
-package com.nixagh.classicmodels.dto.Message;
+package com.nixagh.classicmodels.dto.message;
 
 import lombok.*;
 

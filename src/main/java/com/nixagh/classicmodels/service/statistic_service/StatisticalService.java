@@ -1,13 +1,13 @@
 package com.nixagh.classicmodels.service.statistic_service;
 
 import com.nixagh.classicmodels.controller.StatisticalController;
-import com.nixagh.classicmodels.dto._statistic.Details.*;
-import com.nixagh.classicmodels.dto._statistic.Synthetic.SyntheticStatisticRequest;
-import com.nixagh.classicmodels.dto._statistic.Synthetic.SyntheticStatisticResponse;
-import com.nixagh.classicmodels.dto._statistic.Synthetic.details.SyntheticProduct;
-import com.nixagh.classicmodels.dto._statistic.Synthetic.overview.Overview;
-import com.nixagh.classicmodels.dto._statistic.Synthetic.overview.OverviewTop;
-import com.nixagh.classicmodels.dto._statistic.Synthetic.overview.OverviewTotal;
+import com.nixagh.classicmodels.dto._statistic.details.*;
+import com.nixagh.classicmodels.dto._statistic.synthetic.SyntheticStatisticRequest;
+import com.nixagh.classicmodels.dto._statistic.synthetic.SyntheticStatisticResponse;
+import com.nixagh.classicmodels.dto._statistic.synthetic.details.SyntheticProduct;
+import com.nixagh.classicmodels.dto._statistic.synthetic.overview.Overview;
+import com.nixagh.classicmodels.dto._statistic.synthetic.overview.OverviewTop;
+import com.nixagh.classicmodels.dto._statistic.synthetic.overview.OverviewTotal;
 import com.nixagh.classicmodels.dto.date.DateRange;
 import com.nixagh.classicmodels.dto.statistical.request.*;
 import com.nixagh.classicmodels.dto.statistical.response.*;

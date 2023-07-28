@@ -1,7 +1,7 @@
 package com.nixagh.classicmodels.service.order_service;
 
-import com.nixagh.classicmodels.dto._statistic.Synthetic.details.Details;
-import com.nixagh.classicmodels.dto._statistic.Synthetic.overview.OverviewTop;
+import com.nixagh.classicmodels.dto._statistic.synthetic.details.Details;
+import com.nixagh.classicmodels.dto._statistic.synthetic.overview.OverviewTop;
 import com.nixagh.classicmodels.dto.orders.*;
 import com.nixagh.classicmodels.dto.orders.admin.statictis.customer.orders.detail.CustomerOrderDetailResponse;
 import com.nixagh.classicmodels.dto.orders.admin.statictis.order.OrderDetailResponse;

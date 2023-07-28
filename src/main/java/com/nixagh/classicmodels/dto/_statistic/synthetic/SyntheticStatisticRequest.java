@@ -1,4 +1,4 @@
-package com.nixagh.classicmodels.dto._statistic.Synthetic;
+package com.nixagh.classicmodels.dto._statistic.synthetic;
 
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;

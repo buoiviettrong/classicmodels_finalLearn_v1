@@ -1,6 +1,6 @@
 package com.nixagh.classicmodels.service.customer_service;
 
-import com.nixagh.classicmodels.dto._statistic.Synthetic.overview.OverviewTop;
+import com.nixagh.classicmodels.dto._statistic.synthetic.overview.OverviewTop;
 import com.nixagh.classicmodels.dto.statistical.request.StatisticalRequest;
 import com.nixagh.classicmodels.dto.statistical.response.CustomerEachMonth;
 import com.nixagh.classicmodels.dto.statistical.response.CustomerStatisticResponse;

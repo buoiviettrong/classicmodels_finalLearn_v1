@@ -1,4 +1,4 @@
-package com.nixagh.classicmodels.dto._statistic.Details;
+package com.nixagh.classicmodels.dto._statistic.details;
 
 import com.nixagh.classicmodels.utils.math.RoundUtil;
 import jakarta.persistence.Tuple;

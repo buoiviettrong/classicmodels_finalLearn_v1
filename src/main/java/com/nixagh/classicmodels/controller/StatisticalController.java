@@ -1,9 +1,9 @@
 package com.nixagh.classicmodels.controller;
 
-import com.nixagh.classicmodels.dto._statistic.Details.DetailsStatisticRequest;
-import com.nixagh.classicmodels.dto._statistic.Details.DetailsStatisticResponse;
-import com.nixagh.classicmodels.dto._statistic.Synthetic.SyntheticStatisticRequest;
-import com.nixagh.classicmodels.dto._statistic.Synthetic.SyntheticStatisticResponse;
+import com.nixagh.classicmodels.dto._statistic.details.DetailsStatisticRequest;
+import com.nixagh.classicmodels.dto._statistic.details.DetailsStatisticResponse;
+import com.nixagh.classicmodels.dto._statistic.synthetic.SyntheticStatisticRequest;
+import com.nixagh.classicmodels.dto._statistic.synthetic.SyntheticStatisticResponse;
 import com.nixagh.classicmodels.dto.statistical.request.ProductsEachMonthInYear;
 import com.nixagh.classicmodels.dto.statistical.request.StatisticDTO;
 import com.nixagh.classicmodels.dto.statistical.request.StatisticalRequest;

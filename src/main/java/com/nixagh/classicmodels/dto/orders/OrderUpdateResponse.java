@@ -1,6 +1,6 @@
 package com.nixagh.classicmodels.dto.orders;
 
-import com.nixagh.classicmodels.dto.Message.Message;
+import com.nixagh.classicmodels.dto.message.Message;
 import com.nixagh.classicmodels.entity.Order;
 import lombok.*;
 

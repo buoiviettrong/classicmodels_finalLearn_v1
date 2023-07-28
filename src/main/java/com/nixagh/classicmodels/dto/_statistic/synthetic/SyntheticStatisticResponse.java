@@ -1,7 +1,7 @@
-package com.nixagh.classicmodels.dto._statistic.Synthetic;
+package com.nixagh.classicmodels.dto._statistic.synthetic;
 
-import com.nixagh.classicmodels.dto._statistic.Synthetic.details.SyntheticProduct;
-import com.nixagh.classicmodels.dto._statistic.Synthetic.overview.Overview;
+import com.nixagh.classicmodels.dto._statistic.synthetic.details.SyntheticProduct;
+import com.nixagh.classicmodels.dto._statistic.synthetic.overview.Overview;
 import lombok.*;
 
 @Getter

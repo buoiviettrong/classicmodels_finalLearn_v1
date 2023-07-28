@@ -10,6 +10,7 @@ import com.nixagh.classicmodels.service.order_service.IOrderService;
 import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -61,6 +62,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/{orderNumber}")
+    @CacheEvict(value = {cacheName, cacheFilter, cacheDetail}, allEntries = true)
     public long deleteOrder(@PathVariable(value = "orderNumber") Long orderNumber) {
         return orderService.deleteOrder(orderNumber);
     }
