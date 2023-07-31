@@ -35,6 +35,9 @@ public class Customer implements Serializable {
     @Column(name = "phone")
     private String phone;
 
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "addressLine1")
     private String addressLine1;
 
