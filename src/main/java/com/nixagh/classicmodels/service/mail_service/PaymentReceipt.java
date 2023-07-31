@@ -11,10 +11,16 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class PaymentReceipt {
+    private String name;
     private String to;
-    private String subject;
+    private String subject = "Classic Models - Payment Receipt";
     private String body;
     private List<ProductInfo> products = new ArrayList<>();
+
+    public PaymentReceipt(String name, String to) {
+        this.name = name;
+        this.to = to;
+    }
 
     @Getter
     @Setter
@@ -37,7 +43,7 @@ public class PaymentReceipt {
 
         String headPayment = """
                 <h2>Classic Models - Payment Receipt</h2>
-                <p>Dear <b> :to </b>,</p>
+                <p>Dear <b> :name </b>,</p>
                 <p>Thank you for your payment.</p>
                 <p>Here is your payment receipt:</p>
                 <p><b>Product(s):</b></p>
@@ -64,8 +70,7 @@ public class PaymentReceipt {
                 <p>Classic Models</p>
                 <p><i>This is an automated message, please do not reply.</i></p>
                 """;
-        System.out.println(to);
-        body.append(headPayment.replace(":to", to));
+        body.append(headPayment.replace(":name", name));
         body.append(bodyPayments);
         body.append(footPayment.formatted(getTotal(), java.time.LocalDate.now(), java.time.LocalTime.now()));
 

@@ -142,15 +142,15 @@ public class PaymentService implements IPaymentService {
             String vnpTransactionStatus
     ) throws ParseException, IOException {
         var redirectUrl = "http://localhost:8081/manager/order-history";
-        if (!vnpResponseCode.equals("00")) {
+        if (!"00".equals(vnpResponseCode)) {
             response.sendRedirect(redirectUrl);
         }
         // check hash data
-        // check trang thai don hang
-        // check so tien
-        // check ma don hang
+        // check order status
+        // check amount
+        // check transaction status
 
-        // cap nhat trang thai don hang
+        // update order status
         Long orderNumber = Long.valueOf(vnpTxnRef);
 
         Date paymentDate = new SimpleDateFormat("yyyyMMddHHmmss").parse(vnpPayDate);
@@ -161,7 +161,7 @@ public class PaymentService implements IPaymentService {
         orderRepository.save(order);
 
         // create payment mail receipt
-        PaymentReceipt paymentReceipt = new PaymentReceipt();
+        PaymentReceipt paymentReceipt = new PaymentReceipt(order.getCustomer().getCustomerName(), order.getCustomer().getEmail());
 
         List<OrderDetail> orderDetails = order.getOrderDetail();
         paymentReceipt.setProducts(orderDetails.stream().map(orderDetail -> PaymentReceipt.ProductInfo.builder()
@@ -172,10 +172,7 @@ public class PaymentService implements IPaymentService {
                 .build()).toList());
 
         // send mail
-        String toEmail = order.getCustomer().getEmail();
-        paymentReceipt.setTo(order.getCustomer().getCustomerName());
-        mailService.setPaymentReceipt(paymentReceipt);
-        String result = mailService.sendPaymentReceiptMail(toEmail);
+        mailService.sendPaymentReceiptMail(paymentReceipt);
 
         response.sendRedirect(redirectUrl);
     }
