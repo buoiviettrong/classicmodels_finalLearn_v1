@@ -28,19 +28,6 @@ public class PaymentReceipt {
         private double total;
     }
 
-    public void addProduct(ProductInfo product) {
-        products.add(product);
-    }
-
-    public void addProduct(String name, Long quantity, double price) {
-        products.add(ProductInfo.builder()
-                .name(name)
-                .quantity(quantity)
-                .price(price)
-                .total(price * quantity)
-                .build());
-    }
-
     public double getTotal() {
         return products.stream().mapToDouble(ProductInfo::getTotal).sum();
     }

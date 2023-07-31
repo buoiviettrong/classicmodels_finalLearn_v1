@@ -7,14 +7,16 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 @Configuration
 public class JavaMailConfig {
+    // properties of the smtp server providing the email service
     private static final String MAIL_PROTOCOL = "smtp";
     private static final String MAIL_SMTP_AUTH = "true";
     private static final String MAIL_SMTP_STARTTLS_ENABLE = "true";
-    private static final String MAIL_DEBUG = "true";
+    // default host and port of gmail smtp server
     private static final String MAIL_SMTP_HOST = "smtp.gmail.com";
     private static final int MAIL_SMTP_PORT = 587;
-    private static final String MAIL_USERNAME = "nghiapro121d@gmail.com";
-    private static final String MAIL_PASSWORD = "wsfydbobkwsjytng";
+
+    private static final String MAIL_USERNAME = "nghiapro121d@gmail.com";   // your gmail username
+    private static final String MAIL_PASSWORD = "wsfydbobkwsjytng"; // your gmail password generated from App Passwords
     public static final String MAIL_FROM = "nghiapro121d@gmail.com";
 
     @Bean
@@ -33,7 +35,6 @@ public class JavaMailConfig {
         javaMailSender.getJavaMailProperties().setProperty("mail.transport.protocol", MAIL_PROTOCOL);
         javaMailSender.getJavaMailProperties().setProperty("mail.smtp.auth", MAIL_SMTP_AUTH);
         javaMailSender.getJavaMailProperties().setProperty("mail.smtp.starttls.enable", MAIL_SMTP_STARTTLS_ENABLE);
-//        javaMailSender.getJavaMailProperties().setProperty("mail.debug", MAIL_DEBUG);
 
         return javaMailSender;
     }
