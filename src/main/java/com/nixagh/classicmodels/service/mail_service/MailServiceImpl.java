@@ -14,29 +14,22 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Getter
 public class MailServiceImpl implements IMailService {
-    private PaymentReceipt paymentReceipt;
     private final JavaMailSender javaMailSender;
 
     @Override
-    public void sendPaymentReceiptMail() {
+    public void sendPaymentReceiptMail(PaymentReceipt paymentReceipt) {
         MimeMessage mimeMessage = javaMailSender.createMimeMessage();
         try {
             MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true);
-            helper.setSubject(paymentReceipt.getSubject());
             helper.setFrom(JavaMailConfig.MAIL_FROM);
             helper.setTo(paymentReceipt.getTo());
+            helper.setSubject(paymentReceipt.getSubject());
             helper.setText(paymentReceipt.getBody(), true);
             javaMailSender.send(mimeMessage);
         } catch (MessagingException e) {
             System.out.println(e.getMessage());
             throw new MailSendingException("Mail sending failed");
         }
-    }
-
-    @Override
-    public void sendPaymentReceiptMail(PaymentReceipt paymentReceipt) {
-        this.paymentReceipt = paymentReceipt;
-        sendPaymentReceiptMail();
     }
 
 }
