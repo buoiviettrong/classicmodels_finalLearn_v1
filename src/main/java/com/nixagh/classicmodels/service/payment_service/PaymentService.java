@@ -3,12 +3,16 @@ package com.nixagh.classicmodels.service.payment_service;
 import com.nixagh.classicmodels.config.vn_pay.VnPayConfig;
 import com.nixagh.classicmodels.controller.PaymentController;
 import com.nixagh.classicmodels.entity.Order;
+import com.nixagh.classicmodels.entity.OrderDetail;
 import com.nixagh.classicmodels.entity.Payment;
 import com.nixagh.classicmodels.entity.enums.PaymentStatus;
 import com.nixagh.classicmodels.repository.order.OrderRepository;
 import com.nixagh.classicmodels.repository.payment.PaymentRepository;
+import com.nixagh.classicmodels.service.mail_service.IMailService;
+import com.nixagh.classicmodels.service.mail_service.PaymentReceipt;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -28,6 +32,7 @@ import java.util.*;
 public class PaymentService implements IPaymentService {
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
+    private final IMailService mailService;
 
     @Override
     public List<Payment> getAll() {
@@ -83,7 +88,7 @@ public class PaymentService implements IPaymentService {
         while (itr.hasNext()) {
             String fieldName = itr.next();
             String fieldValue = vnp_Params.get(fieldName);
-            if ((fieldValue != null) && (fieldValue.length() > 0)) {
+            if ((fieldValue != null) && (!fieldValue.isEmpty())) {
                 //Build hash data
                 hashData.append(fieldName);
                 hashData.append('=');
@@ -120,6 +125,7 @@ public class PaymentService implements IPaymentService {
     }
 
     @Override
+    @Transactional
     public void vnPayReturn(
             HttpServletResponse response,
             Long vnpAmount,
@@ -135,10 +141,14 @@ public class PaymentService implements IPaymentService {
             String vnpSecureHash,
             String vnpTransactionStatus
     ) throws ParseException, IOException {
-        var redirectUrl = "http://localhost:8080/manager/order-history";
+        var redirectUrl = "http://localhost:8081/manager/order-history";
         if (!vnpResponseCode.equals("00")) {
             response.sendRedirect(redirectUrl);
         }
+        // check hash data
+        // check trang thai don hang
+        // check so tien
+        // check ma don hang
 
         // cap nhat trang thai don hang
         Long orderNumber = Long.valueOf(vnpTxnRef);
@@ -149,6 +159,23 @@ public class PaymentService implements IPaymentService {
         order.setPaymentStatus(PaymentStatus.PAID.getPaymentStatus());
         order.setPaymentDate(paymentDate);
         orderRepository.save(order);
+
+        // create payment mail receipt
+        PaymentReceipt paymentReceipt = new PaymentReceipt();
+
+        List<OrderDetail> orderDetails = order.getOrderDetail();
+        paymentReceipt.setProducts(orderDetails.stream().map(orderDetail -> PaymentReceipt.ProductInfo.builder()
+                .name(orderDetail.getProduct().getProductName())
+                .price(orderDetail.getPriceEach())
+                .quantity(orderDetail.getQuantityOrdered())
+                .total(orderDetail.getPriceEach() * orderDetail.getQuantityOrdered())
+                .build()).toList());
+
+        // send mail
+        String toEmail = order.getCustomer().getEmail();
+        paymentReceipt.setTo(order.getCustomer().getCustomerName());
+        mailService.setPaymentReceipt(paymentReceipt);
+        String result = mailService.sendPaymentReceiptMail(toEmail);
 
         response.sendRedirect(redirectUrl);
     }
