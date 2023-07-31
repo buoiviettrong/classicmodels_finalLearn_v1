@@ -13,7 +13,7 @@ public class VnPayConfig {
     public static final String vnp_CurrCode = "VND";
     public static final String vnp_Locale = "vn";
     public static final String vnp_PayURL = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-    public static final String vnp_ReturnURL = "http://localhost:8080/api/v1/payments/vnpay_return";
+    public static final String vnp_ReturnURL = "http://localhost:8081/api/v1/payments/vnpay_return";
     public static final String vnp_TmnCode = "GYK6YU3A";
     public static final String vnp_HashSecret = "ORQPOVZXYPPPOKHZKKEUVNJFWKEBPJNZ";
 
