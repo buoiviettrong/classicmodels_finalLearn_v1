@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class CustomExceptionHandler {
     @ExceptionHandler(Exception.class)
     public <T extends Exception & BaseException> ResponseEntity<ErrorResponse> handlerException(T e) {
+        System.out.println(e.getClass().getName());
         var errorResponse = new ErrorResponse(e.getStatus(), e.getMessage());
         return ResponseEntity.status(e.getStatus()).body(errorResponse);
     }

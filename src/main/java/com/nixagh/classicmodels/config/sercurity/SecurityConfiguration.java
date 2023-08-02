@@ -45,7 +45,16 @@ public class SecurityConfiguration {
             "/login/**",
             "/favicon.ico/**",
             "/assets/**",
-            "/api/v1/payments/**"
+            "/api/v1/payments/**",
+            "/api/v1/notification/web-socket/**",
+            "/ws",
+            "/ws/**",
+            "/topic/public",
+            "/topic/public/**",
+            "/topic/private",
+            "/app/chat.sendMessage",
+            "/queue/reply/**"
+
     };
     String[] pages = {
             "/product",

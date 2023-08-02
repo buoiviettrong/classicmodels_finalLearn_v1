@@ -43,3 +43,7 @@ const loadEmail = () => {
     }
 }
 loadEmail();
+
+const getEmail = () => {
+    return user.email;
+}
