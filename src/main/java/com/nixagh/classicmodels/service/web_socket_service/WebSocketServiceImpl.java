@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+
+
 @Service
 @RequiredArgsConstructor
 public class WebSocketServiceImpl implements IWebSocketService{
@@ -29,7 +31,8 @@ public class WebSocketServiceImpl implements IWebSocketService{
         // get user by product name in subscription list of product and send notification to user
         List<String> users = Arrays.asList("manager@mail.com", "nixagh2", "nixagh3");
         // send notification to user
-        users.forEach(user -> simpMessagingTemplate.convertAndSend("/topic/private/" + user, notificationMessage));
+        users.forEach(user -> simpMessagingTemplate.convertAndSend("/topic/private/", notificationMessage));
         return "Notification sent successfully!";
     }
+
 }

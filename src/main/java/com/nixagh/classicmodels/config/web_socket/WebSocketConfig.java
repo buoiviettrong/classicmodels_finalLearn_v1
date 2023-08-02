@@ -24,5 +24,6 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
         // endpoint for subscribing to topic
         registry.enableSimpleBroker("/topic");
+        registry.setUserDestinationPrefix("/user");
     }
 }

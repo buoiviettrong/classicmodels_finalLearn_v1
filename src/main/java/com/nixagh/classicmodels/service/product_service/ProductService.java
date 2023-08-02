@@ -25,10 +25,12 @@ import com.nixagh.classicmodels.dto.statistical.response.ProductStatisticRespons
 import com.nixagh.classicmodels.dto.statistical.response.Top10ProductResponse;
 import com.nixagh.classicmodels.entity.Product;
 import com.nixagh.classicmodels.entity.ProductLinee;
+import com.nixagh.classicmodels.entity.firebase.NotificationMessage;
 import com.nixagh.classicmodels.exception.exceptions.BadRequestException;
 import com.nixagh.classicmodels.exception.exceptions.NotFoundEntity;
 import com.nixagh.classicmodels.repository.product.ProductNoDSLRepository;
 import com.nixagh.classicmodels.repository.product.ProductRepository;
+import com.nixagh.classicmodels.service.web_socket_service.IWebSocketService;
 import com.nixagh.classicmodels.utils.excel.ExcelUtil;
 import com.nixagh.classicmodels.utils.math.RoundUtil;
 import com.nixagh.classicmodels.utils.page.PageUtil;
@@ -52,6 +54,7 @@ public class ProductService implements IProductService {
     private final ProductNoDSLRepository productNoDSLRepository;
     private final EntityManager entityManager;
     private final ProductRepository productRepository;
+    private final IWebSocketService webSocketService;
 
     @Override
     public List<Top10ProductResponse> getTop10Products(Date from, Date to) {
@@ -282,6 +285,13 @@ public class ProductService implements IProductService {
         productInStore.setQuantityInStock(product.getQuantityInStock());
         productInStore.setBuyPrice(product.getBuyPrice());
         productInStore.setMsrp(product.getMsrp());
+
+        webSocketService.sendGlobalNotification(
+                NotificationMessage.builder()
+                        .title("Product updated")
+                        .body("Product " + productCode + " has been updated")
+                        .build()
+        );
         return new HashMap<>(Map.of("productCode", productRepository.save(productInStore).getProductCode()));
     }
 

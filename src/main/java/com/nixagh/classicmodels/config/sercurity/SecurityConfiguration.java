@@ -53,7 +53,9 @@ public class SecurityConfiguration {
             "/topic/public/**",
             "/topic/private",
             "/app/chat.sendMessage",
-            "/queue/reply/**"
+            "/queue/reply/**",
+            "/firebase-cloud-messaging-push-scope",
+            "/firebase-messaging-sw.js",
 
     };
     String[] pages = {
