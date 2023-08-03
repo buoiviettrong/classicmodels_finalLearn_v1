@@ -15,6 +15,10 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // register the endpoint and enable SockJS
         registry.addEndpoint("/ws")
                 .withSockJS();
+
+        // admin endpoint
+        registry.addEndpoint("/admin/ws")
+                .withSockJS();
     }
 
     @Override
@@ -24,6 +28,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
         // endpoint for subscribing to topic
         registry.enableSimpleBroker("/topic");
+        registry.enableSimpleBroker("/admin/notification");
         registry.setUserDestinationPrefix("/user");
     }
 }

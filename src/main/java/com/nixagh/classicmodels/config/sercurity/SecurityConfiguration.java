@@ -56,6 +56,10 @@ public class SecurityConfiguration {
             "/queue/reply/**",
             "/firebase-cloud-messaging-push-scope",
             "/firebase-messaging-sw.js",
+            "/admin/notification",
+            "/admin/notification/**",
+            "/admin/ws",
+            "/admin/ws/**",
 
     };
     String[] pages = {

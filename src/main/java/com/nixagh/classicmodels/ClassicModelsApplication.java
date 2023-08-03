@@ -1,5 +1,6 @@
 package com.nixagh.classicmodels;
 
+import com.nixagh.classicmodels._commons.constants.errorConstants.ErrorConstants;
 import com.nixagh.classicmodels.dto.auth.RegisterRequest;
 import com.nixagh.classicmodels.entity.auth.Permission;
 import com.nixagh.classicmodels.entity.auth.Role;

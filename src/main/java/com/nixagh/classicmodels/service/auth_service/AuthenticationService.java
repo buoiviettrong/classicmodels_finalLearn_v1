@@ -8,6 +8,7 @@ import com.nixagh.classicmodels.entity.auth.Permission;
 import com.nixagh.classicmodels.entity.auth.Token;
 import com.nixagh.classicmodels.entity.auth.User;
 import com.nixagh.classicmodels.entity.enums.TokenType;
+import com.nixagh.classicmodels.entity.firebase.NotificationMessage;
 import com.nixagh.classicmodels.exception.exceptions.AlreadyExistsException;
 import com.nixagh.classicmodels.exception.exceptions.InvalidToken;
 import com.nixagh.classicmodels.exception.exceptions.InvalidUserNameOrPassword;
@@ -15,6 +16,7 @@ import com.nixagh.classicmodels.exception.exceptions.NotFoundEntity;
 import com.nixagh.classicmodels.repository.role.RoleRepository;
 import com.nixagh.classicmodels.repository.token.TokenRepository;
 import com.nixagh.classicmodels.repository.user.UserRepository;
+import com.nixagh.classicmodels.service.web_socket_service.IWebSocketService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,6 +38,7 @@ public class AuthenticationService {
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final RoleRepository roleRepository;
+    private final IWebSocketService webSocketService;
 
     public AuthenticationResponse register(RegisterRequest request) {
         String token;
@@ -63,6 +66,19 @@ public class AuthenticationService {
         var saveUser = userRepository.save(user);
         saveUserToken(saveUser, token);
         user.setPassword(null);
+
+        String result = webSocketService.sendNotification(
+                NotificationMessage.builder()
+                        .title("New user register")
+                        .body("New user register with email: %s".formatted(user.getEmail()))
+                        .data(Map.of(
+                                "email", saveUser.getEmail(),
+                                "id", saveUser.getId().toString()
+                                )
+                        )
+                .build(),
+                "/admin/notification");
+
         return AuthenticationResponse.builder()
                 .userDetails(null)
                 .accessToken(token)

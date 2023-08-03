@@ -35,4 +35,10 @@ public class WebSocketServiceImpl implements IWebSocketService{
         return "Notification sent successfully!";
     }
 
+    @Override
+    public String sendNotification(NotificationMessage notificationMessage, String topic) {
+        simpMessagingTemplate.convertAndSend(topic, notificationMessage);
+        return "Notification sent successfully!";
+    }
+
 }
