@@ -6,10 +6,12 @@ import com.nixagh.classicmodels.entity.Order;
 import com.nixagh.classicmodels.entity.OrderDetail;
 import com.nixagh.classicmodels.entity.Payment;
 import com.nixagh.classicmodels.entity.enums.PaymentStatus;
+import com.nixagh.classicmodels.entity.firebase.NotificationMessage;
 import com.nixagh.classicmodels.repository.order.OrderRepository;
 import com.nixagh.classicmodels.repository.payment.PaymentRepository;
 import com.nixagh.classicmodels.service.mail_service.IMailService;
 import com.nixagh.classicmodels.service.mail_service.PaymentReceipt;
+import com.nixagh.classicmodels.service.web_socket_service.IWebSocketService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
@@ -33,6 +35,7 @@ public class PaymentService implements IPaymentService {
     private final PaymentRepository paymentRepository;
     private final OrderRepository orderRepository;
     private final IMailService mailService;
+    private final IWebSocketService webSocketService;
 
     @Override
     public List<Payment> getAll() {
@@ -175,5 +178,12 @@ public class PaymentService implements IPaymentService {
         mailService.sendPaymentReceiptMail(paymentReceipt);
 
         response.sendRedirect(redirectUrl);
+        webSocketService.sendNotification(
+                NotificationMessage.builder()
+                        .title("Thanh toán đơn hàng")
+                        .body("Đơn hàng " + orderNumber + " đã được thanh toán thành công")
+                        .data(Map.of("id", orderNumber.toString()))
+                .build(),
+                "/admin/notification");
     }
 }

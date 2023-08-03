@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -116,8 +117,8 @@ public class OrderController {
     public AdminOrderResponse getAdminOrder(
             @PathParam(value = "status") String status,
             @PathParam(value = "paymentStatus") String paymentStatus,
-            @PathParam(value = "fromDate") String fromDate,
-            @PathParam(value = "toDate") String toDate,
+            @PathParam(value = "fromDate") @DateTimeFormat(pattern = "yyyy-MM-dd") String fromDate,
+            @PathParam(value = "toDate") @DateTimeFormat(pattern = "yyyy-MM-dd") String toDate,
             @PathParam(value = "pageNumber") Long pageNumber,
             @PathParam(value = "pageSize") Long pageSize
     ) {
