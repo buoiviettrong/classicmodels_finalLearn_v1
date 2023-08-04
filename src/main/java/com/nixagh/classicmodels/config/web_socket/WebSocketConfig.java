@@ -11,17 +11,20 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final String[] STOMP_ENDPOINT = {
             "/ws",          // normal endpoint
-            "/admin/ws"     // admin endpoint
+            "/admin/ws",    // admin endpoint
+            "/user/ws"      // user endpoint
     };
 
     private final String[] MESSAGE_BROKER = {
             "/topic",               // normal topic
-            "/admin/notification"   // admin topic
+            "/admin/notification",   // admin topic
+            "/user/notification"
     };
 
     private final String[] DESTINATION_PREFIX = {
             "/app",         // normal destination prefix
-            "/admin/app"    // admin destination prefix
+            "/admin/app",    // admin destination prefix
+            "/user/app"
     };
 
     @Override
@@ -31,6 +34,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
                 .withSockJS();
     }
 
+
     @Override
     public void configureMessageBroker(MessageBrokerRegistry registry) {
         // endpoint for sending message
@@ -38,7 +42,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // endpoint for subscribing to topic
         registry.enableSimpleBroker(MESSAGE_BROKER);
         // normal user destination prefix
-        String USER_DESTINATION_PREFIX = "/user";
-        registry.setUserDestinationPrefix(USER_DESTINATION_PREFIX);
+//        String USER_DESTINATION_PREFIX = "/user";
+//        registry.setUserDestinationPrefix(USER_DESTINATION_PREFIX);
     }
 }

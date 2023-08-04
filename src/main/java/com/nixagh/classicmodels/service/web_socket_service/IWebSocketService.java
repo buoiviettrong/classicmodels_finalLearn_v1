@@ -7,4 +7,6 @@ public interface IWebSocketService {
     String sendNotificationToSpecificUserBy(NotificationMessage notificationMessage, String productName);
 
     String sendNotification(NotificationMessage notificationMessage, String topic);
+
+    void sendNotificationToUser(NotificationMessage data, String username, String ip);
 }

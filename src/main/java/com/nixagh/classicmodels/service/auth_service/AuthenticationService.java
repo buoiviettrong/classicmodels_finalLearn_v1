@@ -4,7 +4,6 @@ import com.nixagh.classicmodels.config.sercurity.JwtService;
 import com.nixagh.classicmodels.dto.auth.AuthenticateRequest;
 import com.nixagh.classicmodels.dto.auth.AuthenticationResponse;
 import com.nixagh.classicmodels.dto.auth.RegisterRequest;
-import com.nixagh.classicmodels.entity.auth.Permission;
 import com.nixagh.classicmodels.entity.auth.Token;
 import com.nixagh.classicmodels.entity.auth.User;
 import com.nixagh.classicmodels.entity.enums.TokenType;
@@ -59,7 +58,7 @@ public class AuthenticationService {
                 .loginType(request.getType())
                 .build();
 
-        token = jwtService.generateToken(generateClaims(user), user);
+        token = jwtService.generateToken(jwtService.generateClaims(user), user);
         refreshToken = jwtService.generateRefreshToken(user);
         user.setRefreshToken(refreshToken);
 
@@ -102,7 +101,7 @@ public class AuthenticationService {
 
         User user = (User) authentication.getPrincipal();
 
-        var jwtToken = jwtService.generateToken(generateClaims(user), user);
+        var jwtToken = jwtService.generateToken(jwtService.generateClaims(user), user);
         var refreshToken = jwtService.generateRefreshToken(user);
         revokeAllUserTokens(user);
         saveUserToken(user, jwtToken);
@@ -128,7 +127,7 @@ public class AuthenticationService {
 
         revokeAllUserTokens(userDetails);
 
-        var jwtToken = jwtService.generateToken(generateClaims(userDetails), userDetails);
+        var jwtToken = jwtService.generateToken(jwtService.generateClaims(userDetails), userDetails);
         refreshToken = jwtService.generateRefreshToken(userDetails, jwtService.extractClaims(refreshToken, Claims::getExpiration));
         saveUserToken(userDetails, jwtToken);
 
@@ -155,26 +154,5 @@ public class AuthenticationService {
 
     private void revokeAllUserTokens(User user) {
         tokenRepository.revokeAllUserTokens(user);
-    }
-
-    private Map<String, Object> generateClaims(User user) {
-        Map<String, Object> claims = new java.util.HashMap<>(Map.of("role", user.getRole().getRoleName()));
-        // add email to claims
-        claims.put("email", user.getEmail());
-        // add permission to claims
-        claims.put("permission", user.getRole().getPermissions().stream().map(Permission::getPermissionName).toList());
-        // add customer id to claims
-        claims.put("customerNumber", user.getCustomerNumber());
-        // add user id to claims
-        claims.put("userId", user.getId());
-        // add user type to claims
-        claims.put("userType", user.getLoginType());
-        //add username to claims
-        claims.put("userName", user.getFirstName() + " " + user.getLastName());
-        return claims;
-    }
-
-    public String getRoleFromToken(String accessToken) {
-        return jwtService.extractClaims(accessToken, claims -> claims.get("role", String.class));
     }
 }

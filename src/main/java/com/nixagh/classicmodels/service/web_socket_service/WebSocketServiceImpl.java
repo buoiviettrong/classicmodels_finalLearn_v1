@@ -41,4 +41,10 @@ public class WebSocketServiceImpl implements IWebSocketService{
         return "Notification sent successfully!";
     }
 
+    @Override
+    public void sendNotificationToUser(NotificationMessage data, String username, String ip) {
+        System.out.println("/user/notifications/" + username + "/" + ip);
+        simpMessagingTemplate.convertAndSend("/user/notifications/" + username + "/" + ip, data);
+    }
+
 }

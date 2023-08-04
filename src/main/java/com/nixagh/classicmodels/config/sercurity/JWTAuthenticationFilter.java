@@ -38,6 +38,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         log.info("Just call method: " + request.getMethod() + ", path: " + request.getServletPath());
         // ignore api/v1/auth
         if (request.getServletPath().contains("/api/v1/auth")
+                || request.getServletPath().contains("/api/v2/auth/authenticate-only-one-device")
                 || request.getServletPath().contains("https://accounts.google.com/o/oauth2/v2/auth")
                 || request.getServletPath().contains("https://github.com/login/oauth/authorize")
         ) {

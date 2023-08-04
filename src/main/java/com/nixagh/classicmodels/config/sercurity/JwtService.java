@@ -1,6 +1,8 @@
 package com.nixagh.classicmodels.config.sercurity;
 
 import com.nixagh.classicmodels.entity.auth.AuthSettings;
+import com.nixagh.classicmodels.entity.auth.Permission;
+import com.nixagh.classicmodels.entity.auth.User;
 import com.nixagh.classicmodels.exception.exceptions.InvalidToken;
 import com.nixagh.classicmodels.exception.exceptions.NotFoundEntity;
 import com.nixagh.classicmodels.exception.exceptions.SignatureTokenException;
@@ -138,5 +140,35 @@ public class JwtService {
 
     public String getUsernameFromToken(String token) {
         return extractUsername(token);
+    }
+
+    public Map<String, Object> generateClaims(User user) {
+        Map<String, Object> claims = new java.util.HashMap<>(Map.of("role", user.getRole().getRoleName()));
+        // add email to claims
+        claims.put("email", user.getEmail());
+        // add permission to claims
+        claims.put("permission", user.getRole().getPermissions().stream().map(Permission::getPermissionName).toList());
+        // add customer id to claims
+        claims.put("customerNumber", user.getCustomerNumber());
+        // add user id to claims
+        claims.put("userId", user.getId());
+        // add user type to claims
+        claims.put("userType", user.getLoginType());
+        //add username to claims
+        claims.put("userName", user.getFirstName() + " " + user.getLastName());
+        return claims;
+    }
+
+    public Map<String, Object> generateClaims(User user, String ip, String userAgent) {
+        Map<String, Object> claims = generateClaims(user);
+        // add ip to claims
+        claims.put("ip", ip);
+        // add user agent to claims
+        claims.put("userAgent", userAgent);
+        return claims;
+    }
+
+    public String getRoleFromToken(String accessToken) {
+        return extractClaims(accessToken, claims -> claims.get("role", String.class));
     }
 }

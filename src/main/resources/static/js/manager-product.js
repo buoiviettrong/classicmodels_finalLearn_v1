@@ -264,8 +264,4 @@ const loadProductLine = async () => {
     await products.init();
     carts.init();
     await loadProductLine();
-
-    const socket = new Socket_(async () => {
-        await products.load();
-    });
 })();

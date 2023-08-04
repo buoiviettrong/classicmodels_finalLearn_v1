@@ -13,4 +13,9 @@ public interface TokenRepository extends BaseRepository<Token, Long> {
     List<Token> findAllValidTokenByUser(User user);
 
     void revokeAllUserTokens(User user);
+
+
+    Optional<Token> checkTokenExistWithIpNotEqual(User user, String ip, String device);
+
+    long checkTokenExistWithIpNotEqualORDeviceNotEqual(User user, String ip, String device);
 }

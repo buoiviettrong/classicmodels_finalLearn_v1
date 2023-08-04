@@ -1,10 +1,10 @@
 package com.nixagh.classicmodels.controller;
 
+import com.nixagh.classicmodels.config.sercurity.JwtService;
 import com.nixagh.classicmodels.dto.auth.AuthenticateRequest;
 import com.nixagh.classicmodels.dto.auth.AuthenticationResponse;
 import com.nixagh.classicmodels.dto.auth.RegisterRequest;
 import com.nixagh.classicmodels.service.auth_service.AuthenticationService;
-import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +18,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
+    private final JwtService jwtService;
 
     @PostMapping("/register")
     public AuthenticationResponse register(
@@ -28,13 +29,12 @@ public class AuthenticationController {
 
     @PostMapping("/authenticate")
     public AuthenticationResponse authenticate(
-            @RequestBody AuthenticateRequest request,
-            HttpServletResponse response
+            @RequestBody AuthenticateRequest request
     ) throws IOException {
         AuthenticationResponse authenticationResponse = authenticationService.authenticate(request);
         String accessToken = authenticationResponse.getAccessToken();
         // get role from token
-        String role = authenticationService.getRoleFromToken(accessToken);
+        String role = jwtService.getRoleFromToken(accessToken);
         authenticationResponse.setRedirect("/" + role.toLowerCase() + "/dashboard");
         return authenticationResponse;
     }

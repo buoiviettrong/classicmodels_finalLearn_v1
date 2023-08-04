@@ -19,7 +19,7 @@
     <script src="/js/mainAPI.js"></script>
 </head>
 <body>
-<div th:replace="fragment/nav-bar :: nav-bar"></div>
+<div th:replace="fragment/user-nav-bar :: nav-bar"></div>
 <!-- main content -->
 <div class="container">
     <div class="row">
@@ -65,8 +65,6 @@
         </div>
     </div>
 </div>
-<!-- loading user info JS File -->
-<script src="/js/user.js"></script>
 <!-- loading order history JS File -->
 <script src="/js/manager-order-history.js"></script>
 <!-- loading notification JS File -->
@@ -80,6 +78,5 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.1.4/sockjs.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.min.js"></script>
 <script src="/js/notification.js"></script>
-
 </body>
 </html>

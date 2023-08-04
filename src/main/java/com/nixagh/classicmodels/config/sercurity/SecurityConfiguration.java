@@ -31,6 +31,7 @@ public class SecurityConfiguration {
     String[] openURL = {
             "/api/v1/auth/**",
             "/api/v1/oauth2/**",
+            "/api/v2/auth/**",
             "/v2/api-docs",
             "/v3/api-docs",
             "/v3/api-docs/**",
@@ -60,6 +61,10 @@ public class SecurityConfiguration {
             "/admin/notification/**",
             "/admin/ws",
             "/admin/ws/**",
+            "/user/notification",
+            "/user/notification/**",
+            "/user/ws",
+            "/user/ws/**",
 
     };
     String[] pages = {

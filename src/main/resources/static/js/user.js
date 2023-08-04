@@ -37,6 +37,7 @@ const loadEmail = () => {
             permissions: tokenObj.permissions,
             userId: tokenObj.userId,
             customerNumber: tokenObj.customerNumber,
+            ip: tokenObj.ip,
         }
     } else {
         window.location.href = '/login';
@@ -46,4 +47,8 @@ loadEmail();
 
 const getEmail = () => {
     return user.email;
+}
+
+const getIP = () => {
+    return user.ip;
 }
