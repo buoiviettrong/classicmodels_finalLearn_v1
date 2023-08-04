@@ -17,5 +17,5 @@ public interface TokenRepository extends BaseRepository<Token, Long> {
 
     Optional<Token> checkTokenExistWithIpNotEqual(User user, String ip, String device);
 
-    long checkTokenExistWithIpNotEqualORDeviceNotEqual(User user, String ip, String device);
+    Optional<Long> checkTokenExistWithIpNotEqualORDeviceNotEqual(User user, String ip, String device);
 }

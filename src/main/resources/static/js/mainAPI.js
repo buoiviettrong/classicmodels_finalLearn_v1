@@ -5,7 +5,7 @@ const headers = {
 
 const checkStatus = (response) => {
     if (response.status === 401) {
-        alert("Please login to continue");
+        alert(response.message || "Session expired. Please login again.");
         window.location.href = "/login";
     }
     return response;
@@ -20,10 +20,13 @@ const callAPI = {
             headers: headers,
         };
         if (data != null) init["body"] = JSON.stringify(data);
-
-        return fetch(host + url, init)
-            .then((response) => checkStatus(response))
-            .then((response) => response.json());
+        try {
+            return fetch(host + url, init)
+                .then((response) => response.json())
+                .catch((response) => checkStatus(response));
+        } catch (e) {
+            console.log(e.message);
+        }
     },
 
     post: (url, data) => {

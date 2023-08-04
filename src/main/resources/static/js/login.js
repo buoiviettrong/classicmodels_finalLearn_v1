@@ -8,7 +8,7 @@ const login = () => {
             localStorage.setItem("user", JSON.stringify(response["user"]));
             window.location.href = response["redirect"];
         } else {
-            alert("Login failed");
+            alert(response["message"] || "Đăng nhập thất bại");
         }
     });
 }

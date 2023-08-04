@@ -13,8 +13,4 @@ public class InvalidUserNameOrPassword extends AuthenticationException implement
         super(msg);
     }
 
-    @Override
-    public HttpStatus getStatus() {
-        return HttpStatus.BAD_REQUEST;
-    }
 }

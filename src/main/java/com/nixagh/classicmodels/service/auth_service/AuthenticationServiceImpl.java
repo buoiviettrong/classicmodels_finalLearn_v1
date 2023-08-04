@@ -7,6 +7,7 @@ import com.nixagh.classicmodels.entity.auth.Token;
 import com.nixagh.classicmodels.entity.auth.User;
 import com.nixagh.classicmodels.entity.enums.TokenType;
 import com.nixagh.classicmodels.entity.firebase.NotificationMessage;
+import com.nixagh.classicmodels.exception.exceptions.ExistingLoginException;
 import com.nixagh.classicmodels.exception.exceptions.InvalidUserNameOrPassword;
 import com.nixagh.classicmodels.repository.token.TokenRepository;
 import com.nixagh.classicmodels.service.web_socket_service.IWebSocketService;
@@ -19,6 +20,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -57,19 +59,20 @@ public class AuthenticationServiceImpl implements IAuthenticationService{
 //        revokeAllUserTokens(user);
 
         // check token exist in db with ip and device
-        long result = tokenRepository.checkTokenExistWithIpNotEqualORDeviceNotEqual(user, ip, device);
-
-        if(result > 0) {
-            webSocketService.sendNotificationToUser(
-                    NotificationMessage.builder()
-                            .title("Thông báo")
-                            .body("Tài khoản của bạn đã đăng nhập trên một thiết bị khác")
-                            .data(Map.of("id", user.getId().toString()))
-                            .build(),
-                    user.getUsername(),
-                    ip
-            );
-        }
+        tokenRepository.checkTokenExistWithIpNotEqualORDeviceNotEqual(user, ip, device).ifPresent(
+                (id) -> {
+                    webSocketService.sendNotificationToUser(
+                            NotificationMessage.builder()
+                                    .title("Thông báo")
+                                    .body("Tài khoản của bạn vừa đăng nhập trên một thiết bị khác")
+                                    .data(Map.of("id", user.getId().toString()))
+                                    .build(),
+                            user.getUsername(),
+                            ip
+                    );
+                    throw new ExistingLoginException("Tài khoản của bạn đã đăng nhập trên một thiết bị khác");
+                }
+        );
 
         saveUserTokenWithIpAndDevice(user, jwtToken, ip, device);
         user.setPassword(null);

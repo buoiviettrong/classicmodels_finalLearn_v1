@@ -78,7 +78,7 @@ public class TokenRepositoryImpl extends BaseRepositoryImpl<Token, Long> impleme
     @Override
     @Transactional
     @Modifying
-    public long checkTokenExistWithIpNotEqualORDeviceNotEqual(User user, String ip, String device) {
+    public Optional<Long> checkTokenExistWithIpNotEqualORDeviceNotEqual(User user, String ip, String device) {
 
         List<Long> subQuery = jpaQueryFactory
                 .selectDistinct(token.id.as("id"))
@@ -90,13 +90,13 @@ public class TokenRepositoryImpl extends BaseRepositoryImpl<Token, Long> impleme
                         token.expired.isFalse()
                 ).stream().toList();
 
-        JPAUpdateClause updateClause = jpaQueryFactory.update(token);
+//        JPAUpdateClause updateClause = jpaQueryFactory.update(token);
+//
+//        updateClause.set(token.revoked, true)
+//                .set(token.expired, true)
+//                .where(token.id.in(subQuery));
 
-        updateClause.set(token.revoked, true)
-                .set(token.expired, true)
-                .where(token.id.in(subQuery));
-
-        return updateClause.execute();
+        return subQuery.stream().findFirst();
     }
 
 }
