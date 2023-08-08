@@ -98,7 +98,7 @@ public class ChatService implements IChatService {
             room.ifPresent(value -> value.getMembers().add(user.get()));
             roomRepository.save(room.get());
 
-            sendMessage(ChatRequest.builder()
+            this.sendMessage(ChatRequest.builder()
                     .senderId(0)
                     .senderName("System")
                     .content(user.get().getUsername() + " joined the room")
@@ -121,7 +121,10 @@ public class ChatService implements IChatService {
         var room = roomRepository.getRoomById(roomId);
 
         if (room.isEmpty()) {
-            return ChatResponse.builder().build();
+            return ChatResponse.builder()
+                    .success(false)
+                    .errorMessage("Room not found")
+                    .build();
         }
         else {
             ChatMessage chatMessage = ChatMessage.builder()
@@ -137,6 +140,7 @@ public class ChatService implements IChatService {
             messageRepository.save(chatMessage);
             simpMessagingTemplate.convertAndSend("/topic/room/" + roomId, chatMessage);
             return ChatResponse.builder()
+                    .success(true)
                     .messages(room.get().getMessages())
                     .build();
         }

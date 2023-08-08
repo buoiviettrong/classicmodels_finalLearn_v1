@@ -43,11 +43,13 @@ const createRoom = async () => {
 const joinRoom = async (roomId_) => {
     const roomId = roomId_ || $('#roomIdJoin').val();
     const memberId = getUserId();
+    // add member to room
     const url = chatURL + '/join-room?roomId=' + roomId + '&memberId=' + memberId;
 
     const res = await callAPI.get(url);
     console.log(res)
     if(res.success) {
+        // subscribe to room
         const subscription = '/topic/room/' + roomId;
         chatSocket.addSubscription(subscription, (message) => {
             const messageContent = JSON.parse(message.body);
