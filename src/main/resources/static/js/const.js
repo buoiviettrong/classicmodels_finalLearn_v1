@@ -7,3 +7,4 @@ const productURL = "/api/v1/products";
 const productLineURL = "/api/v1/product-lines";
 const userURL = "/api/v1/users";
 const statisticURL = "/api/v1/statistical";
+const chatURL = "/api/v1/chat";

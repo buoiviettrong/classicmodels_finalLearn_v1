@@ -32,9 +32,9 @@ const loadEmail = () => {
         $('#dropdownMenuButton').text(tokenObj.email);
         user = {
             email: tokenObj.email,
-            name: tokenObj.name,
+            name: tokenObj['userName'],
             role: tokenObj.role,
-            permissions: tokenObj.permissions,
+            permissions: tokenObj.permission,
             userId: tokenObj.userId,
             customerNumber: tokenObj.customerNumber,
             ip: tokenObj.ip,
@@ -51,4 +51,12 @@ const getEmail = () => {
 
 const getIP = () => {
     return user.ip;
+}
+
+const getUserId = () => {
+    return user.userId;
+}
+
+const getUserName = () => {
+    return user.name;
 }

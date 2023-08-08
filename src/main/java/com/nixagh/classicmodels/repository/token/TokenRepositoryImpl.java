@@ -89,13 +89,6 @@ public class TokenRepositoryImpl extends BaseRepositoryImpl<Token, Long> impleme
                         token.revoked.isFalse(),
                         token.expired.isFalse()
                 ).stream().toList();
-
-//        JPAUpdateClause updateClause = jpaQueryFactory.update(token);
-//
-//        updateClause.set(token.revoked, true)
-//                .set(token.expired, true)
-//                .where(token.id.in(subQuery));
-
         return subQuery.stream().findFirst();
     }
 

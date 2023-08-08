@@ -18,7 +18,8 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     private final String[] MESSAGE_BROKER = {
             "/topic",               // normal topic
             "/admin/notification",   // admin topic
-            "/user/notification"
+            "/user/notification",
+            "/chat"
     };
 
     private final String[] DESTINATION_PREFIX = {

@@ -65,6 +65,8 @@ public class SecurityConfiguration {
             "/user/notification/**",
             "/user/ws",
             "/user/ws/**",
+            "/user/chat/**",
+            "/user/chat",
 
     };
     String[] pages = {
@@ -81,6 +83,8 @@ public class SecurityConfiguration {
             "/manager/**",
             "/user/profile",
             "/admin-order",
+            "/chat",
+            "/chat/**"
     };
     String[] assets = {
             "/assets/**",

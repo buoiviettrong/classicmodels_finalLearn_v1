@@ -64,4 +64,9 @@ public class GetPage {
     public String getUserProfilePage() {
         return "profile";
     }
+
+    @GetMapping("/chat")
+    public String getChatPage() {
+        return "chat";
+    }
 }
