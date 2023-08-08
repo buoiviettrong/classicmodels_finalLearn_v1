@@ -1,13 +1,8 @@
 package com.nixagh.classicmodels.repository.token;
 
-import com.nixagh.classicmodels.entity.auth.QToken;
 import com.nixagh.classicmodels.entity.auth.Token;
 import com.nixagh.classicmodels.entity.auth.User;
 import com.nixagh.classicmodels.repository.BaseRepositoryImpl;
-import com.querydsl.core.types.EntityPath;
-import com.querydsl.core.types.Expression;
-import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.impl.JPAUpdateClause;
 import jakarta.persistence.EntityManager;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.transaction.annotation.Transactional;

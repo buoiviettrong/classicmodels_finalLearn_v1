@@ -13,7 +13,7 @@ public class RoomRepositoryImpl extends BaseRepositoryImpl<Room, String> impleme
     }
 
     @Override
-    public Optional<Room> getRoomByName(String roomName, long creator) {
+    public Optional<Room> getRoomByRoomName(String roomName, long creator) {
         return jpaQueryFactory
                 .selectFrom(room)
                 .where(room.roomName.eq(roomName).and(room.owner.eq(creator)))
@@ -21,15 +21,7 @@ public class RoomRepositoryImpl extends BaseRepositoryImpl<Room, String> impleme
     }
 
     @Override
-    public Optional<Room> getRoomByName(String roomName) {
-        return jpaQueryFactory
-                .selectFrom(room)
-                .where(room.roomName.eq(roomName))
-                .stream().findFirst();
-    }
-
-    @Override
-    public Optional<Room> getRoomById(String roomId) {
+    public Optional<Room> getRoomByRoomId(String roomId) {
         return jpaQueryFactory
                 .selectFrom(room)
                 .where(room.roomId.eq(roomId))
@@ -37,7 +29,7 @@ public class RoomRepositoryImpl extends BaseRepositoryImpl<Room, String> impleme
     }
 
     @Override
-    public List<Room> getRoomsByMemberId(long memberId) {
+    public List<Room> getRoomsByMembersExists(long memberId) {
         System.out.println("getRoomsByMemberId:: " + memberId);
         return jpaQueryFactory
                 .selectFrom(room)

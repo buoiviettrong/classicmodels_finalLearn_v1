@@ -7,11 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface RoomRepository extends BaseRepository<Room, String> {
-    Optional<Room> getRoomByName(String roomName, long creator);
+    Optional<Room> getRoomByRoomName(String roomName, long creator);
 
-    Optional<Room> getRoomByName(String roomId);
+    Optional<Room> getRoomByRoomId(String roomId);
 
-    Optional<Room> getRoomById(String roomId);
-
-    List<Room> getRoomsByMemberId(long memberId);
+    List<Room> getRoomsByMembersExists(long memberId);
 }

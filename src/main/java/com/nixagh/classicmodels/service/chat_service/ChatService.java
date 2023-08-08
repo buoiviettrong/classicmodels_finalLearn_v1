@@ -42,7 +42,7 @@ public class ChatService implements IChatService {
                     .build();
         }
 
-        roomRepository.getRoomByName(roomName, creator).ifPresent(room -> RoomResponse.builder()
+        roomRepository.getRoomByRoomName(roomName, creator).ifPresent(room -> RoomResponse.builder()
                 .success(false)
                 .message("Room already exists")
         );
@@ -80,7 +80,7 @@ public class ChatService implements IChatService {
         }
 
         System.out.println("roomId:: " + roomId);
-        var room = roomRepository.getRoomById(roomId);
+        var room = roomRepository.getRoomByRoomId(roomId);
 
         if (room.isEmpty()) {
             return RoomResponse.builder()
@@ -118,7 +118,7 @@ public class ChatService implements IChatService {
 
     @Override
     public ChatResponse sendMessage(ChatRequest message, String roomId) {
-        var room = roomRepository.getRoomById(roomId);
+        var room = roomRepository.getRoomByRoomId(roomId);
 
         if (room.isEmpty()) {
             return ChatResponse.builder()
@@ -148,7 +148,7 @@ public class ChatService implements IChatService {
 
     @Override
     public ChatResponse getMessages(String roomId) {
-        var room = roomRepository.getRoomById(roomId);
+        var room = roomRepository.getRoomByRoomId(roomId);
 
         if (room.isEmpty()) {
             return ChatResponse.builder()
@@ -172,7 +172,7 @@ public class ChatService implements IChatService {
 
     @Override
     public RoomResponse getRooms(long memberId) {
-        List<Room> rooms = roomRepository.getRoomsByMemberId(memberId);
+        List<Room> rooms = roomRepository.getRoomsByMembersExists(memberId);
         return RoomResponse.builder()
                 .success(true)
                 .rooms(rooms.stream()

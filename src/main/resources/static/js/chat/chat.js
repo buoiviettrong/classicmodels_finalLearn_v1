@@ -53,20 +53,7 @@ const joinRoom = async (roomId_) => {
         const subscription = '/topic/room/' + roomId;
         chatSocket.addSubscription(subscription, (message) => {
             const messageContent = JSON.parse(message.body);
-
-            const messageElement = `
-                <div class="message">
-                    <div class="message-header">
-                        <span class="message-sender font-weight-bold">${messageContent.senderName}</span>
-                        <span class="message-time">${dateFormatter(messageContent.timestamp)}</span>
-                    </div>
-                    <div class="message-content">
-                        ${messageContent.content}
-                    </div>
-                </div>
-            `;
-
-            $('#messages').append(messageElement);
+            $('#messages').append(chatComponent(messageContent));
         });
         $('#join-room-alert').empty().append('Joined room ' + roomId);
         await loadRoomList();
@@ -88,23 +75,24 @@ const loadMessages = async (roomId) => {
         if (messages.length === 0) {
             messages_.append('<div class="text-center">No messages</div>');
         }
-        messages.forEach(message => {
-            const messageElement = `
-                <div class="message">
-                    <div class="message-header">
-                        <span class="message-sender font-weight-bold">${message.senderName}</span>
-                        <span class="message-time">${dateFormatter(message.timestamp)}</span>
-                    </div>
-                    <div class="message-content">
-                        ${message.content}
-                    </div>
-                </div>
-            `;
-            messages_.append(messageElement);
-        });
+        messages.forEach(message => messages_.append(chatComponent(message)));
     } else {
         alert(res.message);
     }
+}
+
+function chatComponent(message) {
+    return `
+        <div class="message">
+            <div class="message-header">
+                <span class="message-sender font-weight-bold">${message.senderName}</span>
+                <span class="message-time">${dateFormatter(message.timestamp)}</span>
+            </div>
+            <div class="message-content">
+                ${message.content}
+            </div>
+        </div>
+    `;
 }
 
 const dateFormatter = (date) => {
@@ -119,7 +107,7 @@ const dateFormatter = (date) => {
     return `${day}/${month}/${year} ${hour}:${minute}:${second}`;
 }
 
-const loadRoomList = async () => {
+async function loadRoomList() {
     const rooms_ = $('#rooms');
     const url = chatURL + '/get-rooms?memberId=' + getUserId();
     const rooms = await callAPI.get(url);
