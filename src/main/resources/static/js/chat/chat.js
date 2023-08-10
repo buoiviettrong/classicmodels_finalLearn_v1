@@ -216,9 +216,28 @@ const action = {
     },
     leaveRoom: async (roomId) => {
         const res = await callAPI.delete(chatURL + '/delete-room?roomId=' + roomId + '&memberId=' + getUserId());
-        console.log(res);
+        if (res.success) {
+            alert('Left room ' + roomId);
+            await loadRoomList();
+        } else {
+            alert(res.message);
+        }
     }
 };
+
+function inviteUser() {
+    const userId = $('#userIdInvite').val();
+    const roomId = $('#room-id').text();
+
+    const url = chatURL + '/add-member?roomId=' + roomId + '&memberId=' + userId;
+    callAPI.post(url).then(res => {
+        if (res.success) {
+            alert('Invited user ' + userId);
+        } else {
+            alert(res.message);
+        }
+    });
+}
 
 (async () => {
     await loadRoomList();

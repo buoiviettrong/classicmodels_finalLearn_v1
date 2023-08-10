@@ -269,14 +269,18 @@ public class ChatService implements IChatService {
                     .build();
         }
 
-
         roomRepository.save(room);
         roomMembersRepository.save(RoomMembers.builder()
                 .id(new RoomMembersId(roomId, memberId))
                 .room(room)
                 .user(user)
-                .hasBan(false)
+                .hasLeft(false)
                 .build());
+        this.sendMessage(ChatRequest.builder()
+                .senderId(0)
+                .senderName("System")
+                .content(user.getUsername() + " joined the room")
+                .build(), roomId);
 
         return RoomResponse.builder()
                 .success(true)

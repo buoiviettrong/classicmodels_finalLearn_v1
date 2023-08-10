@@ -82,6 +82,19 @@
     </div>
     <div class="container col">
         <h2>Members</h2>
+        <!-- invite user -->
+        <div id="chat-invite">
+            <label>
+                <input type="text" placeholder="userId" id="userIdInvite" onkeydown="(() => {
+                    if (event.keyCode === 13) {
+                        inviteUser();
+                    }
+                })();">
+            </label>
+            <button onclick="inviteUser()">Invite</button>
+            <!-- alert -->
+            <div id="invite-user-alert"></div>
+        </div>
         <div id="members"></div>
     </div>
 </div>
