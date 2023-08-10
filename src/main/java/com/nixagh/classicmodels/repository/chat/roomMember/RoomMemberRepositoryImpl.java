@@ -15,7 +15,7 @@ public class RoomMemberRepositoryImpl extends BaseRepositoryImpl<RoomMembers, Ro
         return jpaQueryFactory
                 .select(roomMembers)
                 .from(roomMembers)
-                .where(roomMembers.id.eq(roomMembersId))
+                .where(roomMembers.id.eq(roomMembersId).and(roomMembers.hasLeft.eq(false)))
                 .fetchFirst();
     }
 }

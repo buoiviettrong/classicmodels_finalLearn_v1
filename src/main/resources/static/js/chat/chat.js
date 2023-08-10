@@ -138,20 +138,16 @@ async function loadRoomList() {
 }
 
 function loadRoomMembers(roomId) {
-    const members_ = $('#members');
-    members_.empty();
-    addMembers(roomId).then(members => {
-        members_.append(members);
-    });
+    addMembers(roomId);
 }
 
-async function addMembers(roomId) {
-    const res = await callAPI.get(chatURL + '/get-members?roomId=' + roomId);
-    const members = res.members;
-    console.log(members);
-    let members_ = '';
-    members.forEach(member => {
-        members_ += `
+function addMembers(roomId) {
+    const x = $('#members');
+    callAPI.get(chatURL + '/get-members?roomId=' + roomId).then(res => {
+        const members = res.members;
+        let members_ = '';
+        members.forEach(member => {
+            members_ += `
             <div class="room-member row">
                 <span class="room-member-name col">${member['memberName']}</span>
                 <div class="dropdown col">
@@ -162,16 +158,16 @@ async function addMembers(roomId) {
                     <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                         <div class="dropdown-item" onclick="action.removeMember('${member['memberId']}')">Remove</div>
                         ${member['isBan']
-            ? `<div class="dropdown-item" onclick="action.unban('${member['memberId']}')">Unban</div>`
-            : `<div class="dropdown-item" onclick="action.ban('${member['memberId']}')">Ban</div>`}
+                ? `<div class="dropdown-item" onclick="action.unban('${member['memberId']}')">Unban</div>`
+                : `<div class="dropdown-item" onclick="action.ban('${member['memberId']}')">Ban</div>`}
                         <div class="dropdown-item" onclick="action.viewProfile('${member['memberId']}')">View profile</div>
                         <div class="dropdown-item" onclick="action.sendMessage('${member['memberId']}')">Send message</div>
                     </div>
                 </div>
-            </div>
-        `;
+            </div>`;
+        });
+        x.empty().append(members_);
     });
-    return members_;
 }
 
 const action = {
