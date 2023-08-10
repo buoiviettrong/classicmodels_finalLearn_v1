@@ -1,13 +1,14 @@
 const chatSocket = new ChatSocket(new SockJS('/user/ws'), getUserId());
 chatSocket.connect();
-const sendMessage = () => {
+
+async function sendMessage() {
     const message_ = $('#message');
     const message = message_.val();
     const roomId = $('#room-id').html();
     const sender = getUserId();
     const url = chatURL + '/send-message?roomId=' + roomId;
 
-    if(message === '') {
+    if (message === '') {
         return;
     }
     console.log(roomId)
@@ -22,17 +23,20 @@ const sendMessage = () => {
         content: message
     }
 
-    const send = callAPI.post(url, request);
+    const send = await callAPI.post(url, request);
     message_.val('');
+    if (!send.success)
+        alert(send['errorMessage'])
+
 }
 
-const createRoom = async () => {
+async function createRoom() {
     const roomName = $('#roomNameCreate').val();
     const creator = getUserId();
     const url = chatURL + '/create-room';
 
     const res = await callAPI.post(url, {roomName, creator});
-    if(res.success) {
+    if (res.success) {
         $('#create-room-alert').empty().append('Created room ' + res['rooms'][0]['roomId']);
         await loadRoomList();
     } else {
@@ -40,7 +44,7 @@ const createRoom = async () => {
     }
 }
 
-const joinRoom = async (roomId_) => {
+async function joinRoom(roomId_) {
     const roomId = roomId_ || $('#roomIdJoin').val();
     const memberId = getUserId();
     // add member to room
@@ -48,27 +52,30 @@ const joinRoom = async (roomId_) => {
 
     const res = await callAPI.get(url);
     console.log(res)
-    if(res.success) {
+    if (res.success) {
         // subscribe to room
         const subscription = '/topic/room/' + roomId;
         chatSocket.addSubscription(subscription, (message) => {
             const messageContent = JSON.parse(message.body);
             $('#messages').append(chatComponent(messageContent));
+            if (0 === messageContent.sender)
+                loadRoomMembers(roomId);
         });
         $('#join-room-alert').empty().append('Joined room ' + roomId);
         await loadRoomList();
         await loadMessages(roomId);
+        await loadRoomMembers(roomId);
     } else {
         alert(res.message);
     }
 }
 
-const loadMessages = async (roomId) => {
+async function loadMessages(roomId) {
     $('#room-id').empty().append(roomId);
     const url = chatURL + '/get-messages?roomId=' + roomId;
     const res = await callAPI.get(url);
     console.log(res);
-    if(res.success) {
+    if (res.success) {
         const messages = res.messages;
         const messages_ = $('#messages');
         messages_.empty();
@@ -95,7 +102,7 @@ function chatComponent(message) {
     `;
 }
 
-const dateFormatter = (date) => {
+function dateFormatter(date) {
     const d = new Date(date);
     const day = d.getDate();
     const month = d.getMonth() + 1;
@@ -112,7 +119,7 @@ async function loadRoomList() {
     const url = chatURL + '/get-rooms?memberId=' + getUserId();
     const rooms = await callAPI.get(url);
     console.log(rooms)
-    if(!rooms.success) {
+    if (!rooms.success) {
         alert(rooms.message);
         return;
     }
@@ -122,12 +129,92 @@ async function loadRoomList() {
     }
     rooms['rooms'].forEach(room => {
         const roomElement = `
-            <div class="room border-top border-bottom" onclick="joinRoom('${room['roomId']}')" style="cursor: pointer">
-                <div class="room-name h5">${room.roomName}</div>
-            </div>
+                <div class="room border-top border-bottom" onclick="joinRoom('${room['roomId']}')" style="cursor: pointer">
+                    <div class="room-name h5">${room.roomName}</div>
+                </div>
         `;
         rooms_.append(roomElement);
     });
+}
+
+function loadRoomMembers(roomId) {
+    const members_ = $('#members');
+    members_.empty();
+    addMembers(roomId).then(members => {
+        members_.append(members);
+    });
+}
+
+async function addMembers(roomId) {
+    const res = await callAPI.get(chatURL + '/get-members?roomId=' + roomId);
+    const members = res.members;
+    console.log(members);
+    let members_ = '';
+    members.forEach(member => {
+        members_ += `
+            <div class="room-member row">
+                <span class="room-member-name col">${member['memberName']}</span>
+                <div class="dropdown col">
+                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            ...
+                    </button>
+                    <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <div class="dropdown-item" onclick="action.removeMember('${member['memberId']}')">Remove</div>
+                        ${member['isBan']
+            ? `<div class="dropdown-item" onclick="action.unban('${member['memberId']}')">Unban</div>`
+            : `<div class="dropdown-item" onclick="action.ban('${member['memberId']}')">Ban</div>`}
+                        <div class="dropdown-item" onclick="action.viewProfile('${member['memberId']}')">View profile</div>
+                        <div class="dropdown-item" onclick="action.sendMessage('${member['memberId']}')">Send message</div>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+    return members_;
+}
+
+const action = {
+    removeMember: (memberId) => {
+        const roomId = $('#room-id').text();
+        const url = chatURL + '/delete-member?memberId=' + memberId + '&roomId=' + roomId;
+        callAPI.delete(url).then(res => {
+            if (res.success) {
+                loadRoomMembers(roomId);
+                alert('Removed member ' + memberId);
+            } else {
+                alert(res.message);
+            }
+        });
+    },
+    ban: async (memberId) => {
+        const roomId = $('#room-id').text();
+        const url = chatURL + '/ban-member?memberId=' + memberId + '&roomId=' + roomId;
+        const res = await callAPI.get(url);
+        if (res.success) {
+            loadRoomMembers(roomId);
+            alert('Banned member ' + memberId);
+        } else {
+            alert(res.message);
+        }
+    },
+    unban: async (memberId) => {
+        const roomId = $('#room-id').text();
+        const url = chatURL + '/unban-member?memberId=' + memberId + '&roomId=' + roomId;
+        const res = await callAPI.get(url);
+        if (res.success) {
+            loadRoomMembers(roomId);
+            alert('Unbanned member ' + memberId);
+        } else {
+            alert(res.message);
+        }
+    },
+    viewProfile: (memberId) => {
+
+    },
+    sendMessage: (memberId) => {
+
+    }
 };
 
 (async () => {

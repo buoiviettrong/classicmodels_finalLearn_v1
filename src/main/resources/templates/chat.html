@@ -23,62 +23,67 @@
 <body>
 <!--<div th:replace="fragment/user-nav-bar :: nav-bar"></div>-->
 <div class="row">
-<div class="container col ml-5">
-    <h2>Chat Room</h2>
-    <!-- create chat room -->
-    <div id="chat-create">
-        <label>
-            <input type="text" placeholder="roomName" id="roomNameCreate" onkeydown="(() => {
-                if (event.keyCode === 13) {
-                    createRoom();
-                }
-            })();">
-        </label>
-        <button onclick="createRoom()">Create</button>
-        <!-- alert -->
-        <div id="create-room-alert"></div>
-    </div>
-    <!-- join chat room -->
-    <div id="chat-join">
-        <label>
-            <input type="text" placeholder="roomName" id="roomNameJoin" onkeydown="(() => {
-                if (event.keyCode === 13) {
-                    joinRoom();
-                }
-            })();">
-        </label>
-        <button onclick="joinRoom()">Join</button>
-        <!-- alert -->
-        <div id="join-room-alert"></div>
-        <
-    <div id="rooms"></div>
-</div>
-<div class="container col" id="chat">
-    <div id="chat-header">
-        <h2>Chat Room</h2>
-    </div>
-    <div id="chat-body">
-        <div id="room">
-            <div id="room-id" hidden="hidden"></div>
-        </div>
-        <div id="chat-content">
-            <div id="chat-messages">
-                <div class="message" id="messages">
-                </div>
-            </div>
-        </div>
-        <div id="chat-input" class="m-5">
+    <div class="container col ml-5">
+        <h2>Room List</h2>
+        <!-- create chat room -->
+        <div id="chat-create">
             <label>
-                <input id="message" type="text" placeholder="messageText" onkeydown="(() => {
+                <input type="text" placeholder="roomName" id="roomNameCreate" onkeydown="(() => {
                     if (event.keyCode === 13) {
-                        sendMessage();
+                        createRoom();
                     }
                 })();">
             </label>
-            <button onclick="sendMessage()">Send</button>
+            <button onclick="createRoom()">Create</button>
+            <!-- alert -->
+            <div id="create-room-alert"></div>
+        </div>
+        <!-- join chat room -->
+        <div id="chat-join">
+            <label>
+                <input type="text" placeholder="roomName" id="roomIdJoin" onkeydown="(() => {
+                    if (event.keyCode === 13) {
+                        joinRoom();
+                    }
+                })();">
+            </label>
+            <button onclick="joinRoom()">Join</button>
+            <!-- alert -->
+            <div id="join-room-alert"></div>
+            <
+            <div id="rooms"></div>
         </div>
     </div>
-</div>
+    <div class="container col" id="chat">
+        <div id="chat-header">
+            <h2>Chat Room</h2>
+        </div>
+        <div id="chat-body">
+            <div id="room">
+                <div id="room-id" hidden="hidden"></div>
+            </div>
+            <div id="chat-content">
+                <div id="chat-messages">
+                    <div class="message" id="messages">
+                    </div>
+                </div>
+            </div>
+            <div id="chat-input" class="m-5">
+                <label>
+                    <input id="message" type="text" placeholder="messageText" onkeydown="(() => {
+                        if (event.keyCode === 13) {
+                            sendMessage();
+                        }
+                    })();">
+                </label>
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+    </div>
+    <div class="container col">
+        <h2>Members</h2>
+        <div id="members"></div>
+    </div>
 </div>
 <script src="/js/chat/chatSocket.js"></script>
 <script src="/js/chat/chat.js"></script>

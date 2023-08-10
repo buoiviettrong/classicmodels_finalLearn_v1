@@ -1,6 +1,5 @@
 package com.nixagh.classicmodels.entity.chat;
 
-import com.nixagh.classicmodels.entity.auth.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,13 +21,9 @@ public class Room {
     private String roomName;
     private Long owner;
 
-    @ManyToMany
-    @JoinTable(
-            name = "room_members",
-            joinColumns = @JoinColumn(name = "room_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    private Set<User> members;
+    @OneToMany
+    @JoinColumn(name = "roomId")
+    private Set<RoomMembers> members;
 
     @OneToMany(mappedBy = "room")
     private List<ChatMessage> messages;

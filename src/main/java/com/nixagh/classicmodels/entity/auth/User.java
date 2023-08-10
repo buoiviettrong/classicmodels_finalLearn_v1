@@ -1,7 +1,7 @@
 package com.nixagh.classicmodels.entity.auth;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.nixagh.classicmodels.entity.chat.Room;
+import com.nixagh.classicmodels.entity.chat.RoomMembers;
 import com.nixagh.classicmodels.entity.enums.LoginType;
 import jakarta.persistence.*;
 import lombok.*;
@@ -13,7 +13,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Table(name = "user")
@@ -48,13 +47,10 @@ public class User implements UserDetails {
     @JsonIgnore
     private String refreshToken;
 
-    @ManyToMany
-    @JoinTable(
-            name = "room_members",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "room_id")
-    )
-    private Set<Room> rooms;
+    @OneToMany
+    @JoinColumn(name = "userId")
+    @JsonIgnore
+    private List<RoomMembers> rooms;
 
     @Override
     @JsonIgnore
