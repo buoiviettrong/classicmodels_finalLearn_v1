@@ -19,4 +19,6 @@ public interface RoomRepository extends BaseRepository<Room, String> {
     List<Tuple> getMemberByRoomId(String roomId);
 
     Long getOwnerByRoomId(String roomId);
+
+    void deleteRoom(Room room);
 }

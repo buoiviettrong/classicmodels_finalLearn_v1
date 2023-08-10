@@ -214,6 +214,7 @@ public class ChatService implements IChatService {
     }
 
     @Override
+    @Transactional
     public RoomResponse deleteRoom(String roomId, long memberId) {
         Room room = roomRepository.getRoomByRoomId(roomId).orElse(null);
         if (room == null) {
@@ -223,14 +224,31 @@ public class ChatService implements IChatService {
                     .build();
         }
 
-        if (room.getOwner().equals(memberId))
-            roomRepository.delete(room);
-        else
-            roomRepository.updateRemoveMember(roomId, memberId, true);
-        return RoomResponse.builder()
-                .success(true)
-                .message("Room deleted successfully")
-                .build();
+        try {
+            if (room.getOwner().equals(memberId)) {
+//                roomMembersRepository.deleteAllByRoom(room);
+//                System.out.println("deleted members");
+//                messageRepository.deleteAllByRoom(room);
+//                System.out.println("deleted messages");
+                roomRepository.deleteRoom(room);
+                System.out.println("deleted room");
+            } else
+                roomRepository.updateRemoveMember(roomId, memberId, true);
+            this.sendMessage(ChatRequest.builder()
+                    .senderId(0)
+                    .senderName("System")
+                    .content("Room deleted")
+                    .build(), roomId);
+            return RoomResponse.builder()
+                    .success(true)
+                    .message("Room deleted successfully")
+                    .build();
+        } catch (Exception e) {
+            return RoomResponse.builder()
+                    .success(false)
+                    .message("Error deleting room")
+                    .build();
+        }
     }
 
     @Override

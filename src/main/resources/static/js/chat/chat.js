@@ -129,9 +129,12 @@ async function loadRoomList() {
     }
     rooms['rooms'].forEach(room => {
         const roomElement = `
-                <div class="room border-top border-bottom" onclick="joinRoom('${room['roomId']}')" style="cursor: pointer">
+            <div class="row">
+                <div class="room border-top border-bottom col" onclick="joinRoom('${room['roomId']}')" style="cursor: pointer">
                     <div class="room-name h5">${room.roomName}</div>
                 </div>
+                <button class="btn btn-sm btn-outline-secondary col-1" onclick="action.leaveRoom('${room['roomId']}')">Leave</button>
+            </divrow>
         `;
         rooms_.append(roomElement);
     });
@@ -210,6 +213,10 @@ const action = {
     },
     sendMessage: (memberId) => {
 
+    },
+    leaveRoom: async (roomId) => {
+        const res = await callAPI.delete(chatURL + '/delete-room?roomId=' + roomId + '&memberId=' + getUserId());
+        console.log(res);
     }
 };
 

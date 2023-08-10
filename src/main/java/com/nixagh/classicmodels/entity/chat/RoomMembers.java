@@ -20,6 +20,8 @@ public class RoomMembers {
     private boolean hasBan;
     private boolean hasLeft;
 
+    private boolean deleted;
+
     @ManyToOne
     @JoinColumn(name = "roomId")
     @MapsId("roomId")

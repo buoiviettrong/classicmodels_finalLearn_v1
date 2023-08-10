@@ -38,7 +38,7 @@ public class RoomRepositoryImpl extends BaseRepositoryImpl<Room, String> impleme
         return jpaQueryFactory
                 .selectFrom(room)
                 .leftJoin(room.members, roomMembers)
-                .where(roomMembers.id.userId.eq(memberId).and(roomMembers.hasLeft.eq(false)))
+                .where(roomMembers.id.userId.eq(memberId).and(roomMembers.hasLeft.eq(false)).and(roomMembers.deleted.eq(false)))
                 .fetch();
     }
 
@@ -60,7 +60,7 @@ public class RoomRepositoryImpl extends BaseRepositoryImpl<Room, String> impleme
                 .from(room)
                 .leftJoin(room.members, roomMembers)
                 .leftJoin(roomMembers.user, user)
-                .where(room.roomId.eq(roomId).and(roomMembers.hasLeft.eq(false)))
+                .where(room.roomId.eq(roomId).and(roomMembers.hasLeft.eq(false)).and(roomMembers.deleted.eq(false)))
                 .fetch();
     }
 
@@ -71,5 +71,21 @@ public class RoomRepositoryImpl extends BaseRepositoryImpl<Room, String> impleme
                 .from(room)
                 .where(room.roomId.eq(roomId))
                 .fetchOne();
+    }
+
+    @Override
+    @Modifying
+    @jakarta.transaction.Transactional
+    public void deleteRoom(Room room_) {
+        jpaQueryFactory
+                .update(room)
+                .set(room.deleted, true)
+                .where(room.roomId.eq(room_.getRoomId()))
+                .execute();
+        jpaQueryFactory
+                .update(roomMembers)
+                .set(roomMembers.deleted, true)
+                .where(roomMembers.id.roomId.eq(room_.getRoomId()))
+                .execute();
     }
 }

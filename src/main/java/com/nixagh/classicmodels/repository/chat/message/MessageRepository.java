@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface MessageRepository extends BaseRepository<ChatMessage, String> {
     List<ChatMessage> getMessagesByRoom(Room room);
+
+    void deleteAllByRoom(Room room);
 }

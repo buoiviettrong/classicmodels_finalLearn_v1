@@ -20,6 +20,7 @@ public class Room {
 
     private String roomName;
     private Long owner;
+    private boolean deleted;
 
     @OneToMany
     @JoinColumn(name = "roomId")
